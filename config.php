@@ -1,9 +1,11 @@
+
+
 <?php
 // ── Paramètres de connexion ──────────────────────────────
 define("MYHOST", "localhost");
 define("MYUSER", "root");
 define("MYPASS", "");          // Adapter selon ton serveur
-define("MYBASE", "gestion_service");
+define("MYBASE", "koudmain_db"); // Adapter selon ta base de données
 
 /**
  * Connexion PDO à MySQL (Chapitre 13 du cours)
