@@ -89,7 +89,7 @@ $prest_attente = $pdo->query("
     FROM Utilisateur u
     JOIN Quartier q ON u.id_quartier = q.id_quartier
     JOIN Ville v ON q.id_ville = v.id_ville
-    WHERE u.est_prestataire = 1 AND u.est_valide = 0
+    WHERE u.est_prestataire = true AND u.est_valide = false
     ORDER BY u.datecrea_utilisateur DESC
 ")->fetchAll();
 
