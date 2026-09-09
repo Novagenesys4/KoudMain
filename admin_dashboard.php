@@ -12,14 +12,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
 
     if ($_POST['action'] === 'valider_prestataire') {
         $id = (int)$_POST['id_utilisateur'];
-        $pdo->prepare("UPDATE Utilisateur SET est_valide = 1 WHERE id_utilisateur = ?")
+        $pdo->prepare("UPDATE Utilisateur SET est_valide = true WHERE id_utilisateur = ?")
             ->execute([$id]);
         $msg = "Compte prestataire validé avec succès.";
     }
 
     elseif ($_POST['action'] === 'suspendre') {
         $id = (int)$_POST['id_utilisateur'];
-        $pdo->prepare("UPDATE Utilisateur SET est_valide = 0 WHERE id_utilisateur = ? AND est_admin = 0")
+        $pdo->prepare("UPDATE Utilisateur SET est_valide = false WHERE id_utilisateur = ? AND est_admin = false")
             ->execute([$id]);
         $msg = "Compte suspendu.";
     }
@@ -102,7 +102,7 @@ $stmt_u = $pdo->prepare("
     SELECT u.*, q.nom_quartier
     FROM Utilisateur u
     JOIN Quartier q ON u.id_quartier = q.id_quartier
-    WHERE u.est_admin = 0
+    WHERE u.est_admin = false
     ORDER BY u.datecrea_utilisateur DESC
     LIMIT $limit_users OFFSET $offset_users
 ");

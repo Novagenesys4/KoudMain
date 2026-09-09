@@ -52,11 +52,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 // ── Quartiers pour le panneau de contexte ──
 $demo_quartiers = [];
 try {
-    $pdo2 = new PDO(
-        "mysql:host=" . MYHOST . ";dbname=" . MYBASE . ";charset=utf8mb4",
-        MYUSER, MYPASS,
-        [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION, PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC]
-    );
+    $pdo2 = getConnexion();
     $demo_quartiers = array_column(
         $pdo2->query("SELECT nom_quartier FROM Quartier ORDER BY nom_quartier LIMIT 6")->fetchAll(),
         'nom_quartier'

@@ -7,11 +7,7 @@ $demo_categories  = [];
 
 try {
 
-    $pdo = new PDO(
-        "mysql:host=" . MYHOST . ";dbname=" . MYBASE . ";charset=utf8mb4",
-        MYUSER, MYPASS,
-        [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION, PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC]
-    );
+    $pdo = getConnexion();
 
     $stmt = $pdo->query("
         SELECT p.titre_prestation, p.prix_prestation, q.nom_quartier
