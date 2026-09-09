@@ -64,9 +64,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $erreur = "Cette adresse e-mail est déjà utilisée.";
         } else {
             $hash       = password_hash($password, PASSWORD_DEFAULT);
-            $est_prest  = ($role === 'prestataire') ? 1 : 0;
-            $est_client = ($role === 'client') ? 1 : 0;
-            $est_valide = ($role === 'client') ? 1 : 0;
+            $est_prest  = ($role === 'prestataire') ? true : false;
+            $est_client = ($role === 'client') ? true : false;
+            $est_valide = ($role === 'client') ? true : false;
 
             $insert = $pdo->prepare("
                 INSERT INTO Utilisateur

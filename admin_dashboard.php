@@ -76,10 +76,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
 // --- Données ---
 $onglet = $_GET['tab'] ?? 'tableau_bord';
 
-$nb_users       = (int)$pdo->query("SELECT COUNT(*) FROM Utilisateur WHERE est_admin = 0")->fetchColumn();
-$nb_clients     = (int)$pdo->query("SELECT COUNT(*) FROM Utilisateur WHERE est_client = 1 AND est_admin = 0")->fetchColumn();
-$nb_prest       = (int)$pdo->query("SELECT COUNT(*) FROM Utilisateur WHERE est_prestataire = 1")->fetchColumn();
-$nb_attente     = (int)$pdo->query("SELECT COUNT(*) FROM Utilisateur WHERE est_prestataire = 1 AND est_valide = 0")->fetchColumn();
+$nb_users       = (int)$pdo->query("SELECT COUNT(*) FROM Utilisateur WHERE est_admin = false")->fetchColumn();
+$nb_clients     = (int)$pdo->query("SELECT COUNT(*) FROM Utilisateur WHERE est_client = true AND est_admin = false")->fetchColumn();
+$nb_prest       = (int)$pdo->query("SELECT COUNT(*) FROM Utilisateur WHERE est_prestataire = true")->fetchColumn();
+$nb_attente     = (int)$pdo->query("SELECT COUNT(*) FROM Utilisateur WHERE est_prestataire = true AND est_valide = false")->fetchColumn();
 $nb_commandes   = (int)$pdo->query("SELECT COUNT(*) FROM Commande")->fetchColumn();
 $nb_cats        = (int)$pdo->query("SELECT COUNT(*) FROM Categorie")->fetchColumn();
 $nb_prestations = (int)$pdo->query("SELECT COUNT(*) FROM Prestation")->fetchColumn();
