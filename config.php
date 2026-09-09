@@ -1,31 +1,19 @@
-
-
 <?php
-// ── Paramètres de connexion ──────────────────────────────
-define("MYHOST", "localhost");
-define("MYUSER", "root");
-define("MYPASS", "");          // Adapter selon ton serveur
-define("MYBASE", "koudmain_db"); // Adapter selon ta base de données
+// ── Paramètres de connexion Supabase ─────────────────────
+define("DATABASE_URL", getenv("DATABASE_URL") ?: "postgresql://postgres.etuhhtojtnoitvceiebj:KENS1705451@P@aws-1-eu-west-1.pooler.supabase.com:5432/postgres");
 
 /**
- * Connexion PDO à MySQL (Chapitre 13 du cours)
- * Retourne un objet PDO ou arrête le script en cas d'erreur.
+ * Connexion PDO à PostgreSQL (Supabase)
  */
 function getConnexion(): PDO {
-    $dsn  = "mysql:host=" . MYHOST . ";dbname=" . MYBASE . ";charset=utf8mb4";
-    $user = MYUSER;
-    $pass = MYPASS;
-
     try {
-        $pdo = new PDO($dsn, $user, $pass);
-        // Active les exceptions PDO pour capturer les erreurs SQL
+        $pdo = new PDO(DATABASE_URL);
         $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-        // Retourne les résultats en tableau associatif par défaut
         $pdo->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
         return $pdo;
     } catch (PDOException $e) {
         die("<div style='font-family:sans-serif;color:#f25f5c;padding:2rem;'>
-             <b>Erreur de connexion à la base de données :</b><br>" . $e->getMessage() . "
+             <b>Erreur de connexion à la base de données :</b><br>" . htmlspecialchars($e->getMessage()) . "
              </div>");
     }
 }
