@@ -1,11 +1,11 @@
 -- ═══════════════════════════════════════════════════════════
---  BASE DE DONNÉES : gestion_service (Version Corrigée)
+--  BASE DE DONNÉES : koudmain_db
 -- ═══════════════════════════════════════════════════════════
 
-CREATE DATABASE IF NOT EXISTS gestion_service
+CREATE DATABASE IF NOT EXISTS koudmain_db
   CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
-USE gestion_service;
+USE koudmain_db;
 
 -- ─── 1. STRUCTURE DES TABLES ───────────────────────────────
 
@@ -182,3 +182,40 @@ FOREIGN KEY (id_commande) REFERENCES Commande(id_commande) ON DELETE CASCADE;
 -- ALTER TABLE Avis DROP FOREIGN KEY FK_User_Avis;
 -- ALTER TABLE Avis ADD CONSTRAINT FK_User_Avis 
 -- FOREIGN KEY (id_utilisateur) REFERENCES Utilisateur(id_utilisateur) ON DELETE CASCADE;
+
+-- ── Table Wallet (1 wallet par utilisateur) ─────────────────
+CREATE TABLE IF NOT EXISTS Wallet (
+    id_wallet       INT AUTO_INCREMENT PRIMARY KEY,
+    id_utilisateur  INT NOT NULL UNIQUE,
+    solde           DECIMAL(12,2) NOT NULL DEFAULT 0.00,
+    date_creation   DATETIME DEFAULT NOW(),
+    date_maj        DATETIME DEFAULT NOW() ON UPDATE NOW(),
+    CONSTRAINT FK_User_Wallet FOREIGN KEY (id_utilisateur)
+        REFERENCES Utilisateur(id_utilisateur) ON DELETE CASCADE
+) ENGINE=InnoDB;
+
+-- ── Table Transaction ───────────────────────────────────────
+CREATE TABLE IF NOT EXISTS Transaction_Wallet (
+    id_transaction  INT AUTO_INCREMENT PRIMARY KEY,
+    id_wallet       INT NOT NULL,
+    type_transaction ENUM('credit','debit','retrait') NOT NULL,
+    montant         DECIMAL(12,2) NOT NULL,
+    libelle         VARCHAR(200) NOT NULL,
+    solde_apres     DECIMAL(12,2) NOT NULL,
+    id_commande     INT DEFAULT NULL,          -- lié à une commande si paiement
+    date_transaction DATETIME DEFAULT NOW(),
+    CONSTRAINT FK_Wallet_Trans FOREIGN KEY (id_wallet)
+        REFERENCES Wallet(id_wallet) ON DELETE CASCADE,
+    CONSTRAINT FK_Cmd_Trans FOREIGN KEY (id_commande)
+        REFERENCES Commande(id_commande) ON DELETE SET NULL
+) ENGINE=InnoDB;
+
+-- ── Créer automatiquement un wallet pour les utilisateurs existants ──
+INSERT IGNORE INTO Wallet (id_utilisateur, solde)
+SELECT id_utilisateur, 0.00 FROM Utilisateur;
+
+-- ── Wallet de démo : créditer l'admin pour tester ───────────
+UPDATE Wallet w
+JOIN Utilisateur u ON w.id_utilisateur = u.id_utilisateur
+SET w.solde = 50000.00
+WHERE u.est_admin = 1;
