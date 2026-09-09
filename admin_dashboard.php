@@ -122,7 +122,7 @@ $services = $pdo->query("
     FROM Service s
     JOIN Categorie c ON s.id_categorie = c.id_categorie
     LEFT JOIN Prestation p ON s.id_service = p.id_service
-    GROUP BY s.id_service
+    GROUP BY s.id_service, c.nom_categorie
     ORDER BY c.nom_categorie, s.nom_service
 ")->fetchAll();
 

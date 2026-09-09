@@ -64,16 +64,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $erreur = "Cette adresse e-mail est déjà utilisée.";
         } else {
             $hash       = password_hash($password, PASSWORD_DEFAULT);
-            $est_prest  = ($role === 'prestataire') ? true : false;
-            $est_client = ($role === 'client') ? true : false;
-            $est_valide = ($role === 'client') ? true : false;
+            $est_prest  = ($role === 'prestataire') ? 't' : 'f';
+            $est_client = ($role === 'client') ? 't' : 'f';
+            $est_valide = ($role === 'client') ? 't' : 'f';
 
             $insert = $pdo->prepare("
                 INSERT INTO Utilisateur
                   (email_utilisateur, mot_de_passe, est_prestataire, est_client,
                    est_admin, est_valide, nom_utilisateur, prenom_utilisateur,
                    num_utilisateur, id_quartier)
-                VALUES (?, ?, ?, ?, 0, ?, ?, ?, ?, ?)
+                VALUES (?, ?, ?::boolean, ?::boolean, false, ?::boolean, ?, ?, ?, ?)
             ");
             $insert->execute([
                 $email, $hash, $est_prest, $est_client,
@@ -373,7 +373,7 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible{ou
 </main>
 
 <script>
-// Bascule visuelle du sélecteur de rôle + note prestataire
+
 function majRole() {
   const checked = document.querySelector('input[name="role"]:checked');
   document.getElementById('km-tile-client').classList.toggle('km-checked', checked && checked.value === 'client');
