@@ -10,11 +10,11 @@ $idUser = $_SESSION['id_utilisateur'];
 $msg    = "";
 $err    = "";
 
-// ── Wallet ──────────────────────────────────────────────
+// --- Wallet ---
 $wallet_cli = getOuCreerWallet($pdo, $idUser);
 $solde_cli  = (float)$wallet_cli['solde'];
 
-// ── Actions POST ────────────────────────────────────────
+// --- Actions POST ---
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
     verifierTokenCSRF();
 
@@ -101,7 +101,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
     }
 }
 
-// ── Onglet ──────────────────────────────────────────────
+// --- Onglet --- //
 $onglet = $_GET['tab'] ?? 'overview';
 $search = trim($_GET['q'] ?? '');
 $cat_filter = (int)($_GET['cat'] ?? 0);
@@ -219,7 +219,7 @@ $quartiers = $pdo->query("
 
 $prenom = htmlspecialchars($_SESSION['prenom'] ?? 'Client');
 
-// ── Icônes catégories (mêmes traits que sur la page d'accueil) ──
+// --- Icônes catégories ---
 function iconeCategorie(string $nom): string {
     $icones = [
         'Beauté et Coiffure'      => '<path d="M6 4 L14 14 M14 4 L6 14" /><circle cx="4.5" cy="15.5" r="1.7"/><circle cx="15.5" cy="15.5" r="1.7"/>',

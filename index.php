@@ -1,14 +1,12 @@
 <?php
 require_once "config.php";
-
-// ── Contenu vitrine (échoue silencieusement : la page reste utilisable sans BDD) ──
+// --- Contenu vitrine ---
 $demo_prestations = [];
 $demo_quartiers   = [];
 $demo_categories  = [];
 
 try {
-    // Connexion locale et silencieuse : contrairement à getConnexion(), on ne veut
-    // jamais interrompre l'affichage de la vitrine si la base est indisponible.
+
     $pdo = new PDO(
         "mysql:host=" . MYHOST . ";dbname=" . MYBASE . ";charset=utf8mb4",
         MYUSER, MYPASS,
@@ -56,7 +54,7 @@ if (empty($demo_categories)) {
     $demo_categories = array_map(fn($n) => ['nom_categorie' => $n, 'nb' => null], $noms);
 }
 
-// ── Icônes de catégories (traits simples, pas d'emoji) ──
+// --- Icônes de catégories ---
 function iconeCategorie(string $nom): string {
     $icones = [
         'Beauté et Coiffure'      => '<path d="M6 4 L14 14 M14 4 L6 14" /><circle cx="4.5" cy="15.5" r="1.7"/><circle cx="15.5" cy="15.5" r="1.7"/>',
@@ -118,7 +116,7 @@ h1,h2,h3,.km-serif{font-family:'Fraunces',serif}
   *{animation-duration:0.001ms !important;animation-iteration-count:1 !important;transition-duration:0.001ms !important;scroll-behavior:auto !important}
 }
 
-/* ── MASTHEAD ─────────────────────────────────────────── */
+/* --- MASTHEAD --- */
 .km-masthead{
   border-bottom:1px solid var(--line);
   background:var(--paper);
@@ -144,7 +142,7 @@ h1,h2,h3,.km-serif{font-family:'Fraunces',serif}
 .km-link-muted{font-size:0.88rem;color:var(--ink-soft)}
 .km-link-muted:hover{color:var(--ink)}
 
-/* ── BUTTONS ──────────────────────────────────────────── */
+/* --- BUTTONS --- */
 .km-btn{
   display:inline-flex;align-items:center;gap:0.5rem;
   padding:0.72rem 1.3rem;
@@ -159,7 +157,7 @@ h1,h2,h3,.km-serif{font-family:'Fraunces',serif}
 .km-btn-outline:hover{border-color:var(--ink)}
 .km-btn-sm{padding:0.5rem 1rem;font-size:0.84rem}
 
-/* ── HERO ─────────────────────────────────────────────── */
+/* --- HERO --- */
 .km-hero{padding:4.5rem 0 3.5rem}
 .km-hero-grid{
   display:grid;grid-template-columns:1.15fr 0.85fr;gap:3.5rem;align-items:center;
@@ -222,7 +220,7 @@ h1,h2,h3,.km-serif{font-family:'Fraunces',serif}
 }
 .km-ticker-item b{color:var(--ink);font-weight:600}
 
-/* ── SECTIONS ─────────────────────────────────────────── */
+/* --- SECTIONS --- */
 .km-section{padding:5rem 0}
 .km-section-head{max-width:44ch;margin-bottom:3rem}
 .km-section-head h2{font-size:clamp(1.7rem,2.6vw,2.2rem);font-weight:600;letter-spacing:-0.01em}

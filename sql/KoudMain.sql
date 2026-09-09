@@ -1,13 +1,13 @@
--- ═══════════════════════════════════════════════════════════
+-- ===========================================================
 --  BASE DE DONNÉES : koudmain_db
--- ═══════════════════════════════════════════════════════════
+-- ===========================================================
 
 CREATE DATABASE IF NOT EXISTS koudmain_db
   CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 USE koudmain_db;
 
--- ─── 1. STRUCTURE DES TABLES ───────────────────────────────
+--  1. STRUCTURE DES TABLES ---
 
 CREATE TABLE Region (
     id_region      INT AUTO_INCREMENT PRIMARY KEY,
@@ -98,7 +98,7 @@ CREATE TABLE Cibler (
     CONSTRAINT FK_Cmd_Cible   FOREIGN KEY (id_commande) REFERENCES Commande(id_commande)
 ) ENGINE=InnoDB;
 
--- ─── 2. DONNÉES INITIALES ──────────────────────────────────
+--  2. DONNÉES INITIALES ---
 
 -- Régions
 INSERT INTO Region (nom_region) VALUES 
@@ -106,7 +106,7 @@ INSERT INTO Region (nom_region) VALUES
 ('Grands-Ponts'), ('Nawa'), ('San-Pédro'), ('Gôh'), ('Marahoué'), 
 ('Bouaké'), ('Poro'), ('Denguélé');
 
--- Départements (Liaison correcte avec les IDs de Region)
+-- Départements (Liaison avec les IDs de Region)
 INSERT INTO Departement (nom_departement, id_region) VALUES 
 ('Abidjan', 1), ('Dabou', 2), ('Grand-Lahou', 2), ('Jacqueville', 2), ('Tiassalé', 2),
 ('Abengourou', 3), ('Agnibilékrou', 3), ('Adiaké', 4), ('Aboisso', 4), ('Grand-Bassam', 4),
@@ -129,7 +129,7 @@ INSERT INTO Quartier (nom_quartier, id_ville) VALUES
 ('Adjamé', 1), ('Abobo Gare', 1), ('Dabou Centre', 2), ('Grand-Bassam France', 10),
 ('San-Pédro Port', 14), ('Bouaké Centre', 17), ('Korhogo Commerce', 18);
 
--- Catégories (Correction des apostrophes)
+-- Catégories
 INSERT INTO Categorie (nom_categorie) VALUES 
 ('Beauté et Coiffure'), ('Plomberie et Sanitaire'), ('Laverie et Pressing'), 
 ('Garde d''enfants'), ('Cuisine et Traiteur'), ('Électricité'), 
@@ -152,16 +152,11 @@ VALUES
   ('admin@service.ci', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 
    0, 1, 1, 1, 'Admin', 'KoudMain', '0700000000', 1);
 
--- 1. On supprime l'ancienne contrainte qui bloque
 ALTER TABLE Commande DROP FOREIGN KEY FK_User_Cmd;
-
--- 2. On la recrée avec l'option "ON DELETE CASCADE"
 ALTER TABLE Commande 
 ADD CONSTRAINT FK_User_Cmd 
 FOREIGN KEY (id_utilisateur) REFERENCES Utilisateur(id_utilisateur) 
 ON DELETE CASCADE;
-
--- 3. Faites de même pour les prestations (si c'est un prestataire)
 ALTER TABLE Prestation DROP FOREIGN KEY FK_User_Prest;
 ALTER TABLE Prestation 
 ADD CONSTRAINT FK_User_Prest 
@@ -178,12 +173,7 @@ ALTER TABLE Cibler DROP FOREIGN KEY FK_Cmd_Cible;
 ALTER TABLE Cibler ADD CONSTRAINT FK_Cmd_Cible 
 FOREIGN KEY (id_commande) REFERENCES Commande(id_commande) ON DELETE CASCADE;
 
--- Si tu as une table Avis séparée (comme dans ton script complet précédent)
--- ALTER TABLE Avis DROP FOREIGN KEY FK_User_Avis;
--- ALTER TABLE Avis ADD CONSTRAINT FK_User_Avis 
--- FOREIGN KEY (id_utilisateur) REFERENCES Utilisateur(id_utilisateur) ON DELETE CASCADE;
-
--- ── Table Wallet (1 wallet par utilisateur) ─────────────────
+    -- --- Table Wallet (1 wallet par utilisateur) ---
 CREATE TABLE IF NOT EXISTS Wallet (
     id_wallet       INT AUTO_INCREMENT PRIMARY KEY,
     id_utilisateur  INT NOT NULL UNIQUE,
@@ -194,7 +184,7 @@ CREATE TABLE IF NOT EXISTS Wallet (
         REFERENCES Utilisateur(id_utilisateur) ON DELETE CASCADE
 ) ENGINE=InnoDB;
 
--- ── Table Transaction ───────────────────────────────────────
+-- --- Table Transaction --- --
 CREATE TABLE IF NOT EXISTS Transaction_Wallet (
     id_transaction  INT AUTO_INCREMENT PRIMARY KEY,
     id_wallet       INT NOT NULL,

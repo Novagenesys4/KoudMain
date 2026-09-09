@@ -7,18 +7,18 @@ $idUser = $_SESSION['id_utilisateur'];
 $msg    = "";
 $err    = "";
 
-// ── Récupérer ou créer le wallet ─────────────────────────
+// --- Récupérer ou créer le wallet ---
 $wallet    = getOuCreerWallet($pdo, $idUser);
 $id_wallet = (int)$wallet['id_wallet'];
 $solde     = (float)$wallet['solde'];
 
-// ════════════════════════════════════════════════════════════
+// =============================================================
 //  ACTIONS POST
-// ════════════════════════════════════════════════════════════
+// =============================================================
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
     verifierTokenCSRF();
 
-    // ── RECHARGER ─────────────────────────────────────────
+    // --- RECHARGER ---
     if ($_POST['action'] === 'recharger') {
         $montant = (float)str_replace(',', '.', $_POST['montant'] ?? 0);
         $methode = htmlspecialchars($_POST['methode'] ?? 'Simulation');
@@ -56,7 +56,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
         }
     }
 
-    // ── RETRAIT (prestataires uniquement) ─────────────────
+    // --- RETRAIT (prestataires uniquement) ---
     elseif ($_POST['action'] === 'retrait' && estPrestataire()) {
         $montant = (float)str_replace(',', '.', $_POST['montant'] ?? 0);
         $rib     = trim($_POST['rib'] ?? '');
@@ -101,7 +101,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
     }
 }
 
-// ── Historique des transactions ──────────────────────────
+// --- Historique des transactions ---
 $transactions = $pdo->prepare("
     SELECT * FROM Transaction_Wallet
     WHERE id_wallet = ?
@@ -111,7 +111,7 @@ $transactions = $pdo->prepare("
 $transactions->execute([$id_wallet]);
 $transactions = $transactions->fetchAll();
 
-// ── Stats rapides ─────────────────────────────────────────
+// --- Stats rapides ---
 $total_credit = $pdo->prepare("
     SELECT COALESCE(SUM(montant), 0) FROM Transaction_Wallet
     WHERE id_wallet = ? AND type_transaction = 'credit'
@@ -170,7 +170,7 @@ a{color:inherit;text-decoration:none}
 h1,h2,h3,.km-serif{font-family:'Fraunces',serif}
 @media(prefers-reduced-motion:reduce){*{animation-duration:.001ms!important;transition-duration:.001ms!important}}
 
-/* ── SIDEBAR (identique aux dashboards) ── */
+/* ── SIDEBAR ── */
 .km-app{display:flex;min-height:100vh}
 .km-sidebar{
   width:var(--sidebar-w);background:var(--ink);color:#E8E4D8;
@@ -270,7 +270,7 @@ h1,h2,h3,.km-serif{font-family:'Fraunces',serif}
 .km-panel-head a{font-size:.8rem;color:var(--amber-deep);font-weight:600}
 .km-panel-body{padding:1.1rem 1.25rem}
 
-/* Mini chart (données réelles) */
+/* Mini chart */
 .km-chart{display:flex;align-items:flex-end;gap:10px;height:120px}
 .km-chart-col{flex:1;display:flex;flex-direction:column;align-items:center;gap:.4rem}
 .km-chart-bar{width:100%;background:linear-gradient(180deg,var(--amber),var(--amber-tint));border-radius:5px 5px 2px 2px;min-height:4px;transition:height .5s ease}

@@ -49,7 +49,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
-// ── Quartiers pour le panneau de contexte (échoue silencieusement) ──
+// ── Quartiers pour le panneau de contexte ──
 $demo_quartiers = [];
 try {
     $pdo2 = new PDO(

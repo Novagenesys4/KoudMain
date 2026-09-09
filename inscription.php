@@ -7,11 +7,11 @@ $erreur  = "";
 $succes  = "";
 $donnees = [];
 
-// Pré-sélection du rôle via GET (depuis connexion.php)
+// Pré-sélection du rôle via GET
 $role_defaut = $_GET['role'] ?? 'client';
 if (!in_array($role_defaut, ['client', 'prestataire'])) $role_defaut = 'client';
 
-// ── Chargement des quartiers ─────────────────────────────
+// --- Chargement des quartiers ---
 try {
     $pdo = getConnexion();
     $stmt = $pdo->prepare("
@@ -32,7 +32,7 @@ try {
     die("Erreur de connexion : " . $e->getMessage());
 }
 
-// ── Traitement du formulaire ──────────────────────────────
+// --- Traitement du formulaire ---
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     verifierTokenCSRF();
     $nom       = trim($_POST['nom'] ?? '');

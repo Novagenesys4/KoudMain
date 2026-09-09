@@ -1,27 +1,31 @@
 <?php
-// ── Paramètres de connexion Supabase ─────────────────────
-define("DATABASE_URL", getenv("DATABASE_URL") ?: "postgresql://postgres.etuhhtojtnoitvceiebj:KENS1705451@P@aws-1-eu-west-1.pooler.supabase.com:5432/postgres");
+// --- Paramètres de connexion ---
+define("MYHOST", "localhost");
+define("MYUSER", "root");
+define("MYPASS", "");
+define("MYBASE", "koudmain_db");
 
-/**
- * Connexion PDO à PostgreSQL (Supabase)
- */
 function getConnexion(): PDO {
+    $dsn  = "mysql:host=" . MYHOST . ";dbname=" . MYBASE . ";charset=utf8mb4";
+    $user = MYUSER;
+    $pass = MYPASS;
+
     try {
-        $pdo = new PDO(DATABASE_URL);
+        $pdo = new PDO($dsn, $user, $pass);
         $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         $pdo->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
         return $pdo;
     } catch (PDOException $e) {
         die("<div style='font-family:sans-serif;color:#f25f5c;padding:2rem;'>
-             <b>Erreur de connexion à la base de données :</b><br>" . htmlspecialchars($e->getMessage()) . "
+             <b>Erreur de connexion à la base de données :</b><br>" . $e->getMessage() . "
              </div>");
     }
 }
 
-// ── Session ─────────────────────────────────────────────
+// --- Session ---
 session_start();
 
-// ── Helpers de session ──────────────────────────────────
+// --- Helpers de session ---
 function estConnecte(): bool {
     return isset($_SESSION['id_utilisateur']);
 }
@@ -69,7 +73,7 @@ function requireAdmin(): void {
     }
 }
 
-// ── Protection CSRF ──────────────────────────────────────
+// --- Protection CSRF ---
 function genererTokenCSRF(): string {
     if (empty($_SESSION['csrf_token'])) {
         $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
@@ -93,7 +97,7 @@ function verifierTokenCSRF(): void {
     }
 }
 
-// ── Helper Wallet Factorisé ──────────────────────────────
+// --- Helper Wallet Factorisé ---
 function getOuCreerWallet(PDO $pdo, int $idUser): array {
     $stmt = $pdo->prepare("SELECT * FROM Wallet WHERE id_utilisateur = ?");
     $stmt->execute([$idUser]);
@@ -103,7 +107,7 @@ function getOuCreerWallet(PDO $pdo, int $idUser): array {
         try {
             $pdo->prepare("INSERT INTO Wallet (id_utilisateur, solde) VALUES (?, 0.00)")->execute([$idUser]);
         } catch (PDOException $e) {
-            // En cas d'accès concurrent, le wallet a pu être créé entre temps (id_utilisateur est UNIQUE)
+            // Gérer l'erreur si nécessaire
         }
         $stmt->execute([$idUser]);
         $wallet = $stmt->fetch();

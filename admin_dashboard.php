@@ -6,7 +6,7 @@ $pdo = getConnexion();
 $msg = "";
 $err = "";
 
-// ── Actions admin ─────────────────────────────────────────
+// --- Actions admin ---
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
     verifierTokenCSRF();
 
@@ -73,7 +73,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
     }
 }
 
-// ── Données ──────────────────────────────────────────────
+// --- Données ---
 $onglet = $_GET['tab'] ?? 'tableau_bord';
 
 $nb_users       = (int)$pdo->query("SELECT COUNT(*) FROM Utilisateur WHERE est_admin = 0")->fetchColumn();
