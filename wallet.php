@@ -203,7 +203,7 @@ $role   = estAdmin() ? 'Admin' : (estPrestataire() ? 'Prestataire' : 'Client');
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>Mon Wallet — KoudMain</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -218,15 +218,29 @@ $role   = estAdmin() ? 'Admin' : (estPrestataire() ? 'Prestataire' : 'Client');
   --radius:14px;--radius-sm:8px;--sidebar-w:250px;
 }
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-body{background:var(--paper);color:var(--ink);font-family:'Inter',sans-serif;font-size:15.5px;line-height:1.6;-webkit-font-smoothing:antialiased}
+html{
+  overflow-x:hidden;max-width:100%;
+  -webkit-text-size-adjust:100%;
+  touch-action:manipulation;
+}
+body{
+  background:var(--paper);color:var(--ink);
+  font-family:'Inter',sans-serif;font-size:15.5px;line-height:1.6;
+  -webkit-font-smoothing:antialiased;
+  overflow-x:hidden;max-width:100vw;width:100%;
+  position:relative;
+}
 a{color:inherit;text-decoration:none}
 button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit}
-input,select{font-family:inherit}
+input,select{font-family:inherit;max-width:100%}
 h1,h2,h3,.km-serif{font-family:'Fraunces',serif}
-@media(prefers-reduced-motion:reduce){*{animation-duration:.001ms!important;transition-duration:.001ms!important}}
+img,svg,video{max-width:100%;height:auto}
+@media(prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.001ms!important;transition-duration:.001ms!important}
+}
 
-/* ── SIDEBAR (identique client_dashboard) ── */
-.km-app{display:flex;min-height:100vh}
+/* ── SIDEBAR ── */
+.km-app{display:flex;min-height:100vh;overflow-x:hidden;max-width:100vw;width:100%}
 .km-sidebar{
   width:var(--sidebar-w);background:var(--ink);color:#E8E4D8;
   display:flex;flex-direction:column;position:fixed;top:0;left:0;bottom:0;z-index:100;
@@ -245,7 +259,6 @@ h1,h2,h3,.km-serif{font-family:'Fraunces',serif}
 .km-sb-link.active::before{content:'';position:absolute;left:0;top:22%;bottom:22%;width:2px;background:var(--amber)}
 .km-sb-icon{width:17px;height:17px;flex-shrink:0}
 .km-sb-icon svg{width:100%;height:100%;fill:none;stroke:currentColor;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}
-.km-sb-badge{margin-left:auto;background:var(--amber);color:var(--ink);font-size:.68rem;font-weight:700;padding:.1rem .45rem;border-radius:10px}
 .km-sb-section{font-size:.66rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#8B8778;padding:1rem .85rem .3rem}
 .km-sb-foot{padding:1rem .9rem 1.3rem;border-top:1px solid rgba(255,255,255,.1)}
 .km-wallet-mini{
@@ -256,7 +269,6 @@ h1,h2,h3,.km-serif{font-family:'Fraunces',serif}
 .km-wallet-mini .w-label{font-size:.7rem;color:#A8A398}
 .km-wallet-mini .w-solde{font-family:'Fraunces',serif;font-weight:600;color:#fff;font-size:1.15rem;margin-top:.2rem}
 
-/* Overlay mobile */
 .km-sidebar-overlay{
   display:none;position:fixed;inset:0;background:rgba(28,27,23,.45);z-index:90;
   opacity:0;transition:opacity .25s ease;pointer-events:none;
@@ -264,19 +276,24 @@ h1,h2,h3,.km-serif{font-family:'Fraunces',serif}
 .km-sidebar-overlay.visible{display:block;opacity:1;pointer-events:auto}
 
 /* ── MAIN ── */
-.km-main{flex:1;margin-left:var(--sidebar-w);min-height:100vh;display:flex;flex-direction:column}
-.km-topbar{
-  display:flex;align-items:center;justify-content:space-between;gap:1rem;
-  padding:.9rem 1.8rem;background:var(--paper);border-bottom:1px solid var(--line);
-  position:sticky;top:0;z-index:50;
+.km-main{
+  flex:1;margin-left:var(--sidebar-w);min-height:100vh;
+  display:flex;flex-direction:column;
+  overflow-x:hidden;max-width:100%;width:100%;
+  min-width:0;
 }
-.km-menu-toggle{display:none;background:none;border:none;font-size:1.3rem;cursor:pointer;color:var(--ink);padding:.2rem;line-height:1}
-.km-topbar-title{font-size:1.05rem;font-weight:600;white-space:nowrap}
-.km-topbar-search{flex:1;max-width:280px;position:relative}
+.km-topbar{
+  display:flex;align-items:center;justify-content:space-between;gap:.75rem;
+  padding:.9rem 1.8rem;background:var(--paper);border-bottom:1px solid var(--line);
+  position:sticky;top:0;z-index:50;width:100%;max-width:100%;
+  overflow:hidden;
+}
+.km-menu-toggle{display:none;background:none;border:none;font-size:1.3rem;cursor:pointer;color:var(--ink);padding:.2rem;line-height:1;flex-shrink:0}
+.km-topbar-title{font-size:1.05rem;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
+.km-topbar-search{flex:1;max-width:280px;position:relative;min-width:0}
 .km-topbar-search input{
   width:100%;padding:.55rem 1rem .55rem 2.3rem;background:var(--surface);
   border:1px solid var(--line);border-radius:20px;font-size:.86rem;color:var(--ink);outline:none;
-  transition:border-color .18s ease;
 }
 .km-topbar-search input:focus{border-color:var(--ink)}
 .km-topbar-search .s-icon{position:absolute;left:.85rem;top:50%;transform:translateY(-50%);font-size:.82rem;opacity:.5;pointer-events:none}
@@ -288,112 +305,208 @@ h1,h2,h3,.km-serif{font-family:'Fraunces',serif}
 .km-topbar-user-name{font-size:.86rem;font-weight:600}
 .km-topbar-user-role{font-size:.72rem;color:var(--ink-soft)}
 
-.km-content{padding:1.8rem 1.8rem 3rem;flex:1;max-width:1120px;width:100%}
+.km-content{
+  padding:1.8rem 1.8rem 3rem;flex:1;
+  width:100%;max-width:1120px;
+  overflow-x:hidden;min-width:0;
+}
 
-/* ── Alerts ── */
-.km-alert{padding:.75rem 1rem;border-left:2px solid;font-size:.86rem;margin-bottom:1.2rem}
+/* Alerts */
+.km-alert{padding:.75rem 1rem;border-left:2px solid;font-size:.86rem;margin-bottom:1.2rem;word-break:break-word}
 .km-alert-ok{border-color:var(--teal);background:var(--teal-tint);color:#1E4B41}
 .km-alert-err{border-color:var(--danger);background:var(--danger-tint);color:#7A2E1D}
 
-/* ── Section label ── */
 .km-section-label{
   font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;
   color:var(--ink-faint);margin-bottom:.85rem;
 }
 
-/* ── Cartes virtuelles (carrousel) ── */
-.km-cards-wrap{margin-bottom:1.7rem}
+/* ═══════════════════════════════════════
+   CARTES VIRTUELLES — 3D FLIP + FLOAT + SHINE
+   ═══════════════════════════════════════ */
+.km-cards-wrap{margin-bottom:1.7rem;width:100%;max-width:100%;overflow:hidden}
 .km-cards-scroll{
-  display:flex;gap:1rem;overflow-x:auto;padding-bottom:.6rem;
-  scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;
+  display:flex;gap:1rem;
+  overflow-x:auto;overflow-y:visible;
+  padding:1rem .15rem 1.2rem;
+  scroll-snap-type:x mandatory;
+  -webkit-overflow-scrolling:touch;
+  width:100%;max-width:100%;
 }
-.km-cards-scroll::-webkit-scrollbar{height:5px}
+.km-cards-scroll::-webkit-scrollbar{height:4px}
 .km-cards-scroll::-webkit-scrollbar-thumb{background:var(--line);border-radius:4px}
 
-.km-vcard{
-  flex:0 0 260px;height:162px;border-radius:var(--radius);padding:1.2rem 1.3rem;
-  position:relative;overflow:hidden;scroll-snap-align:start;
-  display:flex;flex-direction:column;justify-content:space-between;
-  box-shadow:0 6px 20px rgba(28,27,23,.12);
-  transition:transform .2s ease,box-shadow .2s ease;
-  color:#fff;
+/* Scene = perspective container */
+.km-vcard-scene{
+  flex:0 0 260px;
+  height:168px;
+  perspective:1000px;
+  scroll-snap-align:start;
+  position:relative;
+  z-index:1;
+  transition:z-index .01s;
 }
-.km-vcard:hover{transform:translateY(-3px);box-shadow:0 10px 28px rgba(28,27,23,.18)}
-.km-vcard::before{
-  content:'';position:absolute;inset:0;
-  background:radial-gradient(ellipse 80% 55% at 92% 8%,rgba(255,255,255,.18),transparent 55%);
-  pointer-events:none;
-}
-.km-vcard.emerald{background:linear-gradient(145deg,#2E6B5E 0%,#1e4a42 55%,#163832 100%)}
-.km-vcard.silver{background:linear-gradient(145deg,#7a7568 0%,#5c574c 50%,#3f3c35 100%)}
-.km-vcard.platinum{background:linear-gradient(145deg,#3d3a34 0%,#2a2824 60%,#1C1B17 100%);border:1px solid rgba(255,255,255,.12)}
-.km-vcard.amber{background:linear-gradient(145deg,#B96B2A 0%,#8A4E1B 55%,#6b3c14 100%)}
-.km-vcard.midnight{background:linear-gradient(145deg,#3a3650 0%,#2a2740 55%,#1a1828 100%)}
+.km-vcard-scene.active{z-index:5}
 
-.km-vcard-top{display:flex;justify-content:space-between;align-items:flex-start;z-index:1}
+/* Inner = flips */
+.vcard-inner{
+  position:relative;width:100%;height:100%;
+  transition:transform .65s cubic-bezier(.4,.2,.2,1);
+  transform-style:preserve-3d;
+}
+.km-vcard-scene.is-flipped .vcard-inner{transform:rotateY(180deg)}
+.km-vcard-scene.active .vcard-inner{
+  /* slight lift when selected (not flipped state) */
+}
+
+.vcard-front,.vcard-back{
+  position:absolute;inset:0;
+  border-radius:var(--radius);
+  padding:1.15rem 1.25rem;
+  backface-visibility:hidden;-webkit-backface-visibility:hidden;
+  display:flex;flex-direction:column;justify-content:space-between;
+  color:#fff;overflow:hidden;
+  box-shadow:0 6px 20px rgba(28,27,23,.12);
+  transition:box-shadow .3s ease,transform .3s ease;
+}
+
+/* Float animation on hover (desktop) */
+@keyframes floatY{
+  0%,100%{transform:translateY(0)}
+  50%{transform:translateY(-5px)}
+}
+@media(hover:hover) and (pointer:fine){
+  .km-vcard-scene:not(.is-flipped):hover .vcard-front{
+    animation:floatY 2.4s ease-in-out infinite;
+    box-shadow:0 12px 28px rgba(28,27,23,.2);
+  }
+}
+
+/* Shine / glint */
+.vcard-front::after,.vcard-back::after{
+  content:'';position:absolute;top:0;left:-80%;
+  width:55%;height:100%;
+  background:linear-gradient(105deg,transparent 20%,rgba(255,255,255,.22) 45%,rgba(255,255,255,.08) 55%,transparent 80%);
+  transform:skewX(-18deg);
+  pointer-events:none;
+  animation:shine 5.5s ease-in-out infinite;
+}
+@keyframes shine{
+  0%,70%{left:-80%;opacity:0}
+  75%{opacity:1}
+  100%{left:130%;opacity:0}
+}
+
+/* Soft radial highlight */
+.vcard-front::before,.vcard-back::before{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse 80% 55% at 92% 8%,rgba(255,255,255,.16),transparent 55%);
+  pointer-events:none;border-radius:inherit;
+}
+
+.vcard-front.emerald,.vcard-back.emerald{background:linear-gradient(145deg,#2E6B5E 0%,#1e4a42 55%,#163832 100%)}
+.vcard-front.silver,.vcard-back.silver{background:linear-gradient(145deg,#7a7568 0%,#5c574c 50%,#3f3c35 100%)}
+.vcard-front.platinum,.vcard-back.platinum{background:linear-gradient(145deg,#3d3a34 0%,#2a2824 60%,#1C1B17 100%);border:1px solid rgba(255,255,255,.12)}
+.vcard-front.amber,.vcard-back.amber{background:linear-gradient(145deg,#B96B2A 0%,#8A4E1B 55%,#6b3c14 100%)}
+.vcard-front.midnight,.vcard-back.midnight{background:linear-gradient(145deg,#3a3650 0%,#2a2740 55%,#1a1828 100%)}
+
+.vcard-back{transform:rotateY(180deg)}
+
+/* Active halo by color */
+.km-vcard-scene.active .vcard-front,
+.km-vcard-scene.active .vcard-back{
+  transform:scale(1.03);
+  box-shadow:0 0 0 2px rgba(255,255,255,.35),0 14px 36px rgba(28,27,23,.28);
+}
+.km-vcard-scene.active.emerald-halo .vcard-front,
+.km-vcard-scene.active.emerald-halo .vcard-back{box-shadow:0 0 0 2px rgba(46,107,94,.5),0 14px 36px rgba(46,107,94,.35)}
+.km-vcard-scene.active.amber-halo .vcard-front,
+.km-vcard-scene.active.amber-halo .vcard-back{box-shadow:0 0 0 2px rgba(185,107,42,.5),0 14px 36px rgba(185,107,42,.35)}
+.km-vcard-scene.active.silver-halo .vcard-front,
+.km-vcard-scene.active.silver-halo .vcard-back{box-shadow:0 0 0 2px rgba(122,117,104,.45),0 14px 36px rgba(60,55,45,.3)}
+.km-vcard-scene.active.platinum-halo .vcard-front,
+.km-vcard-scene.active.platinum-halo .vcard-back{box-shadow:0 0 0 2px rgba(255,255,255,.25),0 14px 36px rgba(0,0,0,.4)}
+.km-vcard-scene.active.midnight-halo .vcard-front,
+.km-vcard-scene.active.midnight-halo .vcard-back{box-shadow:0 0 0 2px rgba(90,80,140,.45),0 14px 36px rgba(40,35,80,.4)}
+
+.km-vcard-top{display:flex;justify-content:space-between;align-items:flex-start;z-index:1;position:relative}
 .km-vcard-brand{font-size:.72rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;opacity:.92}
 .km-vcard-type{font-size:.68rem;font-weight:600;opacity:.7;letter-spacing:.04em;margin-top:.1rem}
 .km-vcard-chip{
   width:32px;height:24px;border-radius:4px;
   background:linear-gradient(135deg,#f0d78c,#d4a84b 45%,#b8860b);
   box-shadow:inset 0 1px 0 rgba(255,255,255,.35);
-  margin:.5rem 0 .15rem;z-index:1;
+  margin:.45rem 0 .1rem;z-index:1;position:relative;
 }
-.km-vcard-number{font-size:1rem;font-weight:600;letter-spacing:.14em;z-index:1}
-.km-vcard-bottom{display:flex;justify-content:space-between;align-items:flex-end;z-index:1}
-.km-vcard-holder{font-size:.78rem;font-weight:500;opacity:.9;max-width:58%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.km-vcard-number{font-size:.98rem;font-weight:600;letter-spacing:.12em;z-index:1;position:relative}
+.km-vcard-bottom{display:flex;justify-content:space-between;align-items:flex-end;z-index:1;position:relative}
+.km-vcard-holder{font-size:.76rem;font-weight:500;opacity:.9;max-width:58%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .km-vcard-exp{font-size:.7rem;opacity:.7}
-.km-vcard-logo{font-family:'Fraunces',serif;font-size:1.1rem;font-weight:600;letter-spacing:-.02em;opacity:.95}
+.km-vcard-logo{font-family:'Fraunces',serif;font-size:1.05rem;font-weight:600;letter-spacing:-.02em;opacity:.95}
+
+/* Back face */
+.vcard-magstripe{
+  height:36px;background:#1a1916;margin:0 -1.25rem;
+  margin-top:.15rem;position:relative;z-index:1;
+}
+.vcard-cvv-row{
+  display:flex;align-items:center;justify-content:flex-end;gap:.5rem;
+  margin-top:auto;z-index:1;position:relative;
+}
+.vcard-cvv-label{font-size:.65rem;opacity:.7;text-transform:uppercase;letter-spacing:.06em}
+.vcard-cvv-box{
+  background:rgba(255,255,255,.92);color:var(--ink);
+  font-family:'Fraunces',serif;font-weight:600;font-size:.95rem;
+  padding:.25rem .55rem;border-radius:4px;letter-spacing:.08em;
+  min-width:2.6rem;text-align:center;
+}
+.vcard-back-hint{font-size:.65rem;opacity:.55;margin-top:.4rem;z-index:1;position:relative}
 
 .km-vcard-add{
-  flex:0 0 140px;height:162px;border-radius:var(--radius);
+  flex:0 0 140px;height:168px;border-radius:var(--radius);
   border:1.5px dashed var(--line);background:var(--surface);
   display:flex;flex-direction:column;align-items:center;justify-content:center;
-  gap:.4rem;color:var(--ink-soft);scroll-snap-align:start;
+  gap:.4rem;color:var(--ink-soft);scroll-snap-align:start;flex-shrink:0;
   transition:border-color .18s ease,background .18s ease,color .18s ease;
 }
 .km-vcard-add:hover{border-color:var(--amber-deep);background:var(--amber-tint);color:var(--amber-deep)}
 .km-vcard-add span{font-size:1.5rem;line-height:1}
 .km-vcard-add small{font-size:.78rem;font-weight:600}
 
-/* ── Métriques solde ── */
-.km-metrics{display:grid;grid-template-columns:repeat(3,1fr);gap:.9rem;margin-bottom:1.7rem}
+/* Metrics */
+.km-metrics{display:grid;grid-template-columns:repeat(3,1fr);gap:.9rem;margin-bottom:1.7rem;width:100%}
 .km-metric{
   background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);
   padding:1.15rem 1.25rem;transition:border-color .18s ease,transform .18s ease;
+  min-width:0;
 }
 .km-metric:hover{border-color:var(--amber-deep);transform:translateY(-2px)}
 .km-metric-label{font-size:.72rem;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--ink-faint);margin-bottom:.35rem}
-.km-metric-val{font-family:'Fraunces',serif;font-size:1.55rem;font-weight:600;line-height:1.2}
+.km-metric-val{font-family:'Fraunces',serif;font-size:1.55rem;font-weight:600;line-height:1.2;word-break:break-word}
 .km-metric-val.credit{color:var(--teal)}
 .km-metric-val.debit{color:var(--amber-deep)}
 .km-metric-sub{font-size:.75rem;color:var(--ink-soft);margin-top:.25rem}
 
-/* ── Grid ── */
-.km-grid{display:grid;grid-template-columns:1.35fr 1fr;gap:1.2rem;margin-bottom:1.7rem}
-.km-panel{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);overflow:hidden}
+/* Grid */
+.km-grid{display:grid;grid-template-columns:1.35fr 1fr;gap:1.2rem;margin-bottom:1.7rem;width:100%}
+.km-panel{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;width:100%;min-width:0}
 .km-panel-head{
-  display:flex;align-items:center;justify-content:space-between;
+  display:flex;align-items:center;justify-content:space-between;gap:.5rem;
   padding:1rem 1.25rem;border-bottom:1px solid var(--line);
 }
 .km-panel-head h3{font-size:.92rem;font-weight:600;font-family:'Inter',sans-serif}
-.km-panel-head a{font-size:.8rem;color:var(--amber-deep);font-weight:600}
-.km-panel-body{padding:1.1rem 1.25rem}
+.km-panel-head a{font-size:.8rem;color:var(--amber-deep);font-weight:600;white-space:nowrap}
+.km-panel-body{padding:1.1rem 1.25rem;overflow:hidden}
 
-/* Chart */
-.km-chart{display:flex;align-items:flex-end;gap:10px;height:120px;padding-top:.4rem}
-.km-chart-col{flex:1;display:flex;flex-direction:column;align-items:center;gap:.4rem}
+.km-chart{display:flex;align-items:flex-end;gap:8px;height:120px;padding-top:.4rem;width:100%}
+.km-chart-col{flex:1;min-width:0;display:flex;flex-direction:column;align-items:center;gap:.4rem}
 .km-chart-bar{
   width:100%;background:linear-gradient(180deg,var(--amber),var(--amber-tint));
   border-radius:5px 5px 2px 2px;min-height:4px;transition:height .5s ease;
 }
-.km-chart-label{font-size:.68rem;color:var(--ink-faint)}
+.km-chart-label{font-size:.65rem;color:var(--ink-faint)}
 
-/* Recent tx */
-.km-tx-row{
-  display:flex;align-items:center;gap:.8rem;padding:.7rem 0;
-  border-bottom:1px solid var(--line);
-}
+.km-tx-row{display:flex;align-items:center;gap:.8rem;padding:.7rem 0;border-bottom:1px solid var(--line);min-width:0}
 .km-tx-row:last-child{border-bottom:none}
 .km-tx-dot{
   width:34px;height:34px;border-radius:10px;display:flex;align-items:center;justify-content:center;
@@ -404,10 +517,9 @@ h1,h2,h3,.km-serif{font-family:'Fraunces',serif}
 .km-tx-label{flex:1;min-width:0}
 .km-tx-label strong{display:block;font-size:.86rem;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .km-tx-time{font-size:.72rem;color:var(--ink-faint);margin-top:.1rem}
-.km-tx-amount{font-family:'Fraunces',serif;font-weight:600;font-size:.9rem;white-space:nowrap}
+.km-tx-amount{font-family:'Fraunces',serif;font-weight:600;font-size:.9rem;white-space:nowrap;flex-shrink:0}
 .km-tx-amount.credit{color:var(--teal)}
 
-/* Quick actions */
 .km-quick{display:flex;flex-direction:column;gap:.55rem}
 .km-quick-btn{
   display:flex;align-items:center;gap:.7rem;padding:.75rem .9rem;
@@ -420,12 +532,11 @@ h1,h2,h3,.km-serif{font-family:'Fraunces',serif}
   display:flex;align-items:center;justify-content:center;font-size:.95rem;flex-shrink:0;
 }
 
-/* Historique */
 .km-hist-head{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:1rem;flex-wrap:wrap;gap:.4rem}
 .km-hist-head h3{font-size:1.15rem;font-weight:600}
 .km-hist-head span{font-size:.8rem;color:var(--ink-soft)}
 
-.km-table-wrap{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);overflow:hidden}
+.km-table-wrap{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;width:100%}
 .km-thead{
   display:grid;grid-template-columns:70px 1fr 140px 110px 120px;
   background:var(--paper-deep);border-bottom:1px solid var(--line);
@@ -440,8 +551,8 @@ h1,h2,h3,.km-serif{font-family:'Fraunces',serif}
 }
 .km-trow:last-child{border-bottom:none}
 .km-trow:hover{background:var(--paper)}
-.km-trow > div{padding:.75rem 1rem;display:flex;align-items:center;font-size:.85rem}
-.km-trow .lib{font-weight:600}
+.km-trow > div{padding:.75rem 1rem;display:flex;align-items:center;font-size:.85rem;min-width:0}
+.km-trow .lib{font-weight:600;word-break:break-word}
 .km-trow .sub{font-size:.7rem;color:var(--ink-faint);font-weight:400;margin-top:.1rem}
 .km-cell-right{justify-content:flex-end;text-align:right}
 
@@ -449,10 +560,8 @@ h1,h2,h3,.km-serif{font-family:'Fraunces',serif}
 .km-badge-teal{background:var(--teal-tint);color:var(--teal)}
 .km-badge-amber{background:var(--amber-tint);color:var(--amber-deep)}
 .km-badge-neutral{background:var(--paper-deep);color:var(--ink-soft)}
-
 .km-empty{text-align:center;padding:2.8rem 1rem;color:var(--ink-soft);font-size:.9rem}
 
-/* Buttons */
 .km-btn{
   display:inline-flex;align-items:center;justify-content:center;gap:.4rem;
   padding:.65rem 1.1rem;border-radius:8px;border:1px solid transparent;font-weight:600;
@@ -461,22 +570,22 @@ h1,h2,h3,.km-serif{font-family:'Fraunces',serif}
 .km-btn:active{transform:scale(.97)}
 .km-btn-primary{background:var(--ink);color:var(--paper)}
 .km-btn-primary:hover{background:var(--amber-deep)}
-.km-btn-outline{background:transparent;border-color:var(--line);color:var(--ink)}
-.km-btn-outline:hover{border-color:var(--ink)}
 .km-btn-block{width:100%}
 
 /* Modal */
 .km-modal-overlay{
   display:none;position:fixed;inset:0;background:rgba(28,27,23,.55);z-index:200;
   align-items:center;justify-content:center;padding:1rem;
+  overflow-y:auto;
 }
 .km-modal-overlay.open{display:flex}
 .km-modal{
   background:var(--surface);border-radius:18px;padding:1.8rem 1.9rem;
   width:100%;max-width:440px;max-height:90vh;overflow-y:auto;border:1px solid var(--line);
+  margin:auto;
 }
 .km-modal-head{
-  display:flex;justify-content:space-between;align-items:center;
+  display:flex;justify-content:space-between;align-items:center;gap:.5rem;
   margin-bottom:1.2rem;padding-bottom:.9rem;border-bottom:1px solid var(--line);
 }
 .km-modal-head h3{font-size:1.05rem;font-weight:600}
@@ -512,10 +621,7 @@ h1,h2,h3,.km-serif{font-family:'Fraunces',serif}
 .km-methode-opt input:checked + .km-methode-lbl{
   border-color:var(--amber-deep);color:var(--amber-deep);background:var(--amber-tint);
 }
-.km-sim-note{
-  padding:.6rem .8rem;background:var(--teal-tint);color:#1E4B41;
-  border-radius:8px;font-size:.78rem;
-}
+.km-sim-note{padding:.6rem .8rem;background:var(--teal-tint);color:#1E4B41;border-radius:8px;font-size:.78rem}
 .km-couleur-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:.45rem}
 .km-couleur-opt input{display:none}
 .km-couleur-swatch{
@@ -542,12 +648,50 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible{
 @media(max-width:860px){
   .km-sidebar{transform:translateX(-100%)}
   .km-sidebar.open{transform:translateX(0);box-shadow:8px 0 32px rgba(28,27,23,.25)}
-  .km-main{margin-left:0}
+  .km-main{margin-left:0;width:100%;max-width:100vw}
   .km-menu-toggle{display:block}
   .km-topbar-search{display:none}
 }
+@media(max-width:768px){
+  .km-content{
+    padding:.85rem .85rem 2.2rem;
+    max-width:100%;
+    width:100%;
+  }
+  .km-topbar{padding:.75rem .85rem;gap:.5rem}
+  .km-metrics{grid-template-columns:1fr;gap:.7rem}
+  .km-metrics .km-metric:last-child{grid-column:auto}
+  .km-grid{grid-template-columns:1fr;gap:1rem}
+  .km-panel-body{padding:.95rem 1rem}
+  .km-panel-head{padding:.9rem 1rem}
+
+  /* Cartes empilées verticalement */
+  .km-cards-scroll{
+    flex-direction:column;
+    overflow-x:hidden;
+    overflow-y:visible;
+    scroll-snap-type:none;
+    padding:.4rem 0 .8rem;
+    gap:.9rem;
+    align-items:stretch;
+  }
+  .km-vcard-scene{
+    flex:none;
+    width:100%;
+    max-width:100%;
+    height:170px;
+  }
+  .km-vcard-add{
+    flex:none;
+    width:100%;
+    max-width:100%;
+    height:72px;
+    flex-direction:row;
+    gap:.6rem;
+  }
+  .km-metric-val{font-size:1.4rem}
+}
 @media(max-width:640px){
-  /* Tableau → liste de cartes */
   .km-thead{display:none}
   .km-trow{
     display:flex;flex-wrap:wrap;align-items:flex-start;gap:.35rem .8rem;
@@ -562,18 +706,11 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible{
   .km-cell-right{justify-content:flex-start;text-align:left}
 }
 @media(max-width:560px){
-  .km-content{padding:1.2rem 1rem 2.5rem}
-  .km-topbar{padding:.8rem 1rem;gap:.6rem}
-  .km-topbar-title{font-size:.95rem}
   .km-topbar-user-name,.km-topbar-user-role{display:none}
-  .km-metrics{grid-template-columns:1fr}
-  .km-metrics .km-metric:last-child{grid-column:auto}
-  .km-vcard{flex:0 0 240px;height:152px}
-  .km-vcard-add{flex:0 0 120px;height:152px}
-  .km-modal{padding:1.4rem 1.3rem;max-width:100%;width:92%;border-radius:14px}
-  .km-methode-grid{grid-template-columns:1fr 1fr}
+  .km-modal{padding:1.35rem 1.2rem;width:min(92vw,440px);max-width:100%;border-radius:14px}
   .km-couleur-grid{grid-template-columns:repeat(auto-fit,minmax(40px,1fr))}
-  .km-metric-val{font-size:1.35rem}
+  .km-metric-val{font-size:1.3rem}
+  .km-vcard-number{font-size:.9rem;letter-spacing:.1em}
 }
 </style>
 </head>
@@ -581,7 +718,6 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible{
 
 <div class="km-app">
 
-  <!-- Overlay mobile -->
   <div class="km-sidebar-overlay" id="km-overlay" onclick="closeSidebar()"></div>
 
   <aside class="km-sidebar" id="km-sidebar">
@@ -648,7 +784,7 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible{
       <div class="km-topbar-title">Mon Wallet</div>
       <div class="km-topbar-search">
         <span class="s-icon">⌕</span>
-        <input type="text" placeholder="Rechercher une transaction…" id="searchInput" autocomplete="off">
+        <input type="text" placeholder="Rechercher…" id="searchInput" autocomplete="off">
       </div>
       <div class="km-topbar-user">
         <div class="km-avatar"><?= strtoupper(substr($_SESSION['prenom'] ?? 'K', 0, 1)) ?></div>
@@ -663,39 +799,7 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible{
       <?php if ($msg): ?><div class="km-alert km-alert-ok"><?= htmlspecialchars($msg) ?></div><?php endif; ?>
       <?php if ($err): ?><div class="km-alert km-alert-err"><?= htmlspecialchars($err) ?></div><?php endif; ?>
 
-      <!-- Cartes virtuelles -->
-      <div class="km-cards-wrap">
-        <div class="km-section-label">Mes cartes</div>
-        <div class="km-cards-scroll">
-          <?php foreach ($cartes as $c):
-            $coul = htmlspecialchars($c['couleur'] ?? 'emerald');
-            $type = strtoupper($c['type_carte'] ?? 'visa');
-          ?>
-          <article class="km-vcard <?= $coul ?>">
-            <div class="km-vcard-top">
-              <div>
-                <div class="km-vcard-brand"><?= htmlspecialchars($c['libelle'] ?? 'Carte') ?></div>
-                <div class="km-vcard-type"><?= $type ?></div>
-              </div>
-              <div class="km-vcard-logo"><?= $type === 'MASTERCARD' ? 'MC' : 'VISA' ?></div>
-            </div>
-            <div class="km-vcard-chip" aria-hidden="true"></div>
-            <div class="km-vcard-number"><?= htmlspecialchars($c['numero_masque'] ?? '**** **** **** 0000') ?></div>
-            <div class="km-vcard-bottom">
-              <div class="km-vcard-holder"><?= htmlspecialchars($c['nom_titulaire'] ?? $prenom) ?></div>
-              <div class="km-vcard-exp"><?= htmlspecialchars($c['date_expiration'] ?? '12/28') ?></div>
-            </div>
-          </article>
-          <?php endforeach; ?>
-
-          <button type="button" class="km-vcard-add" onclick="openModal('modal-carte')" aria-label="Ajouter une carte">
-            <span>+</span>
-            <small>Ajouter</small>
-          </button>
-        </div>
-      </div>
-
-      <!-- Bank Balance -->
+      <!-- 1. Bank Balance metrics -->
       <div class="km-section-label">Bank Balance</div>
       <div class="km-metrics">
         <div class="km-metric">
@@ -715,9 +819,59 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible{
         </div>
       </div>
 
-      <!-- Grid chart + actions -->
+      <!-- 2. Cartes virtuelles (flip 3D) -->
+      <div class="km-cards-wrap">
+        <div class="km-section-label">Mes cartes · toucher pour retourner</div>
+        <div class="km-cards-scroll" id="cards-stack">
+          <?php foreach ($cartes as $idx => $c):
+            $coul = htmlspecialchars($c['couleur'] ?? 'emerald');
+            $type = strtoupper($c['type_carte'] ?? 'visa');
+            $cvv  = str_pad((string)((int)substr(preg_replace('/\D/','',$c['numero_masque'] ?? '0212'), -3) ?: random_int(100,999)), 3, '0', STR_PAD_LEFT);
+          ?>
+          <div class="km-vcard-scene <?= $coul ?>-halo"
+               data-card-id="<?= (int)($c['id_carte'] ?? $idx) ?>"
+               role="button" tabindex="0"
+               aria-label="Carte <?= htmlspecialchars($c['libelle'] ?? 'virtuelle') ?> — cliquer pour retourner">
+            <div class="vcard-inner">
+              <!-- FACE AVANT -->
+              <div class="vcard-front <?= $coul ?>">
+                <div class="km-vcard-top">
+                  <div>
+                    <div class="km-vcard-brand"><?= htmlspecialchars($c['libelle'] ?? 'Carte') ?></div>
+                    <div class="km-vcard-type"><?= $type ?></div>
+                  </div>
+                  <div class="km-vcard-logo"><?= $type === 'MASTERCARD' ? 'MC' : 'VISA' ?></div>
+                </div>
+                <div class="km-vcard-chip" aria-hidden="true"></div>
+                <div class="km-vcard-number"><?= htmlspecialchars($c['numero_masque'] ?? '**** **** **** 0000') ?></div>
+                <div class="km-vcard-bottom">
+                  <div class="km-vcard-holder"><?= htmlspecialchars($c['nom_titulaire'] ?? $prenom) ?></div>
+                  <div class="km-vcard-exp"><?= htmlspecialchars($c['date_expiration'] ?? '12/28') ?></div>
+                </div>
+              </div>
+              <!-- FACE ARRIÈRE -->
+              <div class="vcard-back <?= $coul ?>">
+                <div class="vcard-magstripe" aria-hidden="true"></div>
+                <div class="vcard-cvv-row">
+                  <span class="vcard-cvv-label">CVV</span>
+                  <span class="vcard-cvv-box"><?= $cvv ?></span>
+                </div>
+                <div class="vcard-back-hint">Toucher à nouveau pour revenir</div>
+              </div>
+            </div>
+          </div>
+          <?php endforeach; ?>
+
+          <button type="button" class="km-vcard-add" onclick="openModal('modal-carte')" aria-label="Ajouter une carte">
+            <span>+</span>
+            <small>Ajouter une carte</small>
+          </button>
+        </div>
+      </div>
+
+      <!-- 3. Actions rapides (avant le graphique sur mobile via order CSS implicit stack) -->
       <div class="km-grid">
-        <div class="km-panel">
+        <div class="km-panel" style="order:2">
           <div class="km-panel-head"><h3>Crédits — 6 derniers mois</h3></div>
           <div class="km-panel-body">
             <div class="km-chart">
@@ -755,7 +909,7 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible{
           </div>
         </div>
 
-        <div class="km-panel">
+        <div class="km-panel" style="order:1">
           <div class="km-panel-head"><h3>Actions rapides</h3></div>
           <div class="km-panel-body">
             <div class="km-quick">
@@ -782,7 +936,7 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible{
         </div>
       </div>
 
-      <!-- Historique -->
+      <!-- 5. Historique -->
       <div id="historique">
         <div class="km-hist-head">
           <h3>Historique</h3>
@@ -863,7 +1017,6 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible{
 </div>
 
 <?php if (estPrestataire()): ?>
-<!-- MODAL RETRAIT -->
 <div class="km-modal-overlay" id="modal-retrait" role="dialog" aria-modal="true">
   <div class="km-modal">
     <div class="km-modal-head">
@@ -901,7 +1054,6 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible{
 </div>
 <?php endif; ?>
 
-<!-- MODAL CARTE -->
 <div class="km-modal-overlay" id="modal-carte" role="dialog" aria-modal="true">
   <div class="km-modal">
     <div class="km-modal-head">
@@ -982,6 +1134,24 @@ document.addEventListener('keydown', e => {
   }
 });
 
+/* ── Flip 3D + active state ── */
+document.querySelectorAll('.km-vcard-scene').forEach(scene => {
+  function toggleCard() {
+    // Active selection
+    document.querySelectorAll('.km-vcard-scene').forEach(s => s.classList.remove('active'));
+    scene.classList.add('active');
+    // Flip
+    scene.classList.toggle('is-flipped');
+  }
+  scene.addEventListener('click', toggleCard);
+  scene.addEventListener('keydown', e => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      toggleCard();
+    }
+  });
+});
+
 const searchInput = document.getElementById('searchInput');
 if (searchInput) {
   searchInput.addEventListener('input', function () {
@@ -991,6 +1161,11 @@ if (searchInput) {
     });
   });
 }
+
+/* Prevent accidental horizontal overscroll bounce on iOS */
+document.addEventListener('touchmove', function (e) {
+  // allow vertical scroll only on main content; don't block default
+}, { passive: true });
 </script>
 
 </body>
