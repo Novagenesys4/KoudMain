@@ -160,10 +160,17 @@ CREATE TABLE Carte_Virtuelle (
     nom_titulaire     VARCHAR(120) NOT NULL,
     date_expiration   VARCHAR(5) NOT NULL DEFAULT '12/28',
     est_principale    BOOLEAN NOT NULL DEFAULT FALSE,
+    est_gelee         BOOLEAN NOT NULL DEFAULT FALSE,
     date_creation     TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE INDEX idx_carte_wallet ON Carte_Virtuelle(id_wallet);
+CREATE INDEX idx_carte_gelee ON Carte_Virtuelle(id_wallet, est_gelee);
+
+-- Rattachement optionnel d'une transaction à une carte virtuelle
+ALTER TABLE Transaction_Wallet
+    ADD COLUMN IF NOT EXISTS id_carte INT REFERENCES Carte_Virtuelle(id_carte) ON DELETE SET NULL;
+CREATE INDEX IF NOT EXISTS idx_tx_carte ON Transaction_Wallet(id_carte);
 
 -- -----------------------------------------------------------
 -- 8. DONNÉES INITIALES
@@ -326,13 +333,47 @@ WHERE id_utilisateur = (
 );
 
 -- Carte virtuelle par défaut pour l'admin
-INSERT INTO Carte_Virtuelle (id_wallet, libelle, type_carte, couleur, numero_masque, nom_titulaire, date_expiration, est_principale)
+INSERT INTO Carte_Virtuelle (id_wallet, libelle, type_carte, couleur, numero_masque, nom_titulaire, date_expiration, est_principale, est_gelee)
 SELECT w.id_wallet, 'Emerald', 'visa', 'emerald', '**** **** **** 0212',
-       u.prenom_utilisateur || ' ' || u.nom_utilisateur, '12/28', TRUE
+       u.prenom_utilisateur || ' ' || u.nom_utilisateur, '12/28', TRUE, FALSE
 FROM Wallet w
 JOIN Utilisateur u ON u.id_utilisateur = w.id_utilisateur
 WHERE u.est_admin = TRUE
 ON CONFLICT DO NOTHING;
+
+-- Cartes secondaires — le stack 3D du wallet a besoin de plusieurs supports
+INSERT INTO Carte_Virtuelle (id_wallet, libelle, type_carte, couleur, numero_masque, nom_titulaire, date_expiration, est_principale, est_gelee)
+SELECT w.id_wallet, 'Amber Prestige', 'mastercard', 'amber', '**** **** **** 7741',
+       u.prenom_utilisateur || ' ' || u.nom_utilisateur, '09/29', FALSE, FALSE
+FROM Wallet w
+JOIN Utilisateur u ON u.id_utilisateur = w.id_utilisateur
+WHERE u.est_admin = TRUE
+  AND NOT EXISTS (
+      SELECT 1 FROM Carte_Virtuelle c
+      WHERE c.id_wallet = w.id_wallet AND c.libelle = 'Amber Prestige'
+  );
+
+INSERT INTO Carte_Virtuelle (id_wallet, libelle, type_carte, couleur, numero_masque, nom_titulaire, date_expiration, est_principale, est_gelee)
+SELECT w.id_wallet, 'Midnight', 'visa', 'midnight', '**** **** **** 3908',
+       u.prenom_utilisateur || ' ' || u.nom_utilisateur, '04/30', FALSE, FALSE
+FROM Wallet w
+JOIN Utilisateur u ON u.id_utilisateur = w.id_utilisateur
+WHERE u.est_admin = TRUE
+  AND NOT EXISTS (
+      SELECT 1 FROM Carte_Virtuelle c
+      WHERE c.id_wallet = w.id_wallet AND c.libelle = 'Midnight'
+  );
+
+-- ===========================================================
+-- Migration idempotente (bases déjà déployées sur Supabase)
+-- Coller ce bloc seul dans SQL Editor si le schéma existe déjà.
+-- ===========================================================
+ALTER TABLE Carte_Virtuelle
+    ADD COLUMN IF NOT EXISTS est_gelee BOOLEAN NOT NULL DEFAULT FALSE;
+ALTER TABLE Transaction_Wallet
+    ADD COLUMN IF NOT EXISTS id_carte INT REFERENCES Carte_Virtuelle(id_carte) ON DELETE SET NULL;
+CREATE INDEX IF NOT EXISTS idx_tx_carte ON Transaction_Wallet(id_carte);
+CREATE INDEX IF NOT EXISTS idx_carte_gelee ON Carte_Virtuelle(id_wallet, est_gelee);
 
 -- ===========================================================
 -- Fin du script

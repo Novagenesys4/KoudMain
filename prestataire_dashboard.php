@@ -44,11 +44,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
             $upd = $pdo->prepare("
                 UPDATE Commande cm
                 SET statut = ?
-                FROM Cibler ci
-                JOIN Prestation p ON ci.id_prestation = p.id_prestation
-                WHERE cm.id_commande = ci.id_commande
-                  AND cm.id_commande = ?
-                  AND p.id_utilisateur = ?
+                WHERE cm.id_commande = ?
+                  AND EXISTS (
+                      SELECT 1 FROM Cibler ci
+                      JOIN Prestation p ON ci.id_prestation = p.id_prestation
+                      WHERE ci.id_commande = cm.id_commande
+                        AND p.id_utilisateur = ?
+                  )
             ");
             $upd->execute([$statut, $id_cmd, $idUser]);
             $msg = "Statut mis à jour.";
