@@ -148,6 +148,24 @@ CREATE TABLE Transaction_Wallet (
 );
 
 -- -----------------------------------------------------------
+-- 7b. CARTES VIRTUELLES (Wallet dashboard)
+-- -----------------------------------------------------------
+CREATE TABLE Carte_Virtuelle (
+    id_carte          SERIAL PRIMARY KEY,
+    id_wallet         INT NOT NULL REFERENCES Wallet(id_wallet) ON DELETE CASCADE,
+    libelle           VARCHAR(80) NOT NULL DEFAULT 'Carte KoudMain',
+    type_carte        TEXT NOT NULL CHECK (type_carte IN ('visa', 'mastercard')) DEFAULT 'visa',
+    couleur           VARCHAR(40) NOT NULL DEFAULT 'emerald', -- emerald | silver | platinum | amber | midnight
+    numero_masque     VARCHAR(19) NOT NULL, -- **** **** **** 0212
+    nom_titulaire     VARCHAR(120) NOT NULL,
+    date_expiration   VARCHAR(5) NOT NULL DEFAULT '12/28',
+    est_principale    BOOLEAN NOT NULL DEFAULT FALSE,
+    date_creation     TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE INDEX idx_carte_wallet ON Carte_Virtuelle(id_wallet);
+
+-- -----------------------------------------------------------
 -- 8. DONNÉES INITIALES
 -- -----------------------------------------------------------
 
@@ -306,6 +324,15 @@ SET solde = 50000.00
 WHERE id_utilisateur = (
     SELECT id_utilisateur FROM Utilisateur WHERE est_admin = TRUE LIMIT 1
 );
+
+-- Carte virtuelle par défaut pour l'admin
+INSERT INTO Carte_Virtuelle (id_wallet, libelle, type_carte, couleur, numero_masque, nom_titulaire, date_expiration, est_principale)
+SELECT w.id_wallet, 'Emerald', 'visa', 'emerald', '**** **** **** 0212',
+       u.prenom_utilisateur || ' ' || u.nom_utilisateur, '12/28', TRUE
+FROM Wallet w
+JOIN Utilisateur u ON u.id_utilisateur = w.id_utilisateur
+WHERE u.est_admin = TRUE
+ON CONFLICT DO NOTHING;
 
 -- ===========================================================
 -- Fin du script
