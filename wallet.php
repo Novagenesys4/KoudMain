@@ -23,7 +23,6 @@ function kmEnsureWalletSchema(PDO $pdo): void
             try {
                 $pdo->exec(str_ireplace(' IF NOT EXISTS', '', $sql));
             } catch (Exception $e2) {
-                /* colonne déjà présente ou moteur trop ancien */
             }
         }
     }
@@ -849,7 +848,7 @@ video {
   cursor: default;
   will-change: transform;
   border-radius: var(--radius);
-  background: var(--ink); /* fond de secours 100% opaque, ceinture + bretelles */
+  background: var(--ink);
   overflow: hidden;
   -webkit-tap-highlight-color: transparent;
 }
@@ -1942,7 +1941,7 @@ select:focus-visible {
       </div>
 
       <div class="km-cards-wrap">
-        <div class="km-section-label">Mes cartes · scrollez ou swipez verticalement pour changer</div>
+        <div class="km-section-label">Mes cartes</div>
         <div class="km-stack-stage" id="cards-stack" style="--stack-n: <?= count($cartes) ?>">
           <?php foreach ($cartes as $idx => $c):
             $coul = htmlspecialchars($c['couleur'] ?? 'emerald');
