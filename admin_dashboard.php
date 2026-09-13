@@ -514,7 +514,7 @@ h1,h2,h3,.km-serif{font-family:'Fraunces',Georgia,serif}
   <aside class="admin-sidebar" id="admin-sidebar">
     <div class="brand-lockup">
       <div class="brand-mark"><?= icon('grid', 17) ?></div>
-      <div class="brand-name">Koud<span>Main</span></div>
+      <div class="brand-name"><a href="index.php"> Koud<span>Main</span></a></div>
     </div>
     <div class="sidebar-caption">Espace administration</div>
     <nav class="sidebar-nav" aria-label="Navigation principale">
@@ -524,7 +524,7 @@ h1,h2,h3,.km-serif{font-family:'Fraunces',Georgia,serif}
       <a href="?tab=categories" class="sidebar-link <?= $onglet === 'categories' ? 'active' : '' ?>"><?= icon('boxes') ?><span>Catalogue</span></a>
       <a href="?tab=commandes" class="sidebar-link <?= $onglet === 'commandes' ? 'active' : '' ?>"><?= icon('clipboard-list') ?><span>Commandes</span></a>
       <div class="sidebar-section-label">Navigation</div>
-      <a href="index.php" class="sidebar-link muted-link"><?= icon('arrow-right') ?><span>Voir le site</span></a>
+      <a href="index.php" class="sidebar-link muted-link"><?= icon('arrow-right') ?><span>Accueil</span></a>
       <a href="connexion.php?action=logout" class="sidebar-link muted-link"><?= icon('log-out') ?><span>Déconnexion</span></a>
     </nav>
     <div class="sidebar-bottom">
