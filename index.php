@@ -76,38 +76,40 @@ function iconeCategorie(string $nom): string {
 <meta name="description" content="Trouvez un prestataire près de chez vous à Abidjan : coiffure, plomberie, laverie, garde d'enfants et plus. Publié par de vrais artisans de quartier.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;600;700&family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&display=swap" rel="stylesheet">
 <style>
 :root{
-  --paper:#F5F4F0;
-  --paper-deep:#EAE7DF;
-  --surface:#FFFFFF;
-  --ink:#1C1B17;
-  --ink-soft:#6C675C;
-  --ink-faint:#9B9788;
-  --line:#DAD6CB;
-  --amber:#B96B2A;
-  --amber-deep:#8A4E1B;
-  --amber-tint:#F1E3D2;
-  --teal:#2E6B5E;
-  --teal-tint:#E4EDE9;
-  --radius:14px;
+  --paper:#f4f2ec;
+  --paper-deep:#ebe8df;
+  --surface:#fffefa;
+  --ink:#1f201c;
+  --ink-soft:#77766e;
+  --ink-faint:#a6a49a;
+  --line:#dedbd1;
+  --amber:#ba6d2c;
+  --amber-deep:#8d4d1d;
+  --amber-tint:#f5e7d7;
+  --teal:#2b6d60;
+  --teal-tint:#e5f0eb;
+  --radius:16px;
   --radius-sm:8px;
   --maxw:1180px;
+  --ease:cubic-bezier(.2,.8,.2,1);
 }
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth}
 body{
   background:var(--paper);
   color:var(--ink);
-  font-family:'Inter',sans-serif;
+  font-family:"DM Sans",sans-serif;
   font-size:16px;
   line-height:1.6;
   -webkit-font-smoothing:antialiased;
 }
+body::before{content:"";position:fixed;inset:0;pointer-events:none;opacity:.035;z-index:1;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.5'/%3E%3C/svg%3E")}
 a{color:inherit;text-decoration:none}
 .wrap{max-width:var(--maxw);margin:0 auto;padding:0 2rem}
-h1,h2,h3,.km-serif{font-family:'Fraunces',serif}
+h1,h2,h3,.km-serif{font-family:Fraunces,Georgia,serif}
 @media(prefers-reduced-motion:reduce){
   *{animation-duration:0.001ms !important;animation-iteration-count:1 !important;transition-duration:0.001ms !important;scroll-behavior:auto !important}
 }
@@ -122,8 +124,8 @@ h1,h2,h3,.km-serif{font-family:'Fraunces',serif}
   max-width:var(--maxw);margin:0 auto;padding:0 2rem;
   height:76px;display:flex;align-items:center;justify-content:space-between;gap:2rem;
 }
-.km-logo{font-family:'Fraunces',serif;font-weight:600;font-size:1.5rem;letter-spacing:-0.01em;color:var(--ink)}
-.km-logo em{font-style:normal;color:var(--amber)}
+.km-logo{font-family:Fraunces,Georgia,serif;font-weight:600;font-size:1.5rem;letter-spacing:-0.01em;color:var(--ink)}
+.km-logo em{font-style:normal;color:#d58d51}
 .km-nav-links{display:flex;align-items:center;gap:2.1rem}
 .km-nav-link{
   font-size:0.92rem;color:var(--ink-soft);position:relative;padding:0.3rem 0;
@@ -142,12 +144,12 @@ h1,h2,h3,.km-serif{font-family:'Fraunces',serif}
 .km-btn{
   display:inline-flex;align-items:center;gap:0.5rem;
   padding:0.72rem 1.3rem;
-  font-family:'Inter',sans-serif;font-size:0.9rem;font-weight:600;
+  font-family:"DM Sans",sans-serif;font-size:0.9rem;font-weight:600;
   border-radius:var(--radius-sm);border:1px solid transparent;cursor:pointer;
   transition:transform 0.18s ease, box-shadow 0.18s ease, background 0.18s ease, border-color 0.18s ease;
 }
 .km-btn:active{transform:scale(0.97)}
-.km-btn-primary{background:var(--ink);color:var(--paper)}
+.km-btn-primary{background:var(--ink);color:#fff}
 .km-btn-primary:hover{background:var(--amber-deep);box-shadow:0 6px 18px rgba(139,78,27,0.25)}
 .km-btn-outline{background:transparent;color:var(--ink);border-color:var(--line)}
 .km-btn-outline:hover{border-color:var(--ink)}
@@ -188,7 +190,7 @@ h1,h2,h3,.km-serif{font-family:'Fraunces',serif}
 .km-listing-card{
   position:absolute;left:0;right:0;background:var(--surface);
   border:1px solid var(--line);border-radius:var(--radius);
-  padding:1.2rem 1.35rem;box-shadow:0 10px 28px rgba(28,27,23,0.06);
+  padding:1.2rem 1.35rem;box-shadow:3px 4px 0 rgba(31,32,28,.035), 0 10px 28px rgba(28,27,23,0.06);
   opacity:0;transform:translateY(26px) rotate(var(--r,0deg));
   transition:opacity 0.6s cubic-bezier(.22,1,.36,1), transform 0.6s cubic-bezier(.22,1,.36,1);
 }
@@ -198,7 +200,7 @@ h1,h2,h3,.km-serif{font-family:'Fraunces',serif}
 .km-listing-card:nth-child(3){top:156px;--r:-1.1deg;z-index:1;transition-delay:0.57s}
 .km-listing-top{display:flex;justify-content:space-between;align-items:baseline;gap:0.6rem}
 .km-listing-title{font-weight:600;font-size:0.98rem;color:var(--ink)}
-.km-listing-price{font-family:'Fraunces',serif;font-weight:600;color:var(--amber-deep);white-space:nowrap}
+.km-listing-price{font-family:Fraunces,Georgia,serif;font-weight:600;color:var(--amber-deep);white-space:nowrap}
 .km-listing-meta{font-size:0.8rem;color:var(--ink-soft);margin-top:0.35rem}
 .km-listing-tag{
   display:inline-block;margin-top:0.7rem;font-size:0.72rem;color:var(--teal);
@@ -225,7 +227,7 @@ h1,h2,h3,.km-serif{font-family:'Fraunces',serif}
 /* Steps (séquence réelle → numérotation légitime) */
 .km-steps{display:grid;grid-template-columns:repeat(3,1fr);gap:2.2rem}
 .km-step{border-top:1px solid var(--ink);padding-top:1.2rem}
-.km-step-num{font-family:'Fraunces',serif;font-size:0.95rem;color:var(--amber-deep);font-weight:600}
+.km-step-num{font-family:Fraunces,Georgia,serif;font-size:0.95rem;color:var(--amber-deep);font-weight:600}
 .km-step h3{margin-top:0.6rem;font-size:1.15rem;font-weight:600}
 .km-step p{margin-top:0.5rem;color:var(--ink-soft);font-size:0.94rem}
 
@@ -293,7 +295,7 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--amber-deep);outline
 body{background:radial-gradient(circle at 88% 2%,rgba(185,107,42,.10),transparent 24rem),var(--paper)}
 .km-masthead{backdrop-filter:blur(14px);background:rgba(245,244,240,.86)}
 .km-logo{display:inline-flex;align-items:center;gap:.28rem;transition:transform .2s ease}.km-logo:hover{transform:translateY(-1px)}
-.km-logo::before{content:'✦';font-family:Inter,sans-serif;font-size:.7rem;color:var(--amber);transform:rotate(-12deg)}
+.km-logo::before{content:'✦';font-family:"DM Sans",sans-serif;font-size:.7rem;color:var(--amber);transform:rotate(-12deg)}
 .km-hero{position:relative;overflow:hidden}.km-hero::before{content:'';position:absolute;width:28rem;height:28rem;border-radius:50%;right:-12rem;top:-10rem;background:rgba(46,107,94,.07);filter:blur(2px);pointer-events:none}
 .km-stack::after{content:'Disponible maintenant';position:absolute;right:-.8rem;bottom:.4rem;padding:.45rem .75rem;border-radius:99px;background:var(--teal);color:#fff;font-size:.68rem;font-weight:700;letter-spacing:.03em;box-shadow:0 10px 22px rgba(46,107,94,.22);animation:km-float 3.5s ease-in-out infinite}
 @keyframes km-float{50%{transform:translateY(-6px)}}

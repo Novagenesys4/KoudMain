@@ -245,58 +245,67 @@ function iconeCategorie(string $nom): string {
 <title>Mon espace — KoudMain</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;600;700&family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&display=swap" rel="stylesheet">
 <style>
 :root{
-  --paper:#F5F4F0;--paper-deep:#EAE7DF;--surface:#FFFFFF;
-  --ink:#1C1B17;--ink-soft:#6C675C;--ink-faint:#9B9788;--line:#DAD6CB;
-  --amber:#B96B2A;--amber-deep:#8A4E1B;--amber-tint:#F1E3D2;
-  --teal:#2E6B5E;--teal-tint:#E4EDE9;
-  --danger:#A6412B;--danger-tint:#F3E2DC;
-  --radius:14px;--radius-sm:8px;--sidebar-w:250px;
+  --paper:#f4f2ec;--paper-deep:#ebe8df;--surface:#fffefa;
+  --ink:#1f201c;--ink-soft:#77766e;--ink-faint:#a6a49a;--line:#dedbd1;
+  --amber:#ba6d2c;--amber-deep:#8d4d1d;--amber-tint:#f5e7d7;
+  --teal:#2b6d60;--teal-deep:#1d5046;--teal-tint:#e5f0eb;
+  --danger:#a74935;--danger-tint:#f4e3df;
+  --radius:16px;--radius-sm:8px;--sidebar-w:256px;
+  --ease:cubic-bezier(.2,.8,.2,1);
 }
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-body{background:var(--paper);color:var(--ink);font-family:'Inter',sans-serif;font-size:15.5px;line-height:1.6;-webkit-font-smoothing:antialiased}
+html{scroll-behavior:smooth}
+body{margin:0;min-width:320px;background:var(--paper);color:var(--ink);font-family:"DM Sans",sans-serif;font-size:15px;line-height:1.6;-webkit-font-smoothing:antialiased}
+body::before{content:"";position:fixed;inset:0;pointer-events:none;opacity:.035;z-index:0;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.5'/%3E%3C/svg%3E")}
 a{color:inherit;text-decoration:none}
-h1,h2,h3,.km-serif{font-family:'Fraunces',serif}
-@media(prefers-reduced-motion:reduce){*{animation-duration:.001ms!important;transition-duration:.001ms!important}}
+button,input,select,textarea{font:inherit}
+button{cursor:pointer;border:0;background:transparent}
+button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid var(--amber-deep);outline-offset:3px}
+h1,h2,h3,.km-serif{font-family:Fraunces,Georgia,serif;font-weight:600;letter-spacing:-.03em}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.001ms!important;transition-duration:.001ms!important}}
 
 /* ── SIDEBAR ── */
-.km-app{display:flex;min-height:100vh}
+.km-app{display:flex;min-height:100vh;position:relative;z-index:2}
 .km-sidebar{
-  width:var(--sidebar-w);background:var(--ink);color:#E8E4D8;
+  width:var(--sidebar-w);background:#1e201d;color:#e8e8df;
   display:flex;flex-direction:column;position:fixed;top:0;left:0;bottom:0;z-index:100;
-  transition:transform .3s ease;
+  box-shadow:14px 0 38px rgba(22,23,20,.08);
+  transition:transform .28s var(--ease);
 }
-.km-sb-brand{padding:1.5rem 1.4rem 1.2rem;border-bottom:1px solid rgba(255,255,255,.1)}
-.km-sb-brand a{font-family:'Fraunces',serif;font-weight:600;font-size:1.3rem;color:#fff}
-.km-sb-brand em{font-style:normal;color:var(--amber)}
+.km-sb-brand{padding:27px 20px 22px;border-bottom:1px solid rgba(255,255,255,.08)}
+.km-brand-lockup{display:flex;align-items:center;gap:10px;font-family:Fraunces,serif;font-weight:600;font-size:22px;letter-spacing:-.05em;color:#fff}
+.km-brand-mark{width:28px;height:28px;display:grid;place-items:center;color:#1e201d;background:#d58d51;border-radius:9px 9px 9px 2px;font-size:16px;font-weight:700;font-family:Fraunces,serif}
+.km-sb-brand em{font-style:normal;color:#d58d51}
 .km-sb-nav{flex:1;padding:1.1rem .8rem;display:flex;flex-direction:column;gap:.15rem}
 .km-sb-link{
-  display:flex;align-items:center;gap:.8rem;padding:.68rem .85rem;border-radius:8px;
-  font-size:.9rem;color:#B9B4A5;position:relative;transition:background .18s ease,color .18s ease;
+  display:flex;align-items:center;gap:.8rem;padding:.68rem .85rem;border-radius:10px;
+  font-size:13px;color:#a9ad9f;position:relative;transition:background .18s ease,color .18s ease,transform .18s ease;
 }
-.km-sb-link:hover{background:rgba(255,255,255,.06);color:#fff}
-.km-sb-link.active{background:rgba(185,107,42,.18);color:#F0DFC7;font-weight:600}
-.km-sb-link.active::before{content:'';position:absolute;left:0;top:22%;bottom:22%;width:2px;background:var(--amber)}
+.km-sb-link:hover{background:rgba(255,255,255,.06);color:#fff;transform:translateX(2px)}
+.km-sb-link.active{background:linear-gradient(90deg, rgba(185,107,42,.25), rgba(185,107,42,.09));color:#f6e2cb;font-weight:600}
+.km-sb-link.active::before{content:'';position:absolute;left:0;top:9px;bottom:9px;width:2px;border-radius:2px;background:#d49758}
 .km-sb-icon{width:17px;height:17px;flex-shrink:0}
 .km-sb-icon svg{width:100%;height:100%;fill:none;stroke:currentColor;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}
 .km-sb-badge{margin-left:auto;background:var(--amber);color:var(--ink);font-size:.68rem;font-weight:700;padding:.1rem .45rem;border-radius:10px}
-.km-sb-section{font-size:.66rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#8B8778;padding:1rem .85rem .3rem}
+.km-sb-section{display:block;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.14em;color:#85887d;padding:1.1rem 13px .55rem}
 .km-sb-foot{padding:1rem .9rem 1.3rem;border-top:1px solid rgba(255,255,255,.1)}
 .km-wallet-mini{
-  display:block;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.12);
-  border-radius:12px;padding:.9rem 1rem;transition:border-color .18s ease;
+  display:block;background:rgba(255,255,255,.055);border:1px solid rgba(255,255,255,.1);
+  border-radius:13px;padding:14px;transition:border-color .18s ease;
 }
-.km-wallet-mini:hover{border-color:var(--amber)}
-.km-wallet-mini .w-label{font-size:.7rem;color:#A8A398}
-.km-wallet-mini .w-solde{font-family:'Fraunces',serif;font-weight:600;color:#fff;font-size:1.15rem;margin-top:.2rem}
+.km-wallet-mini:hover{border-color:#d58d51}
+.km-wallet-mini .w-label{font-size:10px;color:#999b91;font-weight:500}
+.km-wallet-mini .w-solde{font-family:Fraunces,serif;font-weight:600;color:#fff;font-size:18px;margin-top:4px;letter-spacing:-.02em}
 
 /* ── MAIN ── */
 .km-main{flex:1;margin-left:var(--sidebar-w);min-height:100vh;display:flex;flex-direction:column}
 .km-topbar{
   display:flex;align-items:center;justify-content:space-between;gap:1rem;
-  padding:.9rem 1.8rem;background:var(--paper);border-bottom:1px solid var(--line);
+  padding:.9rem 1.8rem;background:rgba(244,242,236,.88);backdrop-filter:blur(18px);
+  border-bottom:1px solid rgba(211,208,197,.72);
   position:sticky;top:0;z-index:50;
 }
 .km-menu-toggle{display:none;background:none;border:none;font-size:1.3rem;cursor:pointer;color:var(--ink)}
@@ -325,20 +334,21 @@ h1,h2,h3,.km-serif{font-family:'Fraunces',serif}
 
 /* ── Header ── */
 .km-page-head{margin-bottom:1.6rem}
-.km-page-head h1{font-size:1.7rem;font-weight:600;letter-spacing:-.01em}
+.km-page-head h1{font-size:clamp(1.7rem,2.5vw,2.2rem);font-weight:600;letter-spacing:-.03em}
 .km-page-head p{color:var(--ink-soft);margin-top:.3rem;font-size:.94rem}
 
 /* ── Stat tiles ── */
 .km-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:.9rem;margin-bottom:1.8rem}
-.km-stat{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:1.15rem 1.25rem}
-.km-stat-val{font-family:'Fraunces',serif;font-size:1.55rem;font-weight:600;color:var(--ink)}
-.km-stat-label{font-size:.78rem;color:var(--ink-soft);margin-top:.25rem}
+.km-stat{background:rgba(255,254,250,.72);border:1px solid var(--line);border-radius:var(--radius);padding:1.15rem 1.25rem;box-shadow:3px 4px 0 rgba(31,32,28,.035);transition:transform .16s var(--ease),border-color .16s ease}
+.km-stat:hover{transform:translateY(-2px);border-color:#c8bda9}
+.km-stat-val{font-family:Fraunces,serif;font-size:1.55rem;font-weight:600;color:var(--ink);letter-spacing:-.03em}
+.km-stat-label{font-size:.72rem;color:var(--ink-faint);margin-top:.35rem;text-transform:uppercase;letter-spacing:.08em;font-weight:700}
 
 /* ── Panels ── */
 .km-two-col{display:grid;grid-template-columns:1.4fr 1fr;gap:1.3rem}
-.km-panel{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);overflow:hidden}
+.km-panel{background:rgba(255,254,250,.72);border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;box-shadow:3px 4px 0 rgba(31,32,28,.035)}
 .km-panel-head{display:flex;align-items:center;justify-content:space-between;padding:1rem 1.25rem;border-bottom:1px solid var(--line)}
-.km-panel-head h3{font-size:.92rem;font-weight:600;font-family:'Inter',sans-serif}
+.km-panel-head h3{font-size:.92rem;font-weight:600;font-family:"DM Sans",sans-serif}
 .km-panel-head a{font-size:.8rem;color:var(--amber-deep);font-weight:600}
 .km-panel-body{padding:.4rem 1.25rem}
 
@@ -346,7 +356,7 @@ h1,h2,h3,.km-serif{font-family:'Fraunces',serif}
 .km-activity:last-child{border-bottom:none}
 .km-activity-title{font-weight:600;font-size:.88rem}
 .km-activity-meta{font-size:.76rem;color:var(--ink-soft);margin-top:.1rem}
-.km-activity-amount{font-weight:700;font-size:.9rem;margin-left:auto;white-space:nowrap;font-family:'Fraunces',serif}
+.km-activity-amount{font-weight:700;font-size:.9rem;margin-left:auto;white-space:nowrap;font-family:Fraunces,Georgia,serif}
 
 .km-quick-list{display:flex;flex-direction:column;gap:.6rem;padding:1.1rem 1.25rem}
 .km-quick-btn{
@@ -367,18 +377,19 @@ h1,h2,h3,.km-serif{font-family:'Fraunces',serif}
 /* ── Prestation grid ── */
 .km-prest-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:1.1rem}
 .km-prest-card{
-  background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);
-  padding:1.2rem;display:flex;flex-direction:column;gap:.65rem;transition:border-color .18s ease,transform .18s ease;
+  background:rgba(255,254,250,.72);border:1px solid var(--line);border-radius:var(--radius);
+  padding:1.2rem;display:flex;flex-direction:column;gap:.65rem;box-shadow:3px 4px 0 rgba(31,32,28,.035);
+  transition:border-color .18s ease,transform .18s var(--ease);
 }
-.km-prest-card:hover{border-color:var(--amber-deep);transform:translateY(-2px)}
+.km-prest-card:hover{border-color:#c8bda9;transform:translateY(-2px)}
 .km-tag{display:inline-flex;font-size:.7rem;font-weight:700;padding:.18rem .55rem;border-radius:20px}
 .km-tag-cat{background:var(--teal-tint);color:var(--teal)}
 .km-tag-service{background:var(--amber-tint);color:var(--amber-deep);margin-left:.3rem}
-.km-prest-card h3{font-size:.98rem;font-weight:600;font-family:'Inter',sans-serif}
+.km-prest-card h3{font-size:.98rem;font-weight:600;font-family:"DM Sans",sans-serif}
 .km-prest-desc{color:var(--ink-soft);font-size:.84rem;flex:1;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
 .km-prest-by{font-size:.78rem;color:var(--ink-faint)}
 .km-prest-foot{display:flex;justify-content:space-between;align-items:center;gap:.5rem}
-.km-price{font-family:'Fraunces',serif;font-weight:600;color:var(--amber-deep);font-size:1.1rem}
+.km-price{font-family:Fraunces,Georgia,serif;font-weight:600;color:var(--amber-deep);font-size:1.1rem}
 
 /* ── Buttons ── */
 .km-btn{
@@ -387,7 +398,7 @@ h1,h2,h3,.km-serif{font-family:'Fraunces',serif}
   font-size:.85rem;cursor:pointer;transition:transform .16s ease,background .16s ease,box-shadow .16s ease;
 }
 .km-btn:active{transform:scale(.97)}
-.km-btn-primary{background:var(--ink);color:var(--paper)}
+.km-btn-primary{background:var(--ink);color:#fff}
 .km-btn-primary:hover{background:var(--amber-deep)}
 .km-btn-outline{background:transparent;border-color:var(--line);color:var(--ink)}
 .km-btn-outline:hover{border-color:var(--ink)}
@@ -395,11 +406,11 @@ h1,h2,h3,.km-serif{font-family:'Fraunces',serif}
 .km-btn-sm{padding:.42rem .8rem;font-size:.78rem}
 
 /* ── Orders ── */
-.km-order-card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;margin-bottom:1rem}
+.km-order-card{background:rgba(255,254,250,.72);border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;margin-bottom:1rem;box-shadow:3px 4px 0 rgba(31,32,28,.035)}
 .km-order-head{display:flex;align-items:center;justify-content:space-between;padding:.9rem 1.2rem;background:var(--paper-deep);flex-wrap:wrap;gap:.5rem}
-.km-order-id{font-family:'Fraunces',serif;font-weight:600;font-size:.86rem;color:var(--ink-soft)}
+.km-order-id{font-family:Fraunces,Georgia,serif;font-weight:600;font-size:.86rem;color:var(--ink-soft)}
 .km-order-date{font-size:.76rem;color:var(--ink-soft)}
-.km-order-total{font-family:'Fraunces',serif;font-weight:600;font-size:1.05rem}
+.km-order-total{font-family:Fraunces,Georgia,serif;font-weight:600;font-size:1.05rem}
 .km-order-body{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr))}
 .km-order-detail{padding:.85rem 1.2rem;border-right:1px solid var(--line)}
 .km-order-detail:last-child{border-right:none}
@@ -414,7 +425,7 @@ h1,h2,h3,.km-serif{font-family:'Fraunces',serif}
 
 .km-rate-select,.km-rate-input{
   padding:.4rem .6rem;border-radius:8px;border:1px solid var(--line);background:var(--paper);
-  font-family:'Inter',sans-serif;font-size:.84rem;color:var(--ink);
+  font-family:"DM Sans",sans-serif;font-size:.84rem;color:var(--ink);
 }
 .km-rate-input{flex:1;min-width:120px}
 
@@ -432,13 +443,14 @@ h1,h2,h3,.km-serif{font-family:'Fraunces',serif}
 
 /* ── Modal ── */
 .km-modal-overlay{
-  display:none;position:fixed;inset:0;background:rgba(28,27,23,.55);z-index:200;
+  display:none;position:fixed;inset:0;background:rgba(26,28,24,.55);backdrop-filter:blur(5px);z-index:200;
   align-items:center;justify-content:center;padding:1rem;
 }
 .km-modal-overlay.open{display:flex}
 .km-modal{
   background:var(--surface);border-radius:18px;padding:1.8rem 1.9rem;width:100%;max-width:440px;
   max-height:90vh;overflow-y:auto;border:1px solid var(--line);
+  box-shadow:0 22px 60px rgba(27,29,25,.16);
 }
 .km-modal-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:1.3rem;padding-bottom:.9rem;border-bottom:1px solid var(--line)}
 .km-modal-head h3{font-size:1.1rem;font-weight:600}
@@ -447,7 +459,7 @@ h1,h2,h3,.km-serif{font-family:'Fraunces',serif}
 .km-mfield label{display:block;font-size:.75rem;font-weight:600;color:var(--ink-soft);text-transform:uppercase;letter-spacing:.05em;margin-bottom:.35rem}
 .km-mfield input,.km-mfield select{
   width:100%;padding:.65rem .85rem;border:1px solid var(--line);border-radius:8px;background:var(--paper);
-  font-family:'Inter',sans-serif;font-size:.9rem;color:var(--ink);outline:none;
+  font-family:"DM Sans",sans-serif;font-size:.9rem;color:var(--ink);outline:none;
 }
 .km-mfield input[readonly]{color:var(--ink-soft)}
 
@@ -474,7 +486,7 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible{ou
 <div class="km-app">
 
   <aside class="km-sidebar" id="km-sidebar">
-    <div class="km-sb-brand"><a href="index.php">Koud<em>Main</em></a></div>
+    <div class="km-sb-brand"><a href="index.php" class="km-brand-lockup"><span class="km-brand-mark">k</span><span>koud<em>main</em></span></a></div>
 
     <nav class="km-sb-nav">
       <a href="?tab=overview" class="km-sb-link <?= $onglet === 'overview' ? 'active' : '' ?>">
