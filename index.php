@@ -288,6 +288,22 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--amber-deep);outline
   .km-cta-band{flex-direction:column;align-items:flex-start;padding:2.2rem 1.6rem}
   .km-hero{padding:2.6rem 0 2rem}
 }
+
+/* --- Modernisation UX : profondeur, recherche instantanée et responsive --- */
+body{background:radial-gradient(circle at 88% 2%,rgba(185,107,42,.10),transparent 24rem),var(--paper)}
+.km-masthead{backdrop-filter:blur(14px);background:rgba(245,244,240,.86)}
+.km-logo{display:inline-flex;align-items:center;gap:.28rem;transition:transform .2s ease}.km-logo:hover{transform:translateY(-1px)}
+.km-logo::before{content:'✦';font-family:Inter,sans-serif;font-size:.7rem;color:var(--amber);transform:rotate(-12deg)}
+.km-hero{position:relative;overflow:hidden}.km-hero::before{content:'';position:absolute;width:28rem;height:28rem;border-radius:50%;right:-12rem;top:-10rem;background:rgba(46,107,94,.07);filter:blur(2px);pointer-events:none}
+.km-stack::after{content:'Disponible maintenant';position:absolute;right:-.8rem;bottom:.4rem;padding:.45rem .75rem;border-radius:99px;background:var(--teal);color:#fff;font-size:.68rem;font-weight:700;letter-spacing:.03em;box-shadow:0 10px 22px rgba(46,107,94,.22);animation:km-float 3.5s ease-in-out infinite}
+@keyframes km-float{50%{transform:translateY(-6px)}}
+.km-listing-card{box-shadow:0 16px 34px rgba(28,27,23,.08);transition:opacity .6s cubic-bezier(.22,1,.36,1),transform .25s cubic-bezier(.23,1,.32,1),box-shadow .25s ease}.km-listing-card:hover{z-index:5;box-shadow:0 20px 42px rgba(28,27,23,.16);transform:translateY(-5px) rotate(var(--r,0deg))}
+.km-btn{position:relative;overflow:hidden}.km-btn::after{content:'';position:absolute;inset:0;background:linear-gradient(110deg,transparent 25%,rgba(255,255,255,.18),transparent 75%);transform:translateX(-120%);transition:transform .45s ease}.km-btn:hover::after{transform:translateX(120%)}
+.km-reveal{opacity:0;transform:translateY(18px);transition:opacity .6s var(--ease-out,cubic-bezier(.23,1,.32,1)),transform .6s var(--ease-out,cubic-bezier(.23,1,.32,1))}.km-reveal.is-visible{opacity:1;transform:none}
+.km-catalogue-tools{display:flex;align-items:center;gap:.7rem;margin:-1rem 0 1.4rem;max-width:32rem}.km-catalogue-search{width:100%;padding:.72rem 1rem;border:1px solid var(--line);border-radius:99px;background:rgba(255,255,255,.75);font:inherit;color:var(--ink);outline:none;transition:border-color .18s ease,box-shadow .18s ease}.km-catalogue-search:focus{border-color:var(--teal);box-shadow:0 0 0 4px rgba(46,107,94,.12)}.km-cat-row.is-hidden{display:none}.km-empty-catalogue{display:none;padding:1.4rem 0;color:var(--ink-soft);font-size:.9rem}.km-empty-catalogue.is-visible{display:block}
+.km-mobile-toggle{display:none;border:1px solid var(--line);background:var(--surface);border-radius:8px;width:38px;height:36px;cursor:pointer;color:var(--ink)}
+@media(max-width:900px){.km-mobile-toggle{display:inline-flex;align-items:center;justify-content:center}.km-nav-links{display:none;position:absolute;left:1rem;right:1rem;top:calc(100% + .5rem);padding:.6rem;background:var(--surface);border:1px solid var(--line);border-radius:12px;box-shadow:0 16px 32px rgba(28,27,23,.12);flex-direction:column;align-items:flex-start;gap:.2rem}.km-nav-links.is-open{display:flex}.km-nav-link{width:100%;padding:.65rem .7rem}.km-masthead-inner{position:relative}.km-nav-actions{margin-left:auto}.km-logo{margin-right:auto}}
+@media(max-width:520px){.km-nav-actions .km-link-muted{display:none}.km-stack{height:270px}.km-listing-card{padding:1rem}.km-stack::after{right:0}.km-catalogue-tools{margin-top:-1.5rem}.km-cat-name{white-space:normal}.km-cat-leader{display:none}}
 </style>
 </head>
 <body>
@@ -295,6 +311,7 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--amber-deep);outline
 <header class="km-masthead">
   <div class="km-masthead-inner">
     <a href="index.php" class="km-logo">Koud<em>Main</em></a>
+    <button class="km-mobile-toggle" id="km-mobile-toggle" type="button" aria-label="Ouvrir le menu" aria-expanded="false">☰</button>
     <nav class="km-nav-links">
       <a href="#categories" class="km-nav-link">Catalogue</a>
       <a href="#comment-ca-marche" class="km-nav-link">Comment ça marche</a>
@@ -398,13 +415,14 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--amber-deep);outline
 <!-- ── CATÉGORIES (annuaire) ── -->
 <section class="km-section" id="categories" style="background:var(--paper-deep)">
   <div class="wrap">
-    <div class="km-section-head">
+    <div class="km-section-head km-reveal">
       <h2 class="km-serif">Le catalogue</h2>
       <p>Dix domaines, des dizaines de services proposés par des prestataires validés.</p>
     </div>
+    <div class="km-catalogue-tools km-reveal"><input class="km-catalogue-search" id="km-catalogue-search" type="search" placeholder="Rechercher une catégorie…" aria-label="Rechercher une catégorie"></div>
     <div class="km-directory-grid km-directory">
       <?php foreach ($demo_categories as $c): ?>
-      <a href="<?= estConnecte() ? 'client_dashboard.php?tab=catalogue' : 'inscription.php' ?>" class="km-cat-row">
+      <a href="<?= estConnecte() ? 'client_dashboard.php?tab=catalogue' : 'inscription.php' ?>" class="km-cat-row km-reveal" data-category="<?= htmlspecialchars(strtolower($c['nom_categorie'])) ?>">
         <span class="km-cat-icon"><svg viewBox="0 0 20 20"><?= iconeCategorie($c['nom_categorie']) ?></svg></span>
         <span class="km-cat-name"><?= htmlspecialchars($c['nom_categorie']) ?></span>
         <span class="km-cat-leader"></span>
@@ -413,6 +431,7 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--amber-deep);outline
       </a>
       <?php endforeach; ?>
     </div>
+    <p class="km-empty-catalogue" id="km-empty-catalogue">Aucune catégorie ne correspond à votre recherche.</p>
   </div>
 </section>
 
@@ -447,9 +466,16 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--amber-deep);outline
 <script>
 // Séquence d'entrée unique et orchestrée (respecte prefers-reduced-motion via CSS)
 window.addEventListener('DOMContentLoaded', () => {
-  requestAnimationFrame(() => {
-    document.getElementById('km-hero').classList.add('km-loaded');
-  });
+  requestAnimationFrame(() => document.getElementById('km-hero').classList.add('km-loaded'));
+  const toggle = document.getElementById('km-mobile-toggle');
+  const nav = document.querySelector('.km-nav-links');
+  toggle?.addEventListener('click', () => { const open = nav.classList.toggle('is-open'); toggle.setAttribute('aria-expanded', open); });
+  const rows = [...document.querySelectorAll('.km-cat-row')];
+  const input = document.getElementById('km-catalogue-search');
+  const empty = document.getElementById('km-empty-catalogue');
+  input?.addEventListener('input', () => { const q = input.value.trim().toLowerCase(); let shown = 0; rows.forEach(row => { const ok = row.dataset.category.includes(q); row.classList.toggle('is-hidden', !ok); if (ok) shown++; }); empty.classList.toggle('is-visible', shown === 0); });
+  const reveal = new IntersectionObserver(entries => entries.forEach(entry => { if (entry.isIntersecting) { entry.target.classList.add('is-visible'); reveal.unobserve(entry.target); } }), {threshold:.12});
+  document.querySelectorAll('.km-reveal').forEach((el, i) => { el.style.transitionDelay = `${Math.min(i * 45, 220)}ms`; reveal.observe(el); });
 });
 </script>
 

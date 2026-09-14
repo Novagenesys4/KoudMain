@@ -160,22 +160,9 @@ $prenom = htmlspecialchars($_SESSION['prenom'] ?? 'Prestataire');
   --teal:#2E6B5E;--teal-tint:#E4EDE9;
   --danger:#A6412B;--danger-tint:#F3E2DC;
   --radius:14px;--radius-sm:8px;--sidebar-w:250px;
-  --shadow-sm:0 2px 8px rgba(28,27,23,.04);
-  --shadow-md:0 12px 28px rgba(28,27,23,.07);
-  --ease:cubic-bezier(.23,1,.32,1);
-}
-html.dark{
-  --paper:#161512;--paper-deep:#1C1A16;--surface:#22201B;
-  --ink:#F0EDE5;--ink-soft:#A8A398;--ink-faint:#7A766C;--line:#333029;
-  --amber:#D4894A;--amber-deep:#E0A06A;--amber-tint:#3A2A1C;
-  --teal:#5BA894;--teal-tint:#1E322C;
-  --danger:#E07A68;--danger-tint:#3A221C;
-  --shadow-sm:0 2px 8px rgba(0,0,0,.25);
-  --shadow-md:0 12px 28px rgba(0,0,0,.35);
 }
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-html{scroll-behavior:smooth}
-body{background:var(--paper);color:var(--ink);font-family:'Inter',sans-serif;font-size:15.5px;line-height:1.6;-webkit-font-smoothing:antialiased;transition:background .3s var(--ease),color .3s var(--ease)}
+body{background:var(--paper);color:var(--ink);font-family:'Inter',sans-serif;font-size:15.5px;line-height:1.6;-webkit-font-smoothing:antialiased}
 a{color:inherit;text-decoration:none}
 h1,h2,h3,.km-serif{font-family:'Fraunces',serif}
 @media(prefers-reduced-motion:reduce){*{animation-duration:.001ms!important;transition-duration:.001ms!important}}
@@ -183,9 +170,9 @@ h1,h2,h3,.km-serif{font-family:'Fraunces',serif}
 /* ── SIDEBAR ── */
 .km-app{display:flex;min-height:100vh}
 .km-sidebar{
-  width:var(--sidebar-w);background:#1C1B17;color:#E8E4D8;
+  width:var(--sidebar-w);background:var(--ink);color:#E8E4D8;
   display:flex;flex-direction:column;position:fixed;top:0;left:0;bottom:0;z-index:100;
-  transition:transform .3s var(--ease);
+  transition:transform .3s ease;
 }
 .km-sb-brand{padding:1.5rem 1.4rem 1.2rem;border-bottom:1px solid rgba(255,255,255,.1)}
 .km-sb-brand a{font-family:'Fraunces',serif;font-weight:600;font-size:1.3rem;color:#fff}
@@ -215,17 +202,10 @@ h1,h2,h3,.km-serif{font-family:'Fraunces',serif}
 .km-main{flex:1;margin-left:var(--sidebar-w);min-height:100vh;display:flex;flex-direction:column}
 .km-topbar{
   display:flex;align-items:center;justify-content:space-between;gap:1rem;
-  padding:.9rem 1.8rem;background:rgba(245,244,240,.88);backdrop-filter:blur(12px);border-bottom:1px solid var(--line);
-  position:sticky;top:0;z-index:50;transition:background .3s var(--ease);
+  padding:.9rem 1.8rem;background:var(--paper);border-bottom:1px solid var(--line);
+  position:sticky;top:0;z-index:50;
 }
-html.dark .km-topbar{background:rgba(22,21,18,.9)}
 .km-menu-toggle{display:none;background:none;border:none;font-size:1.3rem;cursor:pointer;color:var(--ink)}
-.km-theme-toggle{
-  width:38px;height:38px;border-radius:10px;border:1px solid var(--line);background:var(--surface);
-  display:grid;place-items:center;cursor:pointer;color:var(--ink-soft);transition:all .2s var(--ease);margin-left:auto;
-}
-.km-theme-toggle:hover{border-color:var(--amber);color:var(--amber-deep);background:var(--amber-tint)}
-.km-theme-toggle svg{width:18px;height:18px}
 .km-avatar{
   width:36px;height:36px;border-radius:50%;background:var(--amber-tint);color:var(--amber-deep);
   display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.92rem;
@@ -233,8 +213,6 @@ html.dark .km-topbar{background:rgba(22,21,18,.9)}
 .km-topbar-user{display:flex;align-items:center;gap:.6rem}
 .km-topbar-user-name{font-size:.86rem;font-weight:600}
 .km-topbar-user-role{font-size:.72rem;color:var(--ink-soft)}
-.km-stat{transition:transform .22s var(--ease),box-shadow .22s var(--ease);box-shadow:var(--shadow-sm)}
-.km-stat:hover{transform:translateY(-3px);box-shadow:var(--shadow-md)}
 
 .km-content{padding:1.8rem 1.8rem 3rem;flex:1}
 
@@ -433,10 +411,6 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
     <header class="km-topbar">
       <button class="km-menu-toggle" onclick="document.getElementById('km-sidebar').classList.toggle('open')" aria-label="Menu">☰</button>
       <div style="flex:1"></div>
-      <button type="button" class="km-theme-toggle" id="km-theme-toggle" aria-label="Changer de thème" title="Thème">
-        <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
-        <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" style="display:none"><path d="M21 14.5A8.5 8.5 0 1 1 9.5 3a7 7 0 0 0 11.5 11.5Z"/></svg>
-      </button>
       <div class="km-topbar-user">
         <div class="km-avatar"><?= strtoupper(substr($prenom, 0, 1)) ?></div>
         <div>
@@ -700,26 +674,6 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
 </div>
 
 <script>
-(function(){
-  var root = document.documentElement;
-  var btn = document.getElementById('km-theme-toggle');
-  var saved = localStorage.getItem('km-theme');
-  if (saved === 'dark' || (!saved && window.matchMedia('(prefers-color-scheme: dark)').matches)) root.classList.add('dark');
-  function sync() {
-    if (!btn) return;
-    var dark = root.classList.contains('dark');
-    var sun = btn.querySelector('.icon-sun');
-    var moon = btn.querySelector('.icon-moon');
-    if (sun) sun.style.display = dark ? 'none' : 'block';
-    if (moon) moon.style.display = dark ? 'block' : 'none';
-  }
-  sync();
-  if (btn) btn.addEventListener('click', function() {
-    root.classList.toggle('dark');
-    localStorage.setItem('km-theme', root.classList.contains('dark') ? 'dark' : 'light');
-    sync();
-  });
-})();
 document.getElementById('modal-prest').addEventListener('click', function(e) {
   if (e.target === this) this.classList.remove('open');
 });

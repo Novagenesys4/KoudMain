@@ -254,22 +254,9 @@ function iconeCategorie(string $nom): string {
   --teal:#2E6B5E;--teal-tint:#E4EDE9;
   --danger:#A6412B;--danger-tint:#F3E2DC;
   --radius:14px;--radius-sm:8px;--sidebar-w:250px;
-  --shadow-sm:0 2px 8px rgba(28,27,23,.04);
-  --shadow-md:0 12px 28px rgba(28,27,23,.07);
-  --ease:cubic-bezier(.23,1,.32,1);
-}
-html.dark{
-  --paper:#161512;--paper-deep:#1C1A16;--surface:#22201B;
-  --ink:#F0EDE5;--ink-soft:#A8A398;--ink-faint:#7A766C;--line:#333029;
-  --amber:#D4894A;--amber-deep:#E0A06A;--amber-tint:#3A2A1C;
-  --teal:#5BA894;--teal-tint:#1E322C;
-  --danger:#E07A68;--danger-tint:#3A221C;
-  --shadow-sm:0 2px 8px rgba(0,0,0,.25);
-  --shadow-md:0 12px 28px rgba(0,0,0,.35);
 }
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-html{scroll-behavior:smooth}
-body{background:var(--paper);color:var(--ink);font-family:'Inter',sans-serif;font-size:15.5px;line-height:1.6;-webkit-font-smoothing:antialiased;transition:background .3s var(--ease),color .3s var(--ease)}
+body{background:var(--paper);color:var(--ink);font-family:'Inter',sans-serif;font-size:15.5px;line-height:1.6;-webkit-font-smoothing:antialiased}
 a{color:inherit;text-decoration:none}
 h1,h2,h3,.km-serif{font-family:'Fraunces',serif}
 @media(prefers-reduced-motion:reduce){*{animation-duration:.001ms!important;transition-duration:.001ms!important}}
@@ -277,70 +264,50 @@ h1,h2,h3,.km-serif{font-family:'Fraunces',serif}
 /* ── SIDEBAR ── */
 .km-app{display:flex;min-height:100vh}
 .km-sidebar{
-  width:var(--sidebar-w);background:#1C1B17;color:#E8E4D8;
+  width:var(--sidebar-w);background:var(--ink);color:#E8E4D8;
   display:flex;flex-direction:column;position:fixed;top:0;left:0;bottom:0;z-index:100;
-  transition:transform .3s var(--ease),width .3s var(--ease);
+  transition:transform .3s ease;
 }
-html.dark .km-sidebar{background:#0E0D0B;border-right:1px solid #2A2823}
-.km-sidebar.collapsed{width:72px}
-.km-sidebar.collapsed .km-sb-brand a span,
-.km-sidebar.collapsed .km-sb-link span:not(.km-sb-icon),
-.km-sidebar.collapsed .km-sb-badge,
-.km-sidebar.collapsed .km-sb-section,
-.km-sidebar.collapsed .km-wallet-mini .w-label,
-.km-sidebar.collapsed .km-wallet-mini .w-solde{opacity:0;width:0;overflow:hidden;pointer-events:none}
-.km-sidebar.collapsed .km-sb-link{justify-content:center;padding:.68rem}
-.km-sidebar.collapsed .km-sb-brand{text-align:center;padding:1.2rem .5rem}
-.km-sb-brand{padding:1.5rem 1.4rem 1.2rem;border-bottom:1px solid rgba(255,255,255,.1);display:flex;align-items:center;justify-content:space-between;gap:.5rem}
-.km-sb-brand a{font-family:'Fraunces',serif;font-weight:600;font-size:1.3rem;color:#fff;letter-spacing:-.02em}
+.km-sb-brand{padding:1.5rem 1.4rem 1.2rem;border-bottom:1px solid rgba(255,255,255,.1)}
+.km-sb-brand a{font-family:'Fraunces',serif;font-weight:600;font-size:1.3rem;color:#fff}
 .km-sb-brand em{font-style:normal;color:var(--amber)}
-.km-sb-collapse{background:rgba(255,255,255,.06);border:0;color:#B9B4A5;width:28px;height:28px;border-radius:6px;cursor:pointer;display:grid;place-items:center;flex-shrink:0;transition:background .18s}
-.km-sb-collapse:hover{background:rgba(255,255,255,.12);color:#fff}
-.km-sb-nav{flex:1;padding:1.1rem .8rem;display:flex;flex-direction:column;gap:.15rem;overflow-y:auto}
+.km-sb-nav{flex:1;padding:1.1rem .8rem;display:flex;flex-direction:column;gap:.15rem}
 .km-sb-link{
   display:flex;align-items:center;gap:.8rem;padding:.68rem .85rem;border-radius:8px;
   font-size:.9rem;color:#B9B4A5;position:relative;transition:background .18s ease,color .18s ease;
 }
 .km-sb-link:hover{background:rgba(255,255,255,.06);color:#fff}
 .km-sb-link.active{background:rgba(185,107,42,.18);color:#F0DFC7;font-weight:600}
-.km-sb-link.active::before{content:'';position:absolute;left:0;top:22%;bottom:22%;width:2px;background:var(--amber);border-radius:0 2px 2px 0}
+.km-sb-link.active::before{content:'';position:absolute;left:0;top:22%;bottom:22%;width:2px;background:var(--amber)}
 .km-sb-icon{width:17px;height:17px;flex-shrink:0}
 .km-sb-icon svg{width:100%;height:100%;fill:none;stroke:currentColor;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}
-.km-sb-badge{margin-left:auto;background:var(--amber);color:#1C1B17;font-size:.68rem;font-weight:700;padding:.1rem .45rem;border-radius:10px}
+.km-sb-badge{margin-left:auto;background:var(--amber);color:var(--ink);font-size:.68rem;font-weight:700;padding:.1rem .45rem;border-radius:10px}
 .km-sb-section{font-size:.66rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#8B8778;padding:1rem .85rem .3rem}
 .km-sb-foot{padding:1rem .9rem 1.3rem;border-top:1px solid rgba(255,255,255,.1)}
 .km-wallet-mini{
   display:block;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.12);
-  border-radius:12px;padding:.9rem 1rem;transition:border-color .18s ease,background .18s ease;
+  border-radius:12px;padding:.9rem 1rem;transition:border-color .18s ease;
 }
-.km-wallet-mini:hover{border-color:var(--amber);background:rgba(185,107,42,.08)}
+.km-wallet-mini:hover{border-color:var(--amber)}
 .km-wallet-mini .w-label{font-size:.7rem;color:#A8A398}
 .km-wallet-mini .w-solde{font-family:'Fraunces',serif;font-weight:600;color:#fff;font-size:1.15rem;margin-top:.2rem}
 
 /* ── MAIN ── */
-.km-main{flex:1;margin-left:var(--sidebar-w);min-height:100vh;display:flex;flex-direction:column;transition:margin-left .3s var(--ease)}
-.km-sidebar.collapsed ~ .km-main{margin-left:72px}
+.km-main{flex:1;margin-left:var(--sidebar-w);min-height:100vh;display:flex;flex-direction:column}
 .km-topbar{
   display:flex;align-items:center;justify-content:space-between;gap:1rem;
-  padding:.9rem 1.8rem;background:rgba(245,244,240,.88);backdrop-filter:blur(12px);border-bottom:1px solid var(--line);
-  position:sticky;top:0;z-index:50;transition:background .3s var(--ease);
+  padding:.9rem 1.8rem;background:var(--paper);border-bottom:1px solid var(--line);
+  position:sticky;top:0;z-index:50;
 }
-html.dark .km-topbar{background:rgba(22,21,18,.9)}
 .km-menu-toggle{display:none;background:none;border:none;font-size:1.3rem;cursor:pointer;color:var(--ink)}
 .km-topbar-search{flex:1;max-width:380px;position:relative}
 .km-topbar-search input{
   width:100%;padding:.55rem 1rem .55rem 2.3rem;background:var(--surface);
   border:1px solid var(--line);border-radius:20px;font-size:.86rem;color:var(--ink);outline:none;
-  transition:border-color .18s ease,box-shadow .18s ease;
+  transition:border-color .18s ease;
 }
-.km-topbar-search input:focus{border-color:var(--amber);box-shadow:0 0 0 3px rgba(185,107,42,.12)}
+.km-topbar-search input:focus{border-color:var(--ink)}
 .km-topbar-search .s-icon{position:absolute;left:.85rem;top:50%;transform:translateY(-50%);font-size:.82rem;opacity:.5}
-.km-theme-toggle{
-  width:38px;height:38px;border-radius:10px;border:1px solid var(--line);background:var(--surface);
-  display:grid;place-items:center;cursor:pointer;color:var(--ink-soft);transition:all .2s var(--ease);
-}
-.km-theme-toggle:hover{border-color:var(--amber);color:var(--amber-deep);background:var(--amber-tint)}
-.km-theme-toggle svg{width:18px;height:18px}
 .km-avatar{
   width:36px;height:36px;border-radius:50%;background:var(--amber-tint);color:var(--amber-deep);
   display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.92rem;
@@ -352,33 +319,20 @@ html.dark .km-topbar{background:rgba(22,21,18,.9)}
 .km-content{padding:1.8rem 1.8rem 3rem;flex:1}
 
 /* ── Alerts ── */
-.km-alert{padding:.75rem 1rem;border-left:2px solid;font-size:.86rem;margin-bottom:1.2rem;border-radius:0 8px 8px 0}
-.km-alert-ok{border-color:var(--teal);background:var(--teal-tint);color:var(--teal)}
-.km-alert-err{border-color:var(--danger);background:var(--danger-tint);color:var(--danger)}
+.km-alert{padding:.75rem 1rem;border-left:2px solid;font-size:.86rem;margin-bottom:1.2rem}
+.km-alert-ok{border-color:var(--teal);background:var(--teal-tint);color:#1E4B41}
+.km-alert-err{border-color:var(--danger);background:var(--danger-tint);color:#7A2E1D}
 
 /* ── Header ── */
 .km-page-head{margin-bottom:1.6rem}
-.km-page-head h1{font-size:1.7rem;font-weight:600;letter-spacing:-.02em}
+.km-page-head h1{font-size:1.7rem;font-weight:600;letter-spacing:-.01em}
 .km-page-head p{color:var(--ink-soft);margin-top:.3rem;font-size:.94rem}
 
 /* ── Stat tiles ── */
 .km-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:.9rem;margin-bottom:1.8rem}
-.km-stat{
-  background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);
-  padding:1.15rem 1.25rem;position:relative;overflow:hidden;
-  transition:transform .22s var(--ease),box-shadow .22s var(--ease),border-color .22s;
-  box-shadow:var(--shadow-sm);
-}
-.km-stat:hover{transform:translateY(-3px);box-shadow:var(--shadow-md);border-color:rgba(185,107,42,.25)}
-.km-stat-icon{
-  width:36px;height:36px;border-radius:10px;display:grid;place-items:center;margin-bottom:.75rem;
-  background:var(--amber-tint);color:var(--amber-deep);
-}
-.km-stat-icon svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.6}
-.km-stat-val{font-family:'Fraunces',serif;font-size:1.55rem;font-weight:600;color:var(--ink);letter-spacing:-.02em}
+.km-stat{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:1.15rem 1.25rem}
+.km-stat-val{font-family:'Fraunces',serif;font-size:1.55rem;font-weight:600;color:var(--ink)}
 .km-stat-label{font-size:.78rem;color:var(--ink-soft);margin-top:.25rem}
-.km-stat-trend{font-size:.72rem;font-weight:600;margin-top:.4rem;display:inline-flex;align-items:center;gap:.25rem}
-.km-stat-trend.up{color:var(--teal)}.km-stat-trend.down{color:var(--danger)}
 
 /* ── Panels ── */
 .km-two-col{display:grid;grid-template-columns:1.4fr 1fr;gap:1.3rem}
@@ -464,19 +418,6 @@ html.dark .km-topbar{background:rgba(22,21,18,.9)}
 }
 .km-rate-input{flex:1;min-width:120px}
 
-/* ── Star rating ── */
-.km-stars{display:inline-flex;gap:2px;align-items:center}
-.km-star{
-  width:28px;height:28px;border:0;background:transparent;cursor:pointer;padding:0;
-  color:var(--line);transition:color .15s ease,transform .15s ease;
-}
-.km-star svg{width:100%;height:100%;fill:currentColor;stroke:none}
-.km-star:hover,.km-star.is-hover,.km-star.is-active{color:var(--amber)}
-.km-star:hover{transform:scale(1.12)}
-.km-star:focus-visible{outline:2px solid var(--amber);outline-offset:2px;border-radius:4px}
-.km-stars-readonly .km-star{cursor:default;width:16px;height:16px}
-.km-stars-readonly .km-star.is-active{color:var(--amber)}
-
 .km-empty{text-align:center;padding:3.5rem 1rem;color:var(--ink-soft)}
 .km-empty-icon{width:44px;height:44px;margin:0 auto 1rem;opacity:.4}
 .km-empty-icon svg{width:100%;height:100%;fill:none;stroke:currentColor;stroke-width:1.3}
@@ -485,35 +426,29 @@ html.dark .km-topbar{background:rgba(22,21,18,.9)}
 .km-pagination{display:flex;justify-content:center;gap:.4rem;margin-top:1.6rem;flex-wrap:wrap}
 .km-page-link{
   padding:.4rem .8rem;border-radius:8px;font-size:.83rem;font-weight:600;
-  border:1px solid var(--line);color:var(--ink-soft);transition:all .18s;
+  border:1px solid var(--line);color:var(--ink-soft);
 }
-.km-page-link:hover{border-color:var(--ink);color:var(--ink)}
 .km-page-link.active{background:var(--ink);color:var(--paper);border-color:var(--ink)}
 
 /* ── Modal ── */
 .km-modal-overlay{
-  display:none;position:fixed;inset:0;background:rgba(28,27,23,.55);backdrop-filter:blur(4px);z-index:200;
+  display:none;position:fixed;inset:0;background:rgba(28,27,23,.55);z-index:200;
   align-items:center;justify-content:center;padding:1rem;
 }
-.km-modal-overlay.open{display:flex;animation:km-fade-in .2s var(--ease)}
-@keyframes km-fade-in{from{opacity:0}to{opacity:1}}
+.km-modal-overlay.open{display:flex}
 .km-modal{
   background:var(--surface);border-radius:18px;padding:1.8rem 1.9rem;width:100%;max-width:440px;
-  max-height:90vh;overflow-y:auto;border:1px solid var(--line);box-shadow:var(--shadow-md);
-  animation:km-modal-in .28s var(--ease);
+  max-height:90vh;overflow-y:auto;border:1px solid var(--line);
 }
-@keyframes km-modal-in{from{opacity:0;transform:translateY(12px) scale(.97)}to{opacity:1;transform:translateY(0) scale(1)}}
 .km-modal-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:1.3rem;padding-bottom:.9rem;border-bottom:1px solid var(--line)}
 .km-modal-head h3{font-size:1.1rem;font-weight:600}
-.km-modal-close{background:var(--paper);border:1px solid var(--line);width:28px;height:28px;border-radius:6px;cursor:pointer;font-size:.9rem;color:var(--ink-soft);transition:background .15s}
-.km-modal-close:hover{background:var(--paper-deep)}
+.km-modal-close{background:var(--paper);border:1px solid var(--line);width:28px;height:28px;border-radius:6px;cursor:pointer;font-size:.9rem;color:var(--ink-soft)}
 .km-mfield{margin-bottom:1rem}
 .km-mfield label{display:block;font-size:.75rem;font-weight:600;color:var(--ink-soft);text-transform:uppercase;letter-spacing:.05em;margin-bottom:.35rem}
 .km-mfield input,.km-mfield select{
   width:100%;padding:.65rem .85rem;border:1px solid var(--line);border-radius:8px;background:var(--paper);
-  font-family:'Inter',sans-serif;font-size:.9rem;color:var(--ink);outline:none;transition:border-color .18s;
+  font-family:'Inter',sans-serif;font-size:.9rem;color:var(--ink);outline:none;
 }
-.km-mfield input:focus,.km-mfield select:focus{border-color:var(--amber)}
 .km-mfield input[readonly]{color:var(--ink-soft)}
 
 a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid var(--amber-deep);outline-offset:2px}
@@ -522,10 +457,8 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible{ou
 @media(max-width:860px){
   .km-sidebar{transform:translateX(-100%)}
   .km-sidebar.open{transform:translateX(0)}
-  .km-sidebar.collapsed{width:var(--sidebar-w)}
-  .km-main{margin-left:0!important}
+  .km-main{margin-left:0}
   .km-menu-toggle{display:block}
-  .km-sb-collapse{display:none}
 }
 @media(max-width:560px){
   .km-stats{grid-template-columns:1fr 1fr}
@@ -533,7 +466,6 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible{ou
   .km-topbar{padding:.8rem 1rem}
   .km-order-body{grid-template-columns:1fr}
   .km-order-detail{border-right:none;border-bottom:1px solid var(--line)}
-  .km-topbar-search{display:none}
 }
 </style>
 </head>
@@ -542,12 +474,7 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible{ou
 <div class="km-app">
 
   <aside class="km-sidebar" id="km-sidebar">
-    <div class="km-sb-brand">
-      <a href="index.php">Koud<em>Main</em></a>
-      <button type="button" class="km-sb-collapse" id="km-sb-collapse" aria-label="Réduire le menu" title="Réduire">
-        <svg width="14" height="14" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 4l-6 6 6 6"/></svg>
-      </button>
-    </div>
+    <div class="km-sb-brand"><a href="index.php">Koud<em>Main</em></a></div>
 
     <nav class="km-sb-nav">
       <a href="?tab=overview" class="km-sb-link <?= $onglet === 'overview' ? 'active' : '' ?>">
@@ -592,16 +519,12 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible{ou
 
   <div class="km-main">
     <header class="km-topbar">
-      <button class="km-menu-toggle" onclick="document.getElementById('km-sidebar').classList.toggle('open')" aria-label="Menu">☰</button>
+      <button class="km-menu-toggle" onclick="document.getElementById('km-sidebar').classList.toggle('open')">☰</button>
       <form class="km-topbar-search" method="GET" action="">
         <input type="hidden" name="tab" value="catalogue">
         <span class="s-icon">⌕</span>
         <input type="text" name="q" value="<?= htmlspecialchars($search) ?>" placeholder="Rechercher un service…">
       </form>
-      <button type="button" class="km-theme-toggle" id="km-theme-toggle" aria-label="Changer de thème" title="Thème">
-        <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
-        <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" style="display:none"><path d="M21 14.5A8.5 8.5 0 1 1 9.5 3a7 7 0 0 0 11.5 11.5Z"/></svg>
-      </button>
       <div class="km-topbar-user">
         <div class="km-avatar"><?= strtoupper(substr($prenom, 0, 1)) ?></div>
         <div>
@@ -624,26 +547,10 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible{ou
       </div>
 
       <div class="km-stats">
-        <div class="km-stat">
-          <div class="km-stat-icon"><svg viewBox="0 0 20 20"><rect x="2" y="5" width="16" height="11" rx="2"/><path d="M2 9h16"/></svg></div>
-          <div class="km-stat-val"><?= number_format($solde_cli, 0, ',', ' ') ?></div>
-          <div class="km-stat-label">Solde wallet (FCFA)</div>
-        </div>
-        <div class="km-stat">
-          <div class="km-stat-icon" style="background:var(--teal-tint);color:var(--teal)"><svg viewBox="0 0 20 20"><rect x="3" y="7" width="14" height="10" rx="1"/><path d="M7 7V4h6v3"/></svg></div>
-          <div class="km-stat-val"><?= $nb_cmd ?></div>
-          <div class="km-stat-label">Commandes passées</div>
-        </div>
-        <div class="km-stat">
-          <div class="km-stat-icon" style="background:var(--teal-tint);color:var(--teal)"><svg viewBox="0 0 20 20"><path d="M4 11l4 4 8-9"/></svg></div>
-          <div class="km-stat-val"><?= $nb_termine ?></div>
-          <div class="km-stat-label">Terminées</div>
-        </div>
-        <div class="km-stat">
-          <div class="km-stat-icon"><svg viewBox="0 0 20 20"><circle cx="10" cy="10" r="7"/><path d="M10 6v4l2.5 1.5"/></svg></div>
-          <div class="km-stat-val"><?= $nb_attente ?></div>
-          <div class="km-stat-label">En attente</div>
-        </div>
+        <div class="km-stat"><div class="km-stat-val"><?= number_format($solde_cli, 0, ',', ' ') ?></div><div class="km-stat-label">Solde wallet (FCFA)</div></div>
+        <div class="km-stat"><div class="km-stat-val"><?= $nb_cmd ?></div><div class="km-stat-label">Commandes passées</div></div>
+        <div class="km-stat"><div class="km-stat-val"><?= $nb_termine ?></div><div class="km-stat-label">Terminées</div></div>
+        <div class="km-stat"><div class="km-stat-val"><?= $nb_attente ?></div><div class="km-stat-label">En attente</div></div>
       </div>
 
       <div class="km-two-col">
@@ -774,31 +681,22 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible{ou
         </div>
         <div class="km-order-foot">
           <?php if ($c['statut'] === 'Terminé' && $c['evaluation'] === null): ?>
-            <form method="POST" class="km-rate-form" style="display:flex;align-items:center;gap:.6rem;flex-wrap:wrap;width:100%">
+            <form method="POST" style="display:flex;align-items:center;gap:.6rem;flex-wrap:wrap;width:100%">
               <?= champCSRF() ?>
               <input type="hidden" name="action" value="noter">
               <input type="hidden" name="id_commande" value="<?= $c['id_commande'] ?>">
               <input type="hidden" name="id_prestation" value="<?= $c['id_prestation'] ?>">
-              <input type="hidden" name="evaluation" value="" required class="km-rate-value">
               <span style="font-size:.83rem;color:var(--ink-soft)">Noter :</span>
-              <div class="km-stars" role="radiogroup" aria-label="Note de 1 à 5">
-                <?php for ($n = 1; $n <= 5; $n++): ?>
-                <button type="button" class="km-star" data-value="<?= $n ?>" aria-label="<?= $n ?> étoile<?= $n > 1 ? 's' : '' ?>" role="radio" aria-checked="false">
-                  <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-                </button>
-                <?php endfor; ?>
-              </div>
+              <select name="evaluation" required class="km-rate-select">
+                <option value="">★</option>
+                <?php for ($n = 5; $n >= 1; $n--): ?><option value="<?= $n ?>"><?= $n ?> ★</option><?php endfor; ?>
+              </select>
               <input type="text" name="commentaire" placeholder="Commentaire (optionnel)" class="km-rate-input">
               <button type="submit" class="km-btn km-btn-primary km-btn-sm">Envoyer</button>
             </form>
           <?php elseif ($c['evaluation'] !== null): ?>
-            <span style="font-size:.86rem;color:var(--ink-soft);display:inline-flex;align-items:center;gap:.5rem">
-              Votre note :
-              <span class="km-stars km-stars-readonly" aria-label="<?= (int)$c['evaluation'] ?> sur 5">
-                <?php for ($n = 1; $n <= 5; $n++): ?>
-                <span class="km-star <?= $n <= (int)$c['evaluation'] ? 'is-active' : '' ?>"><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></span>
-                <?php endfor; ?>
-              </span>
+            <span style="font-size:.86rem;color:var(--ink-soft)">
+              Votre note : <span style="color:var(--amber-deep)"><?= str_repeat('★', (int)$c['evaluation']) . str_repeat('☆', 5 - (int)$c['evaluation']) ?></span>
               <?php if ($c['commentaire']): ?> — <em><?= htmlspecialchars(mb_substr($c['commentaire'], 0, 60)) ?></em><?php endif; ?>
             </span>
           <?php else: ?>
@@ -851,83 +749,6 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible{ou
 </div>
 
 <script>
-(function(){
-  // Dark mode
-  const root = document.documentElement;
-  const themeBtn = document.getElementById('km-theme-toggle');
-  const saved = localStorage.getItem('km-theme');
-  if (saved === 'dark' || (!saved && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-    root.classList.add('dark');
-  }
-  function syncThemeIcons() {
-    if (!themeBtn) return;
-    const isDark = root.classList.contains('dark');
-    const sun = themeBtn.querySelector('.icon-sun');
-    const moon = themeBtn.querySelector('.icon-moon');
-    if (sun) sun.style.display = isDark ? 'none' : 'block';
-    if (moon) moon.style.display = isDark ? 'block' : 'none';
-  }
-  syncThemeIcons();
-  if (themeBtn) {
-    themeBtn.addEventListener('click', function() {
-      root.classList.toggle('dark');
-      localStorage.setItem('km-theme', root.classList.contains('dark') ? 'dark' : 'light');
-      syncThemeIcons();
-    });
-  }
-
-  // Sidebar collapse
-  const sidebar = document.getElementById('km-sidebar');
-  const collapseBtn = document.getElementById('km-sb-collapse');
-  if (localStorage.getItem('km-sidebar') === 'collapsed' && window.innerWidth > 860) {
-    sidebar.classList.add('collapsed');
-  }
-  if (collapseBtn) {
-    collapseBtn.addEventListener('click', function() {
-      sidebar.classList.toggle('collapsed');
-      localStorage.setItem('km-sidebar', sidebar.classList.contains('collapsed') ? 'collapsed' : 'open');
-    });
-  }
-
-  // Star rating
-  document.querySelectorAll('.km-rate-form').forEach(function(form) {
-    const stars = form.querySelectorAll('.km-star');
-    const hidden = form.querySelector('.km-rate-value');
-    function paint(val, hover) {
-      stars.forEach(function(s) {
-        const v = +s.dataset.value;
-        s.classList.toggle('is-active', v <= val && !hover);
-        s.classList.toggle('is-hover', hover && v <= hover);
-        s.setAttribute('aria-checked', v === val ? 'true' : 'false');
-      });
-    }
-    stars.forEach(function(star) {
-      star.addEventListener('mouseenter', function() { paint(+hidden.value || 0, +star.dataset.value); });
-      star.addEventListener('mouseleave', function() { paint(+hidden.value || 0, 0); });
-      star.addEventListener('click', function() {
-        hidden.value = star.dataset.value;
-        paint(+star.dataset.value, 0);
-      });
-      star.addEventListener('keydown', function(e) {
-        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); star.click(); }
-        if (e.key === 'ArrowRight' || e.key === 'ArrowUp') {
-          e.preventDefault();
-          const next = star.nextElementSibling;
-          if (next) next.focus();
-        }
-        if (e.key === 'ArrowLeft' || e.key === 'ArrowDown') {
-          e.preventDefault();
-          const prev = star.previousElementSibling;
-          if (prev) prev.focus();
-        }
-      });
-    });
-    form.addEventListener('submit', function(e) {
-      if (!hidden.value) { e.preventDefault(); alert('Choisissez une note de 1 à 5 étoiles.'); }
-    });
-  });
-})();
-
 function openOrderModal(id, titre, prix) {
   document.getElementById('order-id-prest').value = id;
   document.getElementById('order-titre').value = titre;
