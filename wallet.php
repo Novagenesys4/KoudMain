@@ -454,23 +454,26 @@ h1,h2{margin:0;font-family:Fraunces,Georgia,serif;font-weight:600;letter-spacing
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.001ms!important;transition-duration:.001ms!important;scroll-behavior:auto!important}}
 
 .wallet-app{display:flex;min-height:100vh;position:relative;z-index:2}
-.sidebar{width:var(--sidebar);flex:0 0 var(--sidebar);position:fixed;inset:0 auto 0 0;z-index:50;display:flex;flex-direction:column;color:#e8e8df;background:#1e201d;box-shadow:14px 0 38px rgba(22,23,20,.08);transition:transform .28s var(--ease)}
-.brand{display:flex;align-items:center;gap:10px;padding:27px 26px 25px;font-family:Fraunces,serif;font-size:22px;font-weight:600;letter-spacing:-.05em;border-bottom:1px solid rgba(255,255,255,.08)}
-.brand>span>span{color:#d58d51}
-.brand-mark{width:28px;height:28px;display:grid;place-items:center;color:#1e201d;background:#d58d51;border-radius:9px 9px 9px 2px;font-size:18px;font-weight:700}
-.sidebar-scroll{flex:1;padding:26px 13px;overflow-y:auto}
-.nav-group{margin-bottom:28px}
-.nav-label{display:block;padding:0 13px 9px;color:#85887d;font-size:10px;text-transform:uppercase;letter-spacing:.14em;font-weight:700}
-.nav-item{position:relative;width:100%;display:flex;align-items:center;gap:12px;padding:11px 13px;color:#aaaca3;background:transparent;border:0;border-radius:10px;font-size:13px;text-align:left;transition:background .18s ease,color .18s ease,transform .18s ease}
+.sidebar{width:var(--sidebar);flex:0 0 var(--sidebar);position:fixed;inset:0 auto 0 0;z-index:50;display:flex;flex-direction:column;color:#E8E4D8;background:#1C1B17;box-shadow:12px 0 34px rgba(20,20,17,.09);transition:transform .28s var(--ease)}
+.brand{padding:26px 24px 22px;border-bottom:1px solid rgba(255,255,255,.08)}
+.brand-logo{display:inline-block;font-family:Fraunces,serif;font-weight:700;font-size:23px;letter-spacing:-.03em;color:#fffdf7}
+.brand-logo span{color:var(--amber)}
+.brand-tag{margin-top:6px;color:#7d7a6d;font-size:9.5px;font-weight:700;letter-spacing:.13em;text-transform:uppercase}
+.sidebar-scroll{flex:1;padding:22px 14px;overflow-y:auto}
+.nav-group{margin-bottom:24px}
+.nav-label{display:block;padding:0 12px 9px;color:#7d7a6d;font-size:10px;text-transform:uppercase;letter-spacing:.13em;font-weight:700}
+.nav-item{position:relative;width:100%;display:flex;align-items:center;gap:12px;min-height:44px;padding:0 13px;color:#a8a49a;background:transparent;border:0;border-radius:10px;font-size:13.5px;font-weight:500;text-align:left;transition:background .18s ease,color .18s ease,transform .18s ease}
 .nav-item:hover{color:#fff;background:rgba(255,255,255,.06);transform:translateX(2px)}
-.nav-item.active{color:#f4e4d0;background:rgba(186,109,44,.17)}
-.nav-item.active::before{content:"";position:absolute;left:0;top:25%;height:50%;width:2px;background:#d58d51;border-radius:3px}
-.sidebar-bottom{padding:15px 14px 20px;border-top:1px solid rgba(255,255,255,.08)}
-.sidebar-mini-balance{display:flex;align-items:center;justify-content:space-between;padding:14px 14px 15px;margin-bottom:13px;background:rgba(255,255,255,.055);border:1px solid rgba(255,255,255,.1);border-radius:13px}
-.mini-kicker{display:block;color:#93968b;font-size:10px;text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px}
-.sidebar-mini-balance strong{font-family:Fraunces,serif;font-size:18px;font-weight:600}
-.sidebar-mini-balance small{color:#999b91;font-family:"DM Sans",sans-serif;font-size:10px;font-weight:500}
-.mini-spark{width:28px;height:28px;display:grid;place-items:center;color:#d58d51;background:rgba(213,141,81,.13);border-radius:50%}
+.nav-item.active{color:#f6e2cb;background:linear-gradient(90deg,rgba(187,108,45,.24),rgba(187,108,45,.07));font-weight:650}
+.nav-item.active::before{content:"";position:absolute;left:0;top:22%;bottom:22%;width:2px;border-radius:3px;background:var(--amber)}
+.sidebar-bottom{padding:14px 18px 20px;border-top:1px solid rgba(255,255,255,.08)}
+.wallet-card-mini{padding:15px 16px;margin-bottom:12px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:13px;transition:border-color .18s ease,background .18s ease}
+.wallet-card-mini:hover{border-color:var(--amber);background:rgba(187,108,45,.08)}
+.wallet-card-mini-label{color:#98988c;font-size:10px;font-weight:600;letter-spacing:.02em}
+.wallet-card-mini-amount{margin-top:6px;font-family:Fraunces,serif;font-weight:600;font-size:19px;color:#fff}
+.wallet-card-mini-amount small{font-family:"DM Sans",sans-serif;color:#999b91;font-size:10px;font-weight:500}
+.sidebar-note{display:flex;align-items:flex-start;gap:7px;margin-bottom:13px;color:#79776b;font-size:10.5px;line-height:1.5}
+.sidebar-note svg{flex:0 0 auto;margin-top:2px;color:var(--amber)}
 .profile-row{width:100%;display:flex;align-items:center;gap:9px;padding:0;border:0;background:transparent;color:#e8e8df;text-align:left}
 .profile-row>div:nth-child(2){flex:1;min-width:0}
 .profile-row strong,.profile-row span{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
@@ -737,7 +740,10 @@ h2{font-size:22px;line-height:1.1}
 <div class="wallet-app">
   <div class="sidebar-backdrop" id="sidebar-backdrop" onclick="document.getElementById('sidebar').classList.remove('open'); this.classList.remove('visible');"></div>
   <aside class="sidebar" id="sidebar">
-    <div class="brand"><div class="brand-mark"><span>k</span></div><span>koud<span>main</span></span></div>
+    <div class="brand">
+      <a href="index.php" class="brand-logo">Koud<span>Main</span></a>
+      <div class="brand-tag">Votre argent, simplifié</div>
+    </div>
     <div class="sidebar-scroll">
       <div class="nav-group">
         <span class="nav-label">Workspace</span>
@@ -761,10 +767,11 @@ h2{font-size:22px;line-height:1.1}
       </div>
     </div>
     <div class="sidebar-bottom">
-      <div class="sidebar-mini-balance">
-        <div><span class="mini-kicker">Solde total</span><strong><?= number_format($soldeTotalAffiche, 0, ',', ' ') ?> <small>FCFA</small></strong></div>
-        <span class="mini-spark"><?= icon('sparkles', 14) ?></span>
+      <div class="wallet-card-mini">
+        <div class="wallet-card-mini-label">Solde total</div>
+        <div class="wallet-card-mini-amount"><?= number_format($soldeTotalAffiche, 0, ',', ' ') ?> <small>FCFA</small></div>
       </div>
+      <p class="sidebar-note"><?= icon('sparkles', 13) ?> Vos données sont protégées par un chiffrement de bout en bout.</p>
       <a href="<?= htmlspecialchars($dashboard) ?>" class="profile-row">
         <div class="avatar"><?= htmlspecialchars($initiales2) ?></div>
         <div><strong><?= $prenom ?> <?= $nom ?></strong><span><?= htmlspecialchars($role) ?></span></div>
