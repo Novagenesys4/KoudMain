@@ -72,39 +72,38 @@ if (empty($demo_quartiers)) {
 <title>Connexion — KoudMain</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;600;700&family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
 :root{
-  --paper:#f4f2ec;
-  --paper-deep:#ebe8df;
-  --surface:#fffefa;
-  --ink:#1f201c;
-  --ink-soft:#77766e;
-  --ink-faint:#a6a49a;
-  --line:#dedbd1;
-  --amber:#ba6d2c;
-  --amber-deep:#8d4d1d;
-  --amber-tint:#f5e7d7;
-  --teal:#2b6d60;
-  --teal-tint:#e5f0eb;
-  --danger:#a74935;
-  --danger-tint:#f4e3df;
-  --radius:16px;
+  --paper:#F5F4F0;
+  --paper-deep:#EBE8DF;
+  --surface:#FFFEFA;
+  --ink:#1D211C;
+  --ink-soft:#6B6D64;
+  --ink-faint:#9A9B91;
+  --line:#DDDCD3;
+  --amber:#BB6C2D;
+  --amber-deep:#8D4E1F;
+  --amber-tint:#F4E4D4;
+  --teal:#2E6B5E;
+  --teal-tint:#E3EFEA;
+  --danger:#A85245;
+  --danger-tint:#F3E2DC;
+  --radius:15px;
   --radius-sm:8px;
   --maxw:1180px;
-  --ease:cubic-bezier(.2,.8,.2,1);
+  --ease:cubic-bezier(.22,1,.36,1);
 }
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 body{
   background:var(--paper);color:var(--ink);
-  font-family:"DM Sans",sans-serif;font-size:16px;line-height:1.6;
+  font-family:'Inter',sans-serif;font-size:16px;line-height:1.6;
   -webkit-font-smoothing:antialiased;
-  min-height:100vh;display:flex;flex-direction:column;position:relative;
+  min-height:100vh;display:flex;flex-direction:column;
 }
-body::before{content:"";position:fixed;inset:0;pointer-events:none;opacity:.035;z-index:1;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.5'/%3E%3C/svg%3E")}
 a{color:inherit;text-decoration:none}
 .wrap{max-width:var(--maxw);margin:0 auto;padding:0 2rem}
-h1,h2,.km-serif{font-family:Fraunces,Georgia,serif}
+h1,h2,.km-serif{font-family:'Fraunces',serif}
 @media(prefers-reduced-motion:reduce){
   *{animation-duration:0.001ms !important;animation-iteration-count:1 !important;transition-duration:0.001ms !important}
 }
@@ -115,20 +114,20 @@ h1,h2,.km-serif{font-family:Fraunces,Georgia,serif}
   max-width:var(--maxw);margin:0 auto;padding:0 2rem;height:76px;
   display:flex;align-items:center;justify-content:space-between;gap:2rem;
 }
-.km-logo{font-family:Fraunces,Georgia,serif;font-weight:600;font-size:1.5rem;letter-spacing:-0.01em;color:var(--ink)}
-.km-logo em{font-style:normal;color:#d58d51}
+.km-logo{font-family:'Fraunces',serif;font-weight:600;font-size:1.5rem;letter-spacing:-0.01em;color:var(--ink)}
+.km-logo em{font-style:normal;color:var(--amber)}
 .km-link-muted{font-size:0.88rem;color:var(--ink-soft)}
 .km-link-muted:hover{color:var(--ink)}
 
 /* ── BUTTONS ── */
 .km-btn{
   display:inline-flex;align-items:center;justify-content:center;gap:0.5rem;
-  padding:0.78rem 1.3rem;font-family:"DM Sans",sans-serif;font-size:0.92rem;font-weight:600;
+  padding:0.78rem 1.3rem;font-family:'Inter',sans-serif;font-size:0.92rem;font-weight:600;
   border-radius:var(--radius-sm);border:1px solid transparent;cursor:pointer;width:100%;
   transition:transform 0.18s ease, box-shadow 0.18s ease, background 0.18s ease;
 }
 .km-btn:active{transform:scale(0.98)}
-.km-btn-primary{background:var(--ink);color:#fff}
+.km-btn-primary{background:var(--ink);color:var(--paper)}
 .km-btn-primary:hover{background:var(--amber-deep);box-shadow:0 6px 18px rgba(139,78,27,0.25)}
 
 /* ── MAIN LAYOUT ── */
@@ -138,12 +137,12 @@ main{flex:1;display:flex;align-items:center;padding:3.5rem 0}
   max-width:980px;margin:0 auto;
   border:1px solid var(--line);border-radius:20px;overflow:hidden;
   background:var(--surface);
-  box-shadow:3px 4px 0 rgba(31,32,28,.035), 0 20px 50px rgba(28,27,23,0.05);
+  box-shadow:0 20px 50px rgba(28,27,23,0.05);
 }
 
 /* Panneau de contexte (gauche) */
 .km-context{
-  background:#1e201d;color:#e8e8df;padding:3rem 2.6rem;
+  background:var(--ink);color:var(--paper);padding:3rem 2.6rem;
   display:flex;flex-direction:column;justify-content:space-between;
 }
 .km-context h2{font-size:1.6rem;font-weight:600;line-height:1.25;letter-spacing:-0.01em;max-width:18ch}
@@ -191,7 +190,7 @@ main{flex:1;display:flex;align-items:center;padding:3.5rem 0}
 .km-field input{
   width:100%;padding:0.8rem 1rem;background:var(--paper);
   border:1px solid var(--line);border-radius:var(--radius-sm);
-  font-family:"DM Sans",sans-serif;font-size:0.95rem;color:var(--ink);
+  font-family:'Inter',sans-serif;font-size:0.95rem;color:var(--ink);
   outline:none;transition:border-color 0.18s ease, background 0.18s ease;
 }
 .km-field input:focus{border-color:var(--ink);background:var(--surface)}
@@ -199,7 +198,7 @@ main{flex:1;display:flex;align-items:center;padding:3.5rem 0}
 .km-toggle-pass{
   position:absolute;right:0.9rem;top:50%;transform:translateY(-50%);
   background:none;border:none;font-size:0.78rem;color:var(--ink-soft);cursor:pointer;
-  font-family:"DM Sans",sans-serif;font-weight:600;
+  font-family:'Inter',sans-serif;font-weight:600;
 }
 .km-toggle-pass:hover{color:var(--ink)}
 

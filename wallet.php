@@ -433,17 +433,17 @@ function icon(string $name, int $size = 17): string {
 <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;600;700&family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&display=swap" rel="stylesheet">
 <style>
 :root{
-  --paper:#f4f2ec;--paper-deep:#ebe8df;--surface:#fffefa;
-  --ink:#1f201c;--ink-soft:#77766e;--ink-faint:#a6a49a;--line:#dedbd1;
-  --amber:#ba6d2c;--amber-deep:#8d4d1d;--amber-tint:#f5e7d7;
-  --teal:#2b6d60;--teal-deep:#1d5046;--teal-tint:#e5f0eb;
-  --danger:#a74935;
-  --radius:16px;--sidebar:256px;
-  --ease:cubic-bezier(.2,.8,.2,1);
+  --paper:#F5F4F0;--paper-deep:#EBE8DF;--surface:#FFFEFA;
+  --ink:#1D211C;--ink-soft:#6B6D64;--ink-faint:#9A9B91;--line:#DDDCD3;
+  --amber:#BB6C2D;--amber-deep:#8D4E1F;--amber-tint:#F4E4D4;
+  --teal:#2E6B5E;--teal-deep:#1d5046;--teal-tint:#E3EFEA;
+  --danger:#A85245;
+  --radius:15px;--sidebar:256px;
+  --ease:cubic-bezier(.22,1,.36,1);
 }
 *{box-sizing:border-box}
 html{scroll-behavior:smooth}
-body{margin:0;min-width:320px;background:var(--paper);color:var(--ink);font-family:"DM Sans",sans-serif;-webkit-font-smoothing:antialiased}
+body{margin:0;min-width:320px;background:var(--paper);color:var(--ink);font-family:'Inter',system-ui,sans-serif;-webkit-font-smoothing:antialiased}
 body::before{content:"";position:fixed;inset:0;pointer-events:none;opacity:.035;z-index:1;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.5'/%3E%3C/svg%3E")}
 a{color:inherit;text-decoration:none}
 button,input,select{font:inherit}

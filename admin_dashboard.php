@@ -242,48 +242,47 @@ function initiales_de(string $prenom, string $nom): string {
 <title>Administration — KoudMain</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;600;700&family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
 :root{
-  --paper:#f4f2ec;
-  --paper-deep:#ebe8df;
-  --surface:#fffefa;
-  --ink:#1f201c;
-  --ink-soft:#77766e;
-  --ink-faint:#a6a49a;
-  --line:#dedbd1;
-  --amber:#ba6d2c;
-  --amber-deep:#8d4d1d;
-  --amber-tint:#f5e7d7;
-  --teal:#2b6d60;
-  --teal-tint:#e5f0eb;
-  --danger:#a74935;
-  --danger-tint:#f4e3df;
-  --sidebar:#1e201d;
-  --sidebar-ink:#e8e8df;
-  --sidebar-muted:#a3a79a;
-  --radius:16px;
-  --ease:cubic-bezier(.2,.8,.2,1);
-  --shadow-soft:0 18px 46px rgba(47,43,34,.06), 0 2px 8px rgba(47,43,34,.04);
-  --shadow-float:0 22px 60px rgba(27,29,25,.16), 0 6px 18px rgba(27,29,25,.08);
+  --paper:#F5F4F0;
+  --paper-deep:#EBE8DF;
+  --surface:#FFFEFA;
+  --ink:#1D211C;
+  --ink-soft:#6B6D64;
+  --ink-faint:#9A9B91;
+  --line:#DDDCD3;
+  --amber:#BB6C2D;
+  --amber-deep:#8D4E1F;
+  --amber-tint:#F4E4D4;
+  --teal:#2E6B5E;
+  --teal-tint:#E3EFEA;
+  --danger:#A85245;
+  --danger-tint:#F3E2DC;
+  --sidebar:#1D211C;
+  --sidebar-ink:#F0EDE5;
+  --sidebar-muted:#A8A398;
+  --radius:15px;
+  --shadow-soft:0 8px 24px rgba(28,27,23,.07), 0 1px 2px rgba(28,27,23,.04);
+  --shadow-float:0 18px 40px rgba(28,27,23,.10), 0 6px 18px rgba(28,27,23,.06);
+  --ease:cubic-bezier(.22,1,.36,1);
 }
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-html{min-width:320px;background:var(--paper);scroll-behavior:smooth}
+html{min-width:320px;background:var(--paper)}
 body{
   margin:0;min-width:320px;min-height:100vh;background:var(--paper);color:var(--ink);
-  font-family:"DM Sans",sans-serif;font-size:15px;line-height:1.6;
+  font-family:'Inter',ui-sans-serif,system-ui,sans-serif;font-size:15px;line-height:1.6;
   -webkit-font-smoothing:antialiased;
 }
-body::before{content:"";position:fixed;inset:0;pointer-events:none;opacity:.035;z-index:1;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.5'/%3E%3C/svg%3E")}
 a{color:inherit;text-decoration:none}
 button,input,select{font:inherit}
 button{border:0;background:transparent}
-button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid var(--amber-deep);outline-offset:3px}
+button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid var(--amber);outline-offset:3px}
 button:not(:disabled){cursor:pointer}
-h1,h2,h3,.km-serif{font-family:Fraunces,Georgia,serif;font-weight:600;letter-spacing:-.03em}
+h1,h2,h3,.km-serif{font-family:'Fraunces',Georgia,serif}
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.001ms!important;transition-duration:.001ms!important}}
 
-.admin-shell{min-height:100vh;position:relative;z-index:2;background:radial-gradient(circle at 74% -10%, rgba(255,255,255,.76), transparent 31rem), var(--paper)}
+.admin-shell{min-height:100vh;background:radial-gradient(circle at 74% -10%, rgba(255,255,255,.76), transparent 31rem), var(--paper)}
 
 /* ── SIDEBAR ── */
 .admin-sidebar{
@@ -292,9 +291,9 @@ h1,h2,h3,.km-serif{font-family:Fraunces,Georgia,serif;font-weight:600;letter-spa
   box-shadow:10px 0 35px rgba(20,22,19,.06);
 }
 .brand-lockup{display:flex;align-items:center;gap:11px;padding:4px 13px 28px;border-bottom:1px solid rgba(255,255,255,.10)}
-.brand-mark{display:grid;place-items:center;width:29px;height:29px;color:var(--sidebar);background:#d58d51;border-radius:9px;box-shadow:0 0 0 4px rgba(217,165,110,.10)}
-.brand-name{font:600 22px/1 Fraunces,Georgia,serif;letter-spacing:-.035em;color:#fffdf7}
-.brand-name span{color:#d58d51}
+.brand-mark{display:grid;place-items:center;width:29px;height:29px;color:var(--sidebar);background:#d9a56e;border-radius:9px;box-shadow:0 0 0 4px rgba(217,165,110,.10)}
+.brand-name{font:600 22px/1 'Fraunces',Georgia,serif;letter-spacing:-.035em;color:#fffdf7}
+.brand-name span{color:#d99c5d}
 .sidebar-caption{padding:23px 13px 10px;color:#777d70;text-transform:uppercase;letter-spacing:.13em;font-size:9px;font-weight:700}
 .sidebar-nav{display:flex;flex-direction:column;gap:4px}
 .sidebar-link{
@@ -341,7 +340,7 @@ h1,h2,h3,.km-serif{font-family:Fraunces,Georgia,serif;font-weight:600;letter-spa
 .content-wrap{max-width:1450px;margin:0 auto;padding:46px 40px 72px}
 .page-header{display:flex;align-items:flex-end;justify-content:space-between;gap:24px;margin-bottom:31px;flex-wrap:wrap}
 .page-kicker,.panel-eyebrow{margin-bottom:9px;color:var(--amber-deep);text-transform:uppercase;letter-spacing:.13em;font-size:10px;font-weight:800}
-.page-header h1{margin:0;color:var(--ink);font:600 clamp(30px,3vw,42px)/1.06 Fraunces,Georgia,serif;letter-spacing:-.035em}
+.page-header h1{margin:0;color:var(--ink);font:600 clamp(30px,3vw,42px)/1.06 'Fraunces',Georgia,serif;letter-spacing:-.035em}
 .page-header p{max-width:610px;margin:11px 0 0;color:var(--ink-soft);font-size:13px;line-height:1.65}
 .header-date,.catalogue-summary,.orders-total{display:flex;align-items:center;gap:7px;color:var(--ink-faint);font-size:11px}
 .live-dot{width:6px;height:6px;border-radius:50%;background:#6aa786;box-shadow:0 0 0 4px rgba(106,167,134,.12)}
@@ -355,14 +354,14 @@ h1,h2,h3,.km-serif{font-family:Fraunces,Georgia,serif;font-weight:600;letter-spa
 .stat-amber .stat-icon{color:var(--amber-deep);background:var(--amber-tint)}
 .stat-card-top span{color:#7ea28e;font-size:10px;font-weight:700}
 .stat-amber .stat-card-top span{color:var(--amber-deep)}
-.stat-value{margin-top:18px;font:600 32px/1 Fraunces,Georgia,serif;letter-spacing:-.04em}
+.stat-value{margin-top:18px;font:600 32px/1 'Fraunces',Georgia,serif;letter-spacing:-.04em}
 .stat-label{margin-top:7px;color:var(--ink-soft);font-size:11px}
 
 .dashboard-grid{display:grid;grid-template-columns:minmax(0,1.55fr) minmax(285px,.75fr);gap:19px;align-items:start}
 .side-stack{display:grid;gap:19px}
 .km-panel{overflow:hidden;background:rgba(255,254,250,.84);border:1px solid rgba(219,216,205,.9);border-radius:var(--radius);box-shadow:var(--shadow-soft)}
 .panel-header{display:flex;align-items:center;justify-content:space-between;gap:16px;min-height:78px;padding:19px 21px 17px;border-bottom:1px solid rgba(224,221,211,.88);flex-wrap:wrap}
-.panel-header h2{margin:0;color:var(--ink);font:600 19px/1.1 Fraunces,Georgia,serif;letter-spacing:-.025em}
+.panel-header h2{margin:0;color:var(--ink);font:600 19px/1.1 'Fraunces',Georgia,serif;letter-spacing:-.025em}
 .text-link{display:inline-flex;align-items:center;gap:6px;padding:0;color:var(--amber-deep);background:transparent;font-size:11px;font-weight:750;transition:gap .18s ease,color .18s ease}
 .text-link:hover{gap:9px;color:var(--ink)}
 .panel-filter{display:inline-flex;align-items:center;gap:7px;color:var(--ink-soft);font-size:10px}
@@ -407,7 +406,7 @@ h1,h2,h3,.km-serif{font-family:Fraunces,Georgia,serif;font-weight:600;letter-spa
 .table-icon-danger{display:grid;place-items:center;width:30px;height:30px;color:var(--danger);background:transparent;border-radius:8px;transition:background .18s ease}
 .table-icon-danger:hover{background:var(--danger-tint)}
 .empty-state{display:flex;flex-direction:column;align-items:center;gap:7px;padding:48px 22px;color:var(--ink-soft);text-align:center}
-.empty-state strong{color:var(--ink);font:600 17px/1.1 Fraunces,Georgia,serif}
+.empty-state strong{color:var(--ink);font:600 17px/1.1 'Fraunces',Georgia,serif}
 .empty-state span{font-size:11px}
 .empty-icon{display:grid;place-items:center;width:35px;height:35px;margin-bottom:5px;color:var(--amber-deep);background:var(--amber-tint);border-radius:50%}
 .activity-list{padding:3px 20px 9px}
@@ -425,7 +424,7 @@ h1,h2,h3,.km-serif{font-family:Fraunces,Georgia,serif;font-weight:600;letter-spa
 .tip-glow{position:absolute;top:-45px;right:-36px;width:130px;height:130px;background:rgba(211,150,83,.14);border-radius:50%;filter:blur(10px)}
 .tip-icon{position:relative;display:grid;place-items:center;flex:0 0 auto;width:32px;height:32px;color:var(--amber-deep);background:rgba(255,255,255,.63);border:1px solid rgba(185,107,42,.16);border-radius:10px}
 .tip-panel strong,.tip-panel p{position:relative;display:block}
-.tip-panel strong{color:var(--ink);font:600 16px/1.1 Fraunces,Georgia,serif}
+.tip-panel strong{color:var(--ink);font:600 16px/1.1 'Fraunces',Georgia,serif}
 .tip-panel p{max-width:210px;margin:7px 0 12px;color:var(--ink-soft);font-size:10px;line-height:1.5}
 
 .search-field{display:flex;align-items:center;gap:8px;width:250px;height:39px;padding:0 11px;color:var(--ink-faint);background:rgba(255,254,250,.78);border:1px solid var(--line);border-radius:9px}
@@ -448,8 +447,8 @@ h1,h2,h3,.km-serif{font-family:Fraunces,Georgia,serif;font-weight:600;letter-spa
 .count-pill{display:grid;place-items:center;min-width:26px;height:24px;padding:0 7px;color:var(--ink-soft);background:var(--paper-deep);border-radius:8px;font-size:10px;font-weight:750}
 .orders-total{color:var(--teal);font-weight:650}
 .orders-table{min-width:880px}
-.order-id{color:var(--ink-soft)!important;font:600 13px Fraunces,Georgia,serif}
-.money-cell{color:var(--ink)!important;font:600 13px Fraunces,Georgia,serif}
+.order-id{color:var(--ink-soft)!important;font:600 13px 'Fraunces',Georgia,serif}
+.money-cell{color:var(--ink)!important;font:600 13px 'Fraunces',Georgia,serif}
 .pagination{display:flex;justify-content:flex-end;gap:5px;padding:16px 19px 18px;flex-wrap:wrap}
 .page-button{display:grid;place-items:center;min-width:28px;height:28px;padding:0 8px;color:var(--ink-soft);background:transparent;border:1px solid var(--line);border-radius:7px;font-size:10px;font-weight:700;transition:all .18s ease}
 .page-button:hover:not(.active){color:var(--ink);border-color:#aaa99e;background:var(--paper-deep)}
@@ -471,7 +470,7 @@ h1,h2,h3,.km-serif{font-family:Fraunces,Georgia,serif;font-weight:600;letter-spa
 @keyframes overlay-in{from{opacity:0}to{opacity:1}}
 @keyframes modal-in{from{opacity:0;transform:translateY(12px) scale(.97)}to{opacity:1;transform:translateY(0) scale(1)}}
 .modal-header{display:flex;align-items:flex-start;justify-content:space-between;gap:20px;padding-bottom:19px;margin-bottom:20px;border-bottom:1px solid var(--line)}
-.modal-header h2{margin:0;color:var(--ink);font:600 24px/1.05 Fraunces,Georgia,serif;letter-spacing:-.025em}
+.modal-header h2{margin:0;color:var(--ink);font:600 24px/1.05 'Fraunces',Georgia,serif;letter-spacing:-.025em}
 .modal-close{display:grid;place-items:center;width:29px;height:29px;color:var(--ink-soft);background:var(--paper);border:1px solid var(--line);border-radius:8px}
 .form-field{display:block;margin-bottom:16px}
 .form-field>span{display:block;margin-bottom:7px;color:var(--ink-soft);text-transform:uppercase;letter-spacing:.09em;font-size:9px;font-weight:800}
