@@ -99,7 +99,7 @@ function iconeService(string $titre): string {
 <meta name="description" content="KoudMain relie les habitants d'Abidjan aux services et savoir-faire de leur quartier. Des services simples, des prix clairs, des visages du quartier.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,400;1,9..144,500;1,9..144,600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
 :root{
   --paper:#F5F4F0;
@@ -115,8 +115,8 @@ function iconeService(string $titre): string {
   --teal:#2E6B5E;
   --teal-tint:#E3EFEA;
   --rose:#A85245;
-  --radius:15px;
-  --radius-sm:8px;
+  --radius:16px;
+  --radius-sm:10px;
   --radius-xs:6px;
   --maxw:1180px;
   --ease:cubic-bezier(.22,1,.36,1);
@@ -145,9 +145,9 @@ h1,h2,h3,.km-serif{font-family:'Fraunces',Georgia,serif}
 /* ── MASTHEAD ── */
 .km-masthead{
   border-bottom:1px solid var(--line);
-  background:rgba(245,244,240,0.85);
-  backdrop-filter:blur(12px);
-  -webkit-backdrop-filter:blur(12px);
+  background:rgba(245,244,240,0.88);
+  backdrop-filter:blur(14px);
+  -webkit-backdrop-filter:blur(14px);
   position:sticky;top:0;z-index:50;
 }
 .km-masthead-inner{
@@ -194,25 +194,29 @@ h1,h2,h3,.km-serif{font-family:'Fraunces',Georgia,serif}
 .km-btn svg{width:16px;height:16px;flex-shrink:0}
 
 /* ── HERO ── */
-.km-hero{padding:4rem 0 3.5rem;position:relative;overflow:hidden}
+.km-hero{padding:4.2rem 0 3.8rem;position:relative;overflow:hidden}
 .km-hero-grid{
-  display:grid;grid-template-columns:1.05fr 0.95fr;gap:3rem;align-items:center;
+  display:grid;grid-template-columns:1.05fr 0.95fr;gap:3.2rem;align-items:center;
 }
 .km-eyebrow{
-  display:inline-flex;align-items:center;gap:0.5rem;
+  display:inline-flex;align-items:center;gap:0.55rem;
   font-size:0.78rem;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;
-  color:var(--ink-soft);margin-bottom:1.25rem;
+  color:var(--ink-soft);margin-bottom:1.3rem;
 }
 .km-eyebrow-dot{
   width:7px;height:7px;border-radius:50%;background:var(--amber);
   box-shadow:0 0 0 3px var(--amber-tint);
 }
 .km-hero h1{
-  font-size:clamp(2.6rem,5vw,3.75rem);
-  font-weight:600;line-height:1.05;letter-spacing:-0.025em;
-  color:var(--ink);max-width:14ch;
+  font-size:clamp(2.55rem,5vw,3.7rem);
+  font-weight:600;line-height:1.08;letter-spacing:-0.025em;
+  color:var(--ink);max-width:15ch;
 }
-.km-hero h1 .accent{color:var(--amber)}
+.km-hero h1 .accent{
+  color:var(--amber);
+  font-style:italic;
+  font-weight:500;
+}
 .km-hero-line{display:block;overflow:hidden}
 .km-hero-line span{
   display:block;transform:translateY(110%);
@@ -222,8 +226,9 @@ h1,h2,h3,.km-serif{font-family:'Fraunces',Georgia,serif}
 .km-hero-line:nth-child(1) span{transition-delay:0.06s}
 .km-hero-line:nth-child(2) span{transition-delay:0.16s}
 .km-hero-line:nth-child(3) span{transition-delay:0.26s}
+.km-hero-line:nth-child(4) span{transition-delay:0.36s}
 .km-hero-desc{
-  margin-top:1.35rem;color:var(--ink-soft);font-size:1.05rem;max-width:40ch;line-height:1.65;
+  margin-top:1.4rem;color:var(--ink-soft);font-size:1.05rem;max-width:40ch;line-height:1.65;
   opacity:0;transform:translateY(10px);
   transition:opacity 0.6s ease 0.45s, transform 0.6s ease 0.45s;
 }
@@ -231,12 +236,12 @@ h1,h2,h3,.km-serif{font-family:'Fraunces',Georgia,serif}
 
 /* Search bar */
 .km-search{
-  margin-top:2rem;
+  margin-top:2.1rem;
   display:flex;align-items:center;gap:0;
   background:var(--surface);
   border:1px solid var(--line);
   border-radius:14px;
-  padding:0.35rem 0.4rem 0.35rem 1rem;
+  padding:0.35rem 0.4rem 0.35rem 1.05rem;
   box-shadow:var(--shadow-md);
   opacity:0;transform:translateY(10px);
   transition:opacity 0.6s ease 0.55s, transform 0.6s ease 0.55s, box-shadow 0.25s ease;
@@ -260,7 +265,7 @@ h1,h2,h3,.km-serif{font-family:'Fraunces',Georgia,serif}
 .km-search .km-btn{border-radius:10px;padding:0.7rem 1.15rem}
 
 .km-trust{
-  margin-top:1.1rem;display:flex;align-items:center;gap:0.5rem;
+  margin-top:1.15rem;display:flex;align-items:center;gap:0.5rem;
   font-size:0.82rem;color:var(--ink-faint);
   opacity:0;transition:opacity 0.5s ease 0.7s;
 }
@@ -269,26 +274,26 @@ h1,h2,h3,.km-serif{font-family:'Fraunces',Georgia,serif}
 
 /* Floating visual */
 .km-visual{
-  position:relative;height:420px;
+  position:relative;height:430px;
   opacity:0;transform:translateY(16px);
   transition:opacity 0.7s ease 0.3s, transform 0.7s var(--ease) 0.3s;
 }
 .km-hero.km-loaded .km-visual{opacity:1;transform:translateY(0)}
 .km-visual-orbit{
-  position:absolute;inset:10% 5%;
+  position:absolute;inset:8% 4%;
   border-radius:50%;
-  border:1px solid rgba(187,108,45,0.12);
+  border:1px dashed rgba(187,108,45,0.18);
   pointer-events:none;
 }
 .km-visual-orbit::before{
-  content:'';position:absolute;inset:-18%;
+  content:'';position:absolute;inset:-20%;
   border-radius:50%;
-  border:1px solid rgba(46,107,94,0.08);
+  border:1px solid rgba(46,107,94,0.10);
 }
 .km-visual-orbit::after{
-  content:'';position:absolute;inset:12%;
+  content:'';position:absolute;inset:14%;
   border-radius:50%;
-  border:1px solid rgba(187,108,45,0.07);
+  border:1px solid rgba(187,108,45,0.08);
 }
 
 .km-float-card{
@@ -296,50 +301,50 @@ h1,h2,h3,.km-serif{font-family:'Fraunces',Georgia,serif}
   background:var(--surface);
   border:1px solid var(--line);
   border-radius:14px;
-  padding:0.9rem 1.1rem;
+  padding:0.95rem 1.15rem;
   box-shadow:var(--shadow-md);
-  display:flex;align-items:center;gap:0.75rem;
+  display:flex;align-items:center;gap:0.8rem;
   animation:km-float 5.5s ease-in-out infinite;
 }
 .km-float-card.dark{
   background:var(--ink);color:var(--paper);border-color:transparent;
-  box-shadow:0 12px 32px rgba(28,27,23,0.25);
+  box-shadow:0 14px 36px rgba(28,27,23,0.28);
 }
 .km-float-icon{
-  width:36px;height:36px;border-radius:10px;flex-shrink:0;
+  width:38px;height:38px;border-radius:11px;flex-shrink:0;
   display:flex;align-items:center;justify-content:center;
   background:var(--amber-tint);color:var(--amber-deep);
 }
-.km-float-card.dark .km-float-icon{background:rgba(255,255,255,0.08);color:#c9c5b9}
+.km-float-card.dark .km-float-icon{background:rgba(255,255,255,0.09);color:#c9c5b9}
 .km-float-icon svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
-.km-float-title{font-weight:600;font-size:0.9rem;line-height:1.25}
-.km-float-meta{font-size:0.78rem;color:var(--ink-soft);margin-top:0.15rem}
+.km-float-title{font-weight:600;font-size:0.92rem;line-height:1.25}
+.km-float-meta{font-size:0.78rem;color:var(--ink-soft);margin-top:0.18rem}
 .km-float-card.dark .km-float-meta{color:#a8a59a}
 .km-float-badge{
-  margin-left:auto;font-size:0.75rem;font-weight:600;
+  margin-left:auto;font-size:0.78rem;font-weight:600;
   display:flex;align-items:center;gap:0.25rem;color:var(--amber-deep);
 }
 .km-float-check{
-  width:18px;height:18px;border-radius:50%;background:var(--teal);
+  width:20px;height:20px;border-radius:50%;background:var(--teal);
   display:flex;align-items:center;justify-content:center;flex-shrink:0;
 }
 .km-float-check svg{width:11px;height:11px;stroke:#fff;fill:none;stroke-width:2.5}
 
-.km-float-1{top:8%;right:8%;animation-delay:0s}
-.km-float-2{top:42%;left:0;animation-delay:1.2s}
-.km-float-3{bottom:12%;right:4%;animation-delay:2.4s}
+.km-float-1{top:6%;right:6%;animation-delay:0s}
+.km-float-2{top:40%;left:0;animation-delay:1.2s}
+.km-float-3{bottom:14%;right:2%;animation-delay:2.4s}
 .km-float-caption{
   position:absolute;bottom:0;left:50%;transform:translateX(-50%);
   font-size:0.8rem;color:var(--ink-faint);white-space:nowrap;
-  display:flex;align-items:center;gap:0.5rem;
+  display:flex;align-items:center;gap:0.55rem;
 }
 .km-float-caption::before{
-  content:'';width:24px;height:1px;background:var(--amber);
+  content:'';width:28px;height:1px;background:var(--amber);
 }
 
 @keyframes km-float{
   0%,100%{transform:translateY(0)}
-  50%{transform:translateY(-7px)}
+  50%{transform:translateY(-8px)}
 }
 
 /* Ticker */
@@ -347,104 +352,151 @@ h1,h2,h3,.km-serif{font-family:'Fraunces',Georgia,serif}
   border-top:1px solid var(--line);border-bottom:1px solid var(--line);
   overflow:hidden;background:var(--paper-deep);
 }
-.km-ticker{display:flex;width:max-content;animation:km-scroll 40s linear infinite}
+.km-ticker{display:flex;width:max-content;animation:km-scroll 42s linear infinite}
 .km-ticker:hover{animation-play-state:paused}
 @keyframes km-scroll{from{transform:translateX(0)}to{transform:translateX(-50%)}}
 .km-ticker-item{
-  padding:0.8rem 2.2rem;font-size:0.85rem;color:var(--ink-soft);white-space:nowrap;
+  padding:0.85rem 2.4rem;font-size:0.85rem;color:var(--ink-soft);white-space:nowrap;
   border-right:1px solid var(--line);
 }
 .km-ticker-item b{color:var(--ink);font-weight:600}
 
 /* ── SECTIONS ── */
 .km-section{padding:5.5rem 0}
-.km-section-head{max-width:48ch;margin-bottom:3rem}
+.km-section-head{max-width:48ch;margin-bottom:3.1rem}
 .km-section-eyebrow{
   font-size:0.78rem;font-weight:600;letter-spacing:0.05em;text-transform:uppercase;
-  color:var(--amber-deep);margin-bottom:0.7rem;
+  color:var(--amber-deep);margin-bottom:0.75rem;
 }
 .km-section-head h2{
-  font-size:clamp(1.75rem,2.8vw,2.35rem);font-weight:600;letter-spacing:-0.015em;line-height:1.15;
+  font-size:clamp(1.8rem,2.9vw,2.4rem);font-weight:600;letter-spacing:-0.015em;line-height:1.15;
 }
-.km-section-head p{color:var(--ink-soft);margin-top:0.85rem;font-size:1.02rem}
+.km-section-head p{color:var(--ink-soft);margin-top:0.9rem;font-size:1.02rem}
 
 /* Steps */
-.km-steps{display:grid;grid-template-columns:repeat(3,1fr);gap:2.5rem}
+.km-steps{display:grid;grid-template-columns:repeat(3,1fr);gap:2.6rem}
 .km-step{
-  border-top:1.5px solid var(--ink);padding-top:1.4rem;
+  border-top:1.5px solid var(--ink);padding-top:1.5rem;
   transition:transform 0.3s var(--ease);
 }
 .km-step:hover{transform:translateY(-3px)}
 .km-step-num{
   font-family:'Fraunces',serif;font-size:0.95rem;color:var(--amber-deep);font-weight:600;
 }
-.km-step h3{margin-top:0.7rem;font-size:1.15rem;font-weight:600}
+.km-step h3{margin-top:0.75rem;font-size:1.15rem;font-weight:600}
 .km-step p{margin-top:0.55rem;color:var(--ink-soft);font-size:0.94rem;line-height:1.55}
 
-/* Categories */
+/* Categories — layout type liste 2 colonnes */
 .km-cats-grid{
-  display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:1rem;
+  display:grid;grid-template-columns:1fr 1fr;gap:0.9rem 2rem;
 }
 .km-cat-card{
-  background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);
-  padding:1.25rem 1.2rem;transition:transform 0.22s var(--ease), box-shadow 0.22s ease, border-color 0.22s;
-  display:flex;flex-direction:column;gap:0.6rem;
+  background:var(--surface);
+  border:1px solid var(--line);
+  border-radius:var(--radius);
+  padding:1.1rem 1.25rem;
+  transition:transform 0.22s var(--ease), box-shadow 0.22s ease, border-color 0.22s;
+  display:flex;align-items:center;gap:1rem;
 }
 .km-cat-card:hover{
-  transform:translateY(-3px);box-shadow:var(--shadow-md);border-color:#c8c5ba;
+  transform:translateY(-2px);box-shadow:var(--shadow-md);border-color:#c8c5ba;
 }
 .km-cat-card-icon{
-  width:38px;height:38px;border-radius:10px;
+  width:40px;height:40px;border-radius:11px;flex-shrink:0;
   background:var(--amber-tint);color:var(--amber-deep);
   display:flex;align-items:center;justify-content:center;
 }
 .km-cat-card-icon svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}
+.km-cat-card-body{flex:1;min-width:0}
 .km-cat-card-name{font-weight:600;font-size:0.95rem}
-.km-cat-card-count{font-size:0.8rem;color:var(--ink-faint)}
+.km-cat-card-count{font-size:0.8rem;color:var(--ink-faint);margin-top:0.15rem}
+.km-cat-card-arrow{
+  color:var(--ink-faint);font-size:1.1rem;flex-shrink:0;
+  transition:transform 0.2s ease, color 0.2s;
+}
+.km-cat-card:hover .km-cat-card-arrow{color:var(--ink);transform:translateX(3px)}
 
 /* Offers grid */
-.km-offers{display:grid;grid-template-columns:repeat(3,1fr);gap:1.4rem}
+.km-offers{display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem}
 .km-offer-card{
   background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);
-  padding:1.4rem;display:flex;flex-direction:column;gap:0.7rem;
+  padding:1.5rem;display:flex;flex-direction:column;gap:0.75rem;
   transition:transform 0.22s var(--ease), box-shadow 0.22s ease;
 }
 .km-offer-card:hover{transform:translateY(-4px);box-shadow:var(--shadow-md)}
+.km-offer-top{display:flex;align-items:center;justify-content:space-between;gap:0.6rem}
 .km-offer-cat{
-  font-size:0.75rem;font-weight:600;color:var(--teal);
-  background:var(--teal-tint);padding:0.2rem 0.55rem;border-radius:20px;width:fit-content;
+  font-size:0.72rem;font-weight:600;color:var(--teal);
+  background:var(--teal-tint);padding:0.22rem 0.6rem;border-radius:20px;width:fit-content;
+  letter-spacing:0.01em;
 }
-.km-offer-card h3{font-size:1.1rem;font-weight:600;line-height:1.3}
+.km-offer-rating{
+  display:flex;align-items:center;gap:0.25rem;font-size:0.82rem;font-weight:600;color:var(--ink);
+}
+.km-offer-rating svg{width:13px;height:13px;fill:var(--amber);stroke:none}
+.km-offer-card h3{font-size:1.12rem;font-weight:600;line-height:1.3}
 .km-offer-desc{font-size:0.9rem;color:var(--ink-soft);line-height:1.5;flex:1}
 .km-offer-meta{font-size:0.82rem;color:var(--ink-faint)}
 .km-offer-footer{
-  display:flex;align-items:center;justify-content:space-between;gap:0.8rem;margin-top:0.3rem;
-  padding-top:0.9rem;border-top:1px solid var(--line);
+  display:flex;align-items:center;justify-content:space-between;gap:0.8rem;margin-top:0.35rem;
+  padding-top:0.95rem;border-top:1px solid var(--line);
 }
-.km-offer-price{font-family:'Fraunces',serif;font-weight:600;font-size:1.05rem;color:var(--amber-deep)}
-.km-offer-rating{display:flex;align-items:center;gap:0.25rem;font-size:0.82rem;font-weight:600;color:var(--ink)}
-.km-offer-rating svg{width:14px;height:14px;fill:var(--amber);stroke:none}
+.km-offer-price{font-family:'Fraunces',serif;font-weight:600;font-size:1.08rem;color:var(--amber-deep)}
+.km-offer-price span{font-size:0.78rem;font-weight:500;color:var(--ink-faint);font-family:'Inter',sans-serif}
+.km-offer-link{
+  font-size:0.84rem;font-weight:600;color:var(--ink-soft);
+  display:inline-flex;align-items:center;gap:0.3rem;
+  transition:color 0.2s;
+}
+.km-offer-link:hover{color:var(--amber-deep)}
 
 /* CTA band */
 .km-cta-band{
-  background:var(--ink);color:var(--paper);border-radius:20px;
-  padding:3.4rem 3.2rem;display:flex;align-items:center;justify-content:space-between;gap:2rem;flex-wrap:wrap;
+  background:var(--ink);color:var(--paper);border-radius:22px;
+  padding:3.5rem 3.4rem;display:flex;align-items:center;justify-content:space-between;gap:2.5rem;
+  position:relative;overflow:hidden;
 }
-.km-cta-band h2{color:var(--paper);font-size:clamp(1.55rem,2.5vw,2.1rem);max-width:22ch;line-height:1.2}
-.km-cta-band p{color:#C9C5B9;margin-top:0.7rem;max-width:40ch;font-size:0.97rem}
-.km-cta-band .km-btn-primary{background:var(--amber);color:#fff}
-.km-cta-band .km-btn-primary:hover{background:#CE8442}
+.km-cta-band-content{position:relative;z-index:1;max-width:520px}
+.km-cta-band .km-section-eyebrow{color:#C9C5B9;margin-bottom:0.8rem}
+.km-cta-band h2{color:var(--paper);font-size:clamp(1.6rem,2.6vw,2.15rem);line-height:1.22}
+.km-cta-band p{color:#C9C5B9;margin-top:0.8rem;font-size:0.97rem;line-height:1.55}
+.km-cta-band .km-btn{margin-top:1.5rem}
+.km-cta-band .km-btn-amber{background:var(--amber);color:#fff}
+.km-cta-band .km-btn-amber:hover{background:#CE8442;box-shadow:0 6px 20px rgba(187,108,45,0.35)}
+
+/* Sceau circulaire KM */
+.km-cta-seal{
+  width:148px;height:148px;border-radius:50%;
+  border:1.5px solid rgba(255,255,255,0.18);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  flex-shrink:0;position:relative;z-index:1;
+}
+.km-cta-seal-inner{
+  width:118px;height:118px;border-radius:50%;
+  border:1px dashed rgba(255,255,255,0.22);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  text-align:center;
+}
+.km-cta-seal-km{
+  font-family:'Fraunces',serif;font-weight:600;font-size:1.55rem;
+  letter-spacing:0.02em;color:var(--paper);
+}
+.km-cta-seal-text{
+  font-size:0.68rem;color:#A8A59A;margin-top:0.35rem;line-height:1.35;
+  letter-spacing:0.02em;
+}
 
 /* Footer */
 .km-footer{border-top:1px solid var(--line);padding:2.8rem 0;margin-top:0.5rem}
-.km-footer-inner{display:flex;justify-content:space-between;align-items:center;gap:1.5rem;flex-wrap:wrap}
+.km-footer-inner{display:flex;justify-content:space-between;align-items:flex-start;gap:1.5rem;flex-wrap:wrap}
 .km-footer p{color:var(--ink-faint);font-size:0.84rem}
-.km-footer-brand{font-family:'Fraunces',serif;font-weight:600;font-size:1.1rem;color:var(--ink)}
+.km-footer-brand{font-family:'Fraunces',serif;font-weight:600;font-size:1.15rem;color:var(--ink)}
 .km-footer-brand em{font-style:normal;color:var(--amber)}
-.km-footer-links{display:flex;gap:1.5rem}
+.km-footer-tagline{font-size:0.82rem;color:var(--ink-faint);margin-top:0.25rem}
+.km-footer-links{display:flex;gap:1.6rem;flex-wrap:wrap}
 .km-footer-links a{font-size:0.84rem;color:var(--ink-soft);transition:color 0.2s}
 .km-footer-links a:hover{color:var(--ink)}
-.km-footer-tagline{font-size:0.8rem;color:var(--ink-faint);margin-top:0.3rem}
+.km-footer-copy{font-size:0.8rem;color:var(--ink-faint);margin-top:0.15rem}
 
 /* Focus */
 a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible{
@@ -453,26 +505,30 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible{
 
 /* Responsive */
 @media(max-width:960px){
-  .km-hero-grid{grid-template-columns:1fr;gap:2.5rem}
-  .km-visual{height:340px;max-width:420px;margin:0 auto}
+  .km-hero-grid{grid-template-columns:1fr;gap:2.8rem}
+  .km-visual{height:360px;max-width:440px;margin:0 auto}
   .km-nav-links{display:none}
-  .km-steps{grid-template-columns:1fr;gap:1.8rem}
+  .km-steps{grid-template-columns:1fr;gap:1.9rem}
   .km-offers{grid-template-columns:1fr 1fr}
+  .km-cats-grid{grid-template-columns:1fr}
+  .km-cta-band{flex-direction:column;align-items:flex-start;padding:2.8rem 2rem}
+  .km-cta-seal{align-self:flex-end}
 }
 @media(max-width:640px){
   .wrap{padding:0 1.25rem}
   .km-masthead-inner{padding:0 1.25rem;height:64px}
-  .km-hero{padding:2.8rem 0 2.2rem}
-  .km-hero h1{font-size:2.35rem}
-  .km-search{flex-wrap:wrap;padding:0.5rem}
+  .km-hero{padding:2.8rem 0 2.4rem}
+  .km-hero h1{font-size:2.3rem}
+  .km-search{flex-wrap:wrap;padding:0.55rem}
   .km-search-divider{display:none}
-  .km-search-select{width:100%;padding:0.5rem 0.6rem}
+  .km-search-select{width:100%;padding:0.55rem 0.6rem}
   .km-search .km-btn{width:100%;justify-content:center}
   .km-offers{grid-template-columns:1fr}
-  .km-cats-grid{grid-template-columns:1fr 1fr}
-  .km-cta-band{flex-direction:column;align-items:flex-start;padding:2.4rem 1.6rem}
   .km-section{padding:3.8rem 0}
-  .km-visual{height:300px}
+  .km-visual{height:310px}
+  .km-cta-seal{width:120px;height:120px}
+  .km-cta-seal-inner{width:96px;height:96px}
+  .km-cta-seal-km{font-size:1.3rem}
 }
 </style>
 </head>
@@ -649,10 +705,13 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible{
         <div class="km-cat-card-icon">
           <svg viewBox="0 0 20 20"><?= iconeCategorie($c['nom_categorie']) ?></svg>
         </div>
-        <div class="km-cat-card-name"><?= htmlspecialchars($c['nom_categorie']) ?></div>
-        <?php if ($c['nb'] !== null): ?>
-          <div class="km-cat-card-count"><?= (int)$c['nb'] ?> service<?= (int)$c['nb'] > 1 ? 's' : '' ?></div>
-        <?php endif; ?>
+        <div class="km-cat-card-body">
+          <div class="km-cat-card-name"><?= htmlspecialchars($c['nom_categorie']) ?></div>
+          <?php if ($c['nb'] !== null): ?>
+            <div class="km-cat-card-count"><?= (int)$c['nb'] ?> service<?= (int)$c['nb'] > 1 ? 's' : '' ?></div>
+          <?php endif; ?>
+        </div>
+        <span class="km-cat-card-arrow" aria-hidden="true">›</span>
       </a>
       <?php endforeach; ?>
     </div>
@@ -674,32 +733,38 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible{
     <div class="km-offers">
       <?php
         $cats_demo = ['Beauté & Coiffure', 'Plomberie & Sanitaire', 'Laverie & Pressing'];
+        $prestataires = ['Aïcha K.', 'Serge T.', 'Nadia B.'];
+        $descs = [
+          'Brushing, tresses et coupe au calme, chez vous.',
+          'Diagnostic rapide et intervention propre, même le week-end.',
+          'Votre linge prêt dans la journée, plié avec soin.',
+        ];
         foreach ($demo_prestations as $i => $p):
           $cat = $cats_demo[$i] ?? 'Service';
           $note = $p['note_moyenne'] ?? (4.9 - $i * 0.1);
+          $prest = $prestataires[$i] ?? 'un prestataire vérifié';
       ?>
       <article class="km-offer-card">
-        <span class="km-offer-cat"><?= htmlspecialchars($cat) ?></span>
-        <h3><?= htmlspecialchars($p['titre_prestation']) ?></h3>
-        <p class="km-offer-desc">
-          <?php
-            $descs = [
-              'Brushing, tresses et coupe au calme, chez vous.',
-              'Diagnostic rapide et intervention propre, même le week-end.',
-              'Votre linge prêt dans la journée, plié avec soin.',
-            ];
-            echo $descs[$i] ?? 'Prestation de qualité par un professionnel de votre quartier.';
-          ?>
-        </p>
-        <div class="km-offer-meta">
-          <?= htmlspecialchars($p['nom_quartier']) ?> · par un prestataire vérifié
-        </div>
-        <div class="km-offer-footer">
-          <span class="km-offer-price"><?= number_format((float)$p['prix_prestation'], 0, ',', ' ') ?> F</span>
+        <div class="km-offer-top">
+          <span class="km-offer-cat"><?= htmlspecialchars($cat) ?></span>
           <span class="km-offer-rating">
             <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
             <?= number_format((float)$note, 1) ?>
           </span>
+        </div>
+        <h3><?= htmlspecialchars($p['titre_prestation']) ?></h3>
+        <p class="km-offer-desc"><?= $descs[$i] ?? 'Prestation de qualité par un professionnel de votre quartier.' ?></p>
+        <div class="km-offer-meta">
+          <?= htmlspecialchars($p['nom_quartier']) ?> · par <?= htmlspecialchars($prest) ?>
+        </div>
+        <div class="km-offer-footer">
+          <span class="km-offer-price">
+            <?= number_format((float)$p['prix_prestation'], 0, ',', ' ') ?> F
+            <span>/ intervention</span>
+          </span>
+          <a href="<?= estConnecte() ? 'client_dashboard.php?tab=catalogue' : 'inscription.php' ?>" class="km-offer-link">
+            Voir l'offre <span aria-hidden="true">↗</span>
+          </a>
         </div>
       </article>
       <?php endforeach; ?>
@@ -711,15 +776,22 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible{
 <section class="km-section" id="devenir-prestataire" style="padding-top:1rem">
   <div class="wrap">
     <div class="km-cta-band">
-      <div>
+      <div class="km-cta-band-content">
+        <div class="km-section-eyebrow">Votre savoir-faire a de la valeur</div>
         <h2 class="km-serif">Et si votre prochain client habitait à deux rues ?</h2>
         <p>Rejoignez les prestataires qui font vivre KoudMain. Publiez vos services, gérez vos commandes et soyez payé simplement.</p>
+        <?php if (!estConnecte() || (!estPrestataire() && !estAdmin())): ?>
+          <a href="inscription.php?role=prestataire" class="km-btn km-btn-amber">Devenir prestataire <span aria-hidden="true">→</span></a>
+        <?php else: ?>
+          <a href="prestataire_dashboard.php" class="km-btn km-btn-amber">Voir mon espace <span aria-hidden="true">→</span></a>
+        <?php endif; ?>
       </div>
-      <?php if (!estConnecte() || (!estPrestataire() && !estAdmin())): ?>
-        <a href="inscription.php?role=prestataire" class="km-btn km-btn-primary">Devenir prestataire</a>
-      <?php else: ?>
-        <a href="prestataire_dashboard.php" class="km-btn km-btn-primary">Voir mon espace</a>
-      <?php endif; ?>
+      <div class="km-cta-seal" aria-hidden="true">
+        <div class="km-cta-seal-inner">
+          <div class="km-cta-seal-km">KM</div>
+          <div class="km-cta-seal-text">Fait ici.<br>Pour ici.</div>
+        </div>
+      </div>
     </div>
   </div>
 </section>
@@ -728,12 +800,15 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible{
   <div class="wrap km-footer-inner">
     <div>
       <div class="km-footer-brand">Koud<em>Main</em></div>
-      <p class="km-footer-tagline">Fait ici. Pour ici.</p>
+      <p class="km-footer-tagline">Les services de votre quartier.</p>
     </div>
-    <div class="km-footer-links">
-      <a href="connexion.php">Connexion</a>
-      <a href="inscription.php">S'inscrire</a>
-      <a href="#comment-ca-marche">Comment ça marche</a>
+    <div style="text-align:right">
+      <div class="km-footer-links">
+        <a href="#catalogue">Catalogue</a>
+        <a href="#comment-ca-marche">Comment ça marche</a>
+        <a href="connexion.php">Connexion</a>
+      </div>
+      <p class="km-footer-copy">© 2025 KoudMain · Abidjan</p>
     </div>
   </div>
 </footer>
