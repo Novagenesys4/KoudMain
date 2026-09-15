@@ -421,6 +421,20 @@ function icon(string $name, int $size = 17): string {
     $body = $paths[$name] ?? $paths['sparkles'];
     return '<svg width="' . $size . '" height="' . $size . '" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">' . $body . '</svg>';
 }
+
+// Icônes reprises telles quelles de client_dashboard.php (même tracé, même gabarit)
+// — utilisées uniquement pour les onglets du menu latéral de cette page.
+function icon_cd(string $name, int $size = 17): string {
+    $paths = [
+        'home'    => '<path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2Z"/><path d="M9 22V12h6v10"/>',
+        'search'  => '<circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/>',
+        'package' => '<path d="M16.5 9.4 7.55 4.24"/><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.29 7 8.71 5 8.71-5"/><path d="M12 22V12"/>',
+        'wallet'  => '<rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/>',
+        'user'    => '<circle cx="12" cy="8" r="5"/><path d="M20 21a8 8 0 0 0-16 0"/>',
+    ];
+    $body = $paths[$name] ?? $paths['home'];
+    return '<svg width="' . $size . '" height="' . $size . '" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">' . $body . '</svg>';
+}
 ?>
 <!DOCTYPE html>
 <html lang="fr">
@@ -747,13 +761,13 @@ h2{font-size:22px;line-height:1.1}
     <div class="sidebar-scroll">
       <div class="nav-group">
         <span class="nav-label">Workspace</span>
-        <a href="<?= htmlspecialchars($dashboard) ?>" class="nav-item"><?= icon('home') ?><span>Vue d'ensemble</span></a>
-        <a href="<?= htmlspecialchars($lien_catalogue) ?>" class="nav-item"><?= icon('search') ?><span>Catalogue</span></a>
-        <a href="<?= htmlspecialchars($lien_commandes) ?>" class="nav-item"><?= icon('file-text') ?><span>Mes commandes</span></a>
+        <a href="<?= htmlspecialchars($dashboard) ?>" class="nav-item"><?= icon_cd('home') ?><span>Vue d'ensemble</span></a>
+        <a href="<?= htmlspecialchars($lien_catalogue) ?>" class="nav-item"><?= icon_cd('search') ?><span>Catalogue</span></a>
+        <a href="<?= htmlspecialchars($lien_commandes) ?>" class="nav-item"><?= icon_cd('package') ?><span>Mes commandes</span></a>
       </div>
       <div class="nav-group">
         <span class="nav-label">Finance</span>
-        <a href="wallet.php" class="nav-item active"><?= icon('wallet-cards') ?><span>Mon Wallet</span></a>
+        <a href="wallet.php" class="nav-item active"><?= icon_cd('wallet') ?><span>Mon Wallet</span></a>
         <?php if ($lien_stats): ?>
         <a href="<?= htmlspecialchars($lien_stats) ?>" class="nav-item"><?= icon('bar-chart') ?><span>Statistiques</span></a>
         <?php else: ?>
@@ -762,7 +776,7 @@ h2{font-size:22px;line-height:1.1}
       </div>
       <div class="nav-group">
         <span class="nav-label">Compte</span>
-        <a href="<?= htmlspecialchars($dashboard) ?>" class="nav-item"><?= icon('user-round') ?><span>Profil</span></a>
+        <a href="<?= htmlspecialchars($dashboard) ?>" class="nav-item"><?= icon_cd('user') ?><span>Profil</span></a>
         <button type="button" class="nav-item" onclick="showToast('info','Préférences bientôt disponibles.')"><?= icon('settings') ?><span>Préférences</span></button>
       </div>
     </div>
