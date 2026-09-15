@@ -293,7 +293,7 @@ function stars_html(float $note): string {
   --amber:#ba6d2c;--amber-deep:#8d4d1d;--amber-tint:#f5e7d7;
   --teal:#2b6d60;--teal-deep:#1d5046;--teal-tint:#e5f0eb;
   --danger:#a74935;--danger-tint:#f4e0da;
-  --radius:16px;--sidebar:256px;
+  --radius:16px;--sidebar:250px;
   --ease:cubic-bezier(.2,.8,.2,1);
 }
 *{box-sizing:border-box}
@@ -309,32 +309,39 @@ em{font-style:normal;color:var(--amber)}
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.001ms!important;transition-duration:.001ms!important;scroll-behavior:auto!important}}
 
 .km-app{display:flex;min-height:100vh}
-.sidebar{width:var(--sidebar);flex:0 0 var(--sidebar);position:fixed;inset:0 auto 0 0;z-index:50;display:flex;flex-direction:column;color:#e8e8df;background:#1e201d;box-shadow:14px 0 38px rgba(22,23,20,.08);transition:transform .28s var(--ease)}
-.brand{display:flex;align-items:center;gap:10px;padding:27px 26px 25px;font-family:Fraunces,serif;font-size:22px;font-weight:600;letter-spacing:-.05em;border-bottom:1px solid rgba(255,255,255,.08)}
-.brand span>span{color:#d58d51}
-.brand-mark{width:28px;height:28px;display:grid;place-items:center;color:#1e201d;background:#d58d51;border-radius:9px 9px 9px 2px;font-size:18px;font-weight:700}
-.sidebar-scroll{flex:1;padding:26px 13px;overflow-y:auto}
-.nav-group{margin-bottom:28px}
-.nav-label{display:block;padding:0 13px 9px;color:#85887d;font-size:10px;text-transform:uppercase;letter-spacing:.14em;font-weight:700}
-.nav-item{position:relative;width:100%;display:flex;align-items:center;gap:12px;padding:11px 13px;color:#aaaca3;background:transparent;border:0;border-radius:10px;font-size:13px;text-align:left;transition:background .18s ease,color .18s ease,transform .18s ease}
-.nav-item:hover{color:#fff;background:rgba(255,255,255,.06);transform:translateX(2px)}
-.nav-item.active{color:#f4e4d0;background:rgba(186,109,44,.17)}
-.nav-item.active::before{content:"";position:absolute;left:0;top:25%;height:50%;width:2px;background:#d58d51;border-radius:3px}
-.nav-badge{margin-left:auto;display:grid;place-items:center;min-width:20px;height:20px;padding:0 6px;color:#2b241c;background:#e1ad74;border-radius:30px;font-size:10px;font-weight:800}
-.sidebar-bottom{padding:15px 14px 20px;border-top:1px solid rgba(255,255,255,.08)}
-.sidebar-mini-balance{display:flex;align-items:center;justify-content:space-between;padding:14px 14px 15px;margin-bottom:13px;background:rgba(255,255,255,.055);border:1px solid rgba(255,255,255,.1);border-radius:13px}
-.mini-kicker{display:block;color:#93968b;font-size:10px;text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px}
-.sidebar-mini-balance strong{font-family:Fraunces,serif;font-size:18px;font-weight:600}
-.sidebar-mini-balance small{color:#999b91;font-family:"DM Sans",sans-serif;font-size:10px;font-weight:500}
-.mini-spark{width:28px;height:28px;display:grid;place-items:center;color:#d58d51;background:rgba(213,141,81,.13);border-radius:50%}
-.profile-row{width:100%;display:flex;align-items:center;gap:9px;padding:0;border:0;background:transparent;color:#e8e8df;text-align:left}
-.profile-row>div:nth-child(2){flex:1;min-width:0}
-.profile-row strong,.profile-row span{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.profile-row strong{font-size:12px;font-weight:600}
-.profile-row span{color:#85887d;font-size:10px;margin-top:2px}
+
+/* ── SIDEBAR (style client_dashboard.php) ── */
+.km-sidebar{
+  width:var(--sidebar);flex:0 0 var(--sidebar);background:var(--ink);color:#E8E4D8;
+  display:flex;flex-direction:column;position:fixed;top:0;left:0;bottom:0;z-index:100;
+  transition:transform .3s ease;
+}
+.km-sb-brand{padding:1.5rem 1.4rem 1.2rem;border-bottom:1px solid rgba(255,255,255,.1)}
+.km-sb-brand a{font-family:'Fraunces',serif;font-weight:600;font-size:1.3rem;color:#fff}
+.km-sb-brand em{font-style:normal;color:var(--amber)}
+.km-sb-nav{flex:1;padding:1.1rem .8rem;display:flex;flex-direction:column;gap:.15rem;overflow-y:auto}
+.km-sb-link{
+  display:flex;align-items:center;gap:.8rem;padding:.68rem .85rem;border-radius:8px;
+  font-size:.9rem;color:#B9B4A5;position:relative;transition:background .18s ease,color .18s ease;
+}
+.km-sb-link:hover{background:rgba(255,255,255,.06);color:#fff}
+.km-sb-link.active{background:rgba(186,109,44,.18);color:#F0DFC7;font-weight:600}
+.km-sb-link.active::before{content:'';position:absolute;left:0;top:22%;bottom:22%;width:2px;background:var(--amber)}
+.km-sb-icon{width:17px;height:17px;flex-shrink:0}
+.km-sb-icon svg{width:100%;height:100%;fill:none;stroke:currentColor;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}
+.km-sb-badge{margin-left:auto;background:var(--amber);color:var(--ink);font-size:.68rem;font-weight:700;padding:.1rem .45rem;border-radius:10px}
+.km-sb-section{font-size:.66rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#8B8778;padding:1rem .85rem .3rem}
+.km-sb-foot{padding:1rem .9rem 1.3rem;border-top:1px solid rgba(255,255,255,.1)}
+.km-wallet-mini{
+  display:block;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.12);
+  border-radius:12px;padding:.9rem 1rem;transition:border-color .18s ease;
+}
+.km-wallet-mini:hover{border-color:var(--amber)}
+.km-wallet-mini .w-label{font-size:.7rem;color:#A8A398}
+.km-wallet-mini .w-solde{font-family:'Fraunces',serif;font-weight:600;color:#fff;font-size:1.15rem;margin-top:.2rem}
+
 .avatar{width:32px;height:32px;display:grid;place-items:center;flex:0 0 auto;color:#6d3a18;background:#f0d4b7;border-radius:50%;font-size:11px;font-weight:700}
 .avatar-sm{width:30px;height:30px}
-.sidebar-backdrop{display:none}
 
 .main-area{flex:1;min-width:0;margin-left:var(--sidebar)}
 .topbar{height:76px;display:flex;align-items:center;justify-content:space-between;gap:22px;padding:0 42px;position:sticky;top:0;z-index:20;background:rgba(244,242,236,.83);border-bottom:1px solid rgba(222,219,209,.8);backdrop-filter:blur(14px)}
@@ -491,9 +498,8 @@ h2{font-size:22px;line-height:1.1}
 
 @media(max-width:1100px){.page-content{padding-left:28px;padding-right:28px}.topbar{padding-left:28px;padding-right:28px}.metrics-grid{grid-template-columns:1fr 1fr}.dashboard-grid{grid-template-columns:1fr}}
 @media(max-width:760px){
-  .sidebar{transform:translateX(-100%)}
-  .sidebar.open{transform:translateX(0);box-shadow:10px 0 40px rgba(26,28,24,.3)}
-  .sidebar-backdrop.visible{display:block;position:fixed;inset:0;z-index:40;background:rgba(26,28,24,.42)}
+  .km-sidebar{transform:translateX(-100%)}
+  .km-sidebar.open{transform:translateX(0);box-shadow:10px 0 40px rgba(26,28,24,.3)}
   .main-area{margin-left:0}
   .topbar-left>.icon-button{display:grid}
   .topbar{height:64px;padding:0 17px}
@@ -520,37 +526,46 @@ h2{font-size:22px;line-height:1.1}
 <body>
 
 <div class="km-app">
-  <div class="sidebar-backdrop" id="sidebar-backdrop" onclick="document.getElementById('sidebar').classList.remove('open'); this.classList.remove('visible');"></div>
-  <aside class="sidebar" id="sidebar">
-    <div class="brand"><div class="brand-mark"><span>k</span></div><span>koud<span>main</span></span></div>
-    <div class="sidebar-scroll">
-      <div class="nav-group">
-        <span class="nav-label">Workspace</span>
-        <a href="?tab=overview" class="nav-item <?= $onglet === 'overview' ? 'active' : '' ?>"><?= icon('home') ?><span>Vue d'ensemble</span></a>
-        <a href="?tab=prestations" class="nav-item <?= $onglet === 'prestations' ? 'active' : '' ?>"><?= icon('briefcase') ?><span>Mes prestations</span><?php if ($nb_prest > 0): ?><span class="nav-badge"><?= $nb_prest ?></span><?php endif; ?></a>
-        <a href="?tab=commandes" class="nav-item <?= $onglet === 'commandes' ? 'active' : '' ?>"><?= icon('clipboard-list') ?><span>Commandes</span><?php if ($nb_attente > 0): ?><span class="nav-badge"><?= $nb_attente ?></span><?php endif; ?></a>
-      </div>
-      <div class="nav-group">
-        <span class="nav-label">Finance</span>
-        <a href="wallet.php" class="nav-item"><?= icon('wallet-cards') ?><span>Mon Wallet</span></a>
-        <button type="button" class="nav-item" onclick="showToast('info','Statistiques bientôt disponibles.')"><?= icon('bar-chart') ?><span>Statistiques</span></button>
-      </div>
-      <div class="nav-group">
-        <span class="nav-label">Compte</span>
-        <a href="index.php" class="nav-item"><?= icon('home') ?><span>Accueil KoudMain</span></a>
-        <button type="button" class="nav-item" onclick="showToast('info','Préférences bientôt disponibles.')"><?= icon('settings') ?><span>Préférences</span></button>
-        <a href="connexion.php?action=logout" class="nav-item"><?= icon('log-out') ?><span>Déconnexion</span></a>
-      </div>
-    </div>
-    <div class="sidebar-bottom">
-      <div class="sidebar-mini-balance">
-        <div><span class="mini-kicker">Solde disponible</span><strong><?= number_format($solde_prest, 0, ',', ' ') ?> <small>FCFA</small></strong></div>
-        <a href="wallet.php" class="mini-spark"><?= icon('sparkles', 14) ?></a>
-      </div>
-      <a href="wallet.php" class="profile-row">
-        <div class="avatar"><?= htmlspecialchars($initiales) ?></div>
-        <div><strong><?= $prenom ?> <?= $nom ?></strong><span>Prestataire vérifié</span></div>
-        <?= icon('more-horizontal', 16) ?>
+  <aside class="km-sidebar" id="sidebar">
+    <div class="km-sb-brand"><a href="index.php">Koud<em>Main</em></a></div>
+
+    <nav class="km-sb-nav">
+      <a href="?tab=overview" class="km-sb-link <?= $onglet === 'overview' ? 'active' : '' ?>">
+        <span class="km-sb-icon"><svg viewBox="0 0 20 20"><path d="M3 10l7-6 7 6M5 9v7h10V9"/></svg></span>
+        Vue d'ensemble
+      </a>
+      <a href="?tab=prestations" class="km-sb-link <?= $onglet === 'prestations' ? 'active' : '' ?>">
+        <span class="km-sb-icon"><svg viewBox="0 0 20 20"><rect x="3" y="3" width="14" height="14" rx="2"/><path d="M7 8h6M7 12h4"/></svg></span>
+        Mes prestations
+        <?php if ($nb_prest > 0): ?><span class="km-sb-badge"><?= $nb_prest ?></span><?php endif; ?>
+      </a>
+      <a href="?tab=commandes" class="km-sb-link <?= $onglet === 'commandes' ? 'active' : '' ?>">
+        <span class="km-sb-icon"><svg viewBox="0 0 20 20"><rect x="3" y="7" width="14" height="10" rx="1"/><path d="M7 7V4h6v3"/></svg></span>
+        Commandes
+        <?php if ($nb_attente > 0): ?><span class="km-sb-badge"><?= $nb_attente ?></span><?php endif; ?>
+      </a>
+
+      <div class="km-sb-section">Finance</div>
+      <a href="wallet.php" class="km-sb-link">
+        <span class="km-sb-icon"><svg viewBox="0 0 20 20"><rect x="2" y="5" width="16" height="11" rx="2"/><path d="M2 9h16"/></svg></span>
+        Mon Wallet
+      </a>
+
+      <div class="km-sb-section">Compte</div>
+      <a href="index.php" class="km-sb-link">
+        <span class="km-sb-icon"><svg viewBox="0 0 20 20"><circle cx="10" cy="10" r="7"/></svg></span>
+        Accueil
+      </a>
+      <a href="connexion.php?action=logout" class="km-sb-link">
+        <span class="km-sb-icon"><svg viewBox="0 0 20 20"><path d="M8 4H4v12h4M13 14l4-4-4-4M17 10H8"/></svg></span>
+        Déconnexion
+      </a>
+    </nav>
+
+    <div class="km-sb-foot">
+      <a href="wallet.php" class="km-wallet-mini">
+        <div class="w-label">Solde disponible</div>
+        <div class="w-solde"><?= number_format($solde_prest, 0, ',', ' ') ?> FCFA</div>
       </a>
     </div>
   </aside>
@@ -558,7 +573,7 @@ h2{font-size:22px;line-height:1.1}
   <main class="main-area">
     <header class="topbar">
       <div class="topbar-left">
-        <button class="icon-button" aria-label="Ouvrir le menu" onclick="document.getElementById('sidebar').classList.add('open'); document.getElementById('sidebar-backdrop').classList.add('visible');"><?= icon('menu', 21) ?></button>
+        <button class="icon-button km-menu-toggle" aria-label="Ouvrir le menu" onclick="document.getElementById('sidebar').classList.toggle('open')"><?= icon('menu', 21) ?></button>
         <div class="breadcrumb"><span>Espace prestataire</span><?= icon('chevron-right', 14) ?><strong><?= htmlspecialchars($tab_label_courant) ?></strong></div>
       </div>
       <div class="topbar-actions">
@@ -833,7 +848,12 @@ document.addEventListener('keydown', e => {
   if (e.key === 'Escape') {
     document.querySelectorAll('.modal-overlay.open').forEach(m => closeModal(m.id));
     document.getElementById('sidebar').classList.remove('open');
-    document.getElementById('sidebar-backdrop').classList.remove('visible');
+  }
+});
+document.addEventListener('click', e => {
+  const sb = document.getElementById('sidebar');
+  if (window.innerWidth <= 760 && sb.classList.contains('open') && !sb.contains(e.target) && !e.target.closest('.km-menu-toggle')) {
+    sb.classList.remove('open');
   }
 });
 
