@@ -12,7 +12,14 @@ $err = "";
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
     verifierTokenCSRF();
 
-    if ($_POST['action'] === 'valider_prestataire') {
+    if ($_POST['action'] === 'arbitrer_litige') {
+        $id_cmd   = (int)($_POST['id_commande'] ?? 0);
+        $decision = $_POST['decision'] ?? '';
+        $res = arbitrerLitige($pdo, $id_cmd, $decision);
+        $res['ok'] ? $msg = $res['message'] : $err = $res['message'];
+    }
+
+    elseif ($_POST['action'] === 'valider_prestataire') {
         $id = (int)$_POST['id_utilisateur'];
         $pdo->prepare("UPDATE Utilisateur SET est_valide = true WHERE id_utilisateur = ?")
             ->execute([$id]);
@@ -89,7 +96,7 @@ $nb_commandes   = (int)$pdo->query("SELECT COUNT(*) FROM Commande")->fetchColumn
 $nb_cats        = (int)$pdo->query("SELECT COUNT(*) FROM Categorie")->fetchColumn();
 $nb_prestations = (int)$pdo->query("SELECT COUNT(*) FROM Prestation")->fetchColumn();
 $nb_prest_valid = (int)$pdo->query("SELECT COUNT(*) FROM Utilisateur WHERE est_prestataire = true AND est_valide = true")->fetchColumn();
-$nb_cmd_termine = (int)$pdo->query("SELECT COUNT(*) FROM Commande WHERE statut = 'Terminé'")->fetchColumn();
+$nb_cmd_termine = (int)$pdo->query("SELECT COUNT(*) FROM Commande WHERE statut = 'Terminée'")->fetchColumn();
 
 $prest_attente = $pdo->query("
     SELECT u.*, q.nom_quartier, v.nom_ville
@@ -890,10 +897,15 @@ h1,h2,h3,.km-serif{font-family:'Fraunces',Georgia,serif}
         <?php else: ?>
         <div class="table-scroll">
           <table class="data-table orders-table">
-            <thead><tr><th>#</th><th>Prestation</th><th>Client</th><th>Prestataire</th><th>Total</th><th>Statut</th><th>Date</th></tr></thead>
+            <thead><tr><th>#</th><th>Prestation</th><th>Client</th><th>Prestataire</th><th>Total</th><th>Statut</th><th>Date</th><th>Action</th></tr></thead>
             <tbody>
               <?php foreach ($commandes as $c):
-                $badgeClass = match($c['statut']) { 'Terminé' => 'status-teal', 'Acceptée' => 'status-neutral', default => 'status-amber' };
+                $badgeClass = match($c['statut']) {
+                    'Terminée' => 'status-teal',
+                    'En attente', 'En cours' => 'status-amber',
+                    'Annulée', 'Litige' => 'status-danger',
+                    default => 'status-neutral',
+                };
               ?>
               <tr>
                 <td class="order-id">#<?= (int)$c['id_commande'] ?></td>
@@ -901,8 +913,30 @@ h1,h2,h3,.km-serif{font-family:'Fraunces',Georgia,serif}
                 <td><?= htmlspecialchars($c['prenom_utilisateur'] . ' ' . $c['nom_utilisateur']) ?></td>
                 <td><?= htmlspecialchars($c['prest_prenom'] . ' ' . $c['prest_nom']) ?></td>
                 <td class="money-cell"><?= formatMoney($c['montant_total']) ?></td>
-                <td><span class="status-badge <?= $badgeClass ?>"><?= htmlspecialchars($c['statut']) ?></span></td>
+                <td><span class="status-badge <?= $badgeClass ?>" title="<?= htmlspecialchars($c['motif_litige'] ?? '') ?>"><?= htmlspecialchars($c['statut']) ?></span></td>
                 <td class="muted-cell"><?= formatDate($c['date_commande'], true) ?></td>
+                <td>
+                  <?php if ($c['statut'] === 'Litige'): ?>
+                  <div class="row-actions">
+                    <form method="POST" onsubmit="return confirm('Trancher en faveur du prestataire (paiement libéré) ?');">
+                      <?= champCSRF() ?>
+                      <input type="hidden" name="action" value="arbitrer_litige">
+                      <input type="hidden" name="id_commande" value="<?= (int)$c['id_commande'] ?>">
+                      <input type="hidden" name="decision" value="Terminée">
+                      <button type="submit" class="km-button button-teal button-sm">Valider prestataire</button>
+                    </form>
+                    <form method="POST" onsubmit="return confirm('Trancher en faveur du client (remboursement) ?');">
+                      <?= champCSRF() ?>
+                      <input type="hidden" name="action" value="arbitrer_litige">
+                      <input type="hidden" name="id_commande" value="<?= (int)$c['id_commande'] ?>">
+                      <input type="hidden" name="decision" value="Annulée">
+                      <button type="submit" class="km-button button-danger button-sm">Rembourser client</button>
+                    </form>
+                  </div>
+                  <?php else: ?>
+                    <span class="muted-cell">—</span>
+                  <?php endif; ?>
+                </td>
               </tr>
               <?php endforeach; ?>
             </tbody>

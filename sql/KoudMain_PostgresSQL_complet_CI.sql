@@ -3,6 +3,7 @@
 --  Version fusionnée : structure + géographie CI complète
 --  Idempotent : peut être rejoué sans doublons ni perte
 --  Dernière mise à jour : géographie complète (toutes les régions)
+--  CORRIGÉ : tous les INSERT Quartier contiennent maintenant id_ville
 -- ===========================================================
 -- Instructions :
 -- 1. Ouvre Supabase → SQL Editor → New query
@@ -212,7 +213,7 @@ INSERT INTO Region (nom_region) VALUES
 ('Folon')
 ON CONFLICT (nom_region) DO NOTHING;
 
--- 8.2 Départements / Villes / Quartiers (bloc PL/pgSQL idempotent - VERSION COMPLÈTE)
+-- 8.2 Départements / Villes / Quartiers (bloc PL/pgSQL idempotent - VERSION COMPLÈTE CORRIGÉE)
 DO $$
 DECLARE
     r_id INT;
@@ -235,8 +236,8 @@ BEGIN
         INSERT INTO Ville (nom_ville, id_departement) VALUES ('Abidjan (Cocody)', d_id) RETURNING id_ville INTO v_id;
     END IF;
     INSERT INTO Quartier (nom_quartier, id_ville) VALUES
-        ('Riviera 1'), ('Riviera 2'), ('Riviera 3'), ('Riviera 4'),
-        ('Angré'), ('Deux Plateaux'), ('Danga'), ('Attoban'), ('M''Badon')
+        ('Riviera 1', v_id), ('Riviera 2', v_id), ('Riviera 3', v_id), ('Riviera 4', v_id),
+        ('Angré', v_id), ('Deux Plateaux', v_id), ('Danga', v_id), ('Attoban', v_id), ('M''Badon', v_id)
     ON CONFLICT (nom_quartier, id_ville) DO NOTHING;
 
     SELECT id_ville INTO v_id FROM Ville WHERE nom_ville = 'Abidjan (Yopougon)' AND id_departement = d_id;
@@ -244,8 +245,8 @@ BEGIN
         INSERT INTO Ville (nom_ville, id_departement) VALUES ('Abidjan (Yopougon)', d_id) RETURNING id_ville INTO v_id;
     END IF;
     INSERT INTO Quartier (nom_quartier, id_ville) VALUES
-        ('Niangon'), ('Selmer'), ('Sicogi'), ('Maroc'),
-        ('Wassakara'), ('Toits Rouges'), ('Gesco')
+        ('Niangon', v_id), ('Selmer', v_id), ('Sicogi', v_id), ('Maroc', v_id),
+        ('Wassakara', v_id), ('Toits Rouges', v_id), ('Gesco', v_id)
     ON CONFLICT (nom_quartier, id_ville) DO NOTHING;
 
     SELECT id_ville INTO v_id FROM Ville WHERE nom_ville = 'Abidjan (Marcory)' AND id_departement = d_id;
@@ -253,7 +254,7 @@ BEGIN
         INSERT INTO Ville (nom_ville, id_departement) VALUES ('Abidjan (Marcory)', d_id) RETURNING id_ville INTO v_id;
     END IF;
     INSERT INTO Quartier (nom_quartier, id_ville) VALUES
-        ('Zone 4'), ('Biétry'), ('Champroux'), ('Anoumabo'), ('Hibiscus')
+        ('Zone 4', v_id), ('Biétry', v_id), ('Champroux', v_id), ('Anoumabo', v_id), ('Hibiscus', v_id)
     ON CONFLICT (nom_quartier, id_ville) DO NOTHING;
 
     SELECT id_ville INTO v_id FROM Ville WHERE nom_ville = 'Abidjan (Abobo)' AND id_departement = d_id;
@@ -261,7 +262,7 @@ BEGIN
         INSERT INTO Ville (nom_ville, id_departement) VALUES ('Abidjan (Abobo)', d_id) RETURNING id_ville INTO v_id;
     END IF;
     INSERT INTO Quartier (nom_quartier, id_ville) VALUES
-        ('PK18'), ('Abobo-Baoulé'), ('Sogefiha'), ('Sagbé'), ('Samaké'), ('Akeïkoi')
+        ('PK18', v_id), ('Abobo-Baoulé', v_id), ('Sogefiha', v_id), ('Sagbé', v_id), ('Samaké', v_id), ('Akeïkoi', v_id)
     ON CONFLICT (nom_quartier, id_ville) DO NOTHING;
 
     SELECT id_ville INTO v_id FROM Ville WHERE nom_ville = 'Abidjan (Plateau)' AND id_departement = d_id;
@@ -269,7 +270,7 @@ BEGIN
         INSERT INTO Ville (nom_ville, id_departement) VALUES ('Abidjan (Plateau)', d_id) RETURNING id_ville INTO v_id;
     END IF;
     INSERT INTO Quartier (nom_quartier, id_ville) VALUES
-        ('Centre des affaires'), ('Cité Administrative'), ('RAN')
+        ('Centre des affaires', v_id), ('Cité Administrative', v_id), ('RAN', v_id)
     ON CONFLICT (nom_quartier, id_ville) DO NOTHING;
 
     SELECT id_ville INTO v_id FROM Ville WHERE nom_ville = 'Abidjan (Adjamé)' AND id_departement = d_id;
@@ -277,7 +278,7 @@ BEGIN
         INSERT INTO Ville (nom_ville, id_departement) VALUES ('Abidjan (Adjamé)', d_id) RETURNING id_ville INTO v_id;
     END IF;
     INSERT INTO Quartier (nom_quartier, id_ville) VALUES
-        ('Mirador'), ('Renault'), ('Paillet'), ('Williamsville'), ('220 Logements')
+        ('Mirador', v_id), ('Renault', v_id), ('Paillet', v_id), ('Williamsville', v_id), ('220 Logements', v_id)
     ON CONFLICT (nom_quartier, id_ville) DO NOTHING;
 
     SELECT id_ville INTO v_id FROM Ville WHERE nom_ville = 'Abidjan (Treichville)' AND id_departement = d_id;
@@ -285,7 +286,7 @@ BEGIN
         INSERT INTO Ville (nom_ville, id_departement) VALUES ('Abidjan (Treichville)', d_id) RETURNING id_ville INTO v_id;
     END IF;
     INSERT INTO Quartier (nom_quartier, id_ville) VALUES
-        ('Arras'), ('Avenue 16'), ('Belleville'), ('Chicago'), ('Zone 2')
+        ('Arras', v_id), ('Avenue 16', v_id), ('Belleville', v_id), ('Chicago', v_id), ('Zone 2', v_id)
     ON CONFLICT (nom_quartier, id_ville) DO NOTHING;
 
     SELECT id_ville INTO v_id FROM Ville WHERE nom_ville = 'Abidjan (Koumassi)' AND id_departement = d_id;
@@ -293,7 +294,7 @@ BEGIN
         INSERT INTO Ville (nom_ville, id_departement) VALUES ('Abidjan (Koumassi)', d_id) RETURNING id_ville INTO v_id;
     END IF;
     INSERT INTO Quartier (nom_quartier, id_ville) VALUES
-        ('Grand Campement'), ('Remblais'), ('Prodomo'), ('Sicogi')
+        ('Grand Campement', v_id), ('Remblais', v_id), ('Prodomo', v_id), ('Sicogi', v_id)
     ON CONFLICT (nom_quartier, id_ville) DO NOTHING;
 
     SELECT id_ville INTO v_id FROM Ville WHERE nom_ville = 'Abidjan (Port-Bouët)' AND id_departement = d_id;
@@ -301,7 +302,7 @@ BEGIN
         INSERT INTO Ville (nom_ville, id_departement) VALUES ('Abidjan (Port-Bouët)', d_id) RETURNING id_ville INTO v_id;
     END IF;
     INSERT INTO Quartier (nom_quartier, id_ville) VALUES
-        ('Vridi'), ('Gondwana'), ('Cité Universitaire'), ('Derrière L''Aéroport'), ('Jean-Folly')
+        ('Vridi', v_id), ('Gondwana', v_id), ('Cité Universitaire', v_id), ('Derrière L''Aéroport', v_id), ('Jean-Folly', v_id)
     ON CONFLICT (nom_quartier, id_ville) DO NOTHING;
 
     SELECT id_ville INTO v_id FROM Ville WHERE nom_ville = 'Abidjan (Attécoubé)' AND id_departement = d_id;
@@ -309,7 +310,7 @@ BEGIN
         INSERT INTO Ville (nom_ville, id_departement) VALUES ('Abidjan (Attécoubé)', d_id) RETURNING id_ville INTO v_id;
     END IF;
     INSERT INTO Quartier (nom_quartier, id_ville) VALUES
-        ('Boribana'), ('Sebroko'), ('Locodjro'), ('Agban-Village')
+        ('Boribana', v_id), ('Sebroko', v_id), ('Locodjro', v_id), ('Agban-Village', v_id)
     ON CONFLICT (nom_quartier, id_ville) DO NOTHING;
 
     -- Anyama
@@ -322,7 +323,7 @@ BEGIN
         INSERT INTO Ville (nom_ville, id_departement) VALUES ('Anyama', d_id) RETURNING id_ville INTO v_id;
     END IF;
     INSERT INTO Quartier (nom_quartier, id_ville) VALUES
-        ('Zossonkoi'), ('Schneider'), ('Ran'), ('Christiankoi')
+        ('Zossonkoi', v_id), ('Schneider', v_id), ('Ran', v_id), ('Christiankoi', v_id)
     ON CONFLICT (nom_quartier, id_ville) DO NOTHING;
 
     -- Bingerville
@@ -335,7 +336,7 @@ BEGIN
         INSERT INTO Ville (nom_ville, id_departement) VALUES ('Bingerville', d_id) RETURNING id_ville INTO v_id;
     END IF;
     INSERT INTO Quartier (nom_quartier, id_ville) VALUES
-        ('Santé 2'), ('Marché'), ('Cité FEH'), ('Gbagba')
+        ('Santé 2', v_id), ('Marché', v_id), ('Cité FEH', v_id), ('Gbagba', v_id)
     ON CONFLICT (nom_quartier, id_ville) DO NOTHING;
 
     -- Songon
@@ -348,7 +349,7 @@ BEGIN
         INSERT INTO Ville (nom_ville, id_departement) VALUES ('Songon', d_id) RETURNING id_ville INTO v_id;
     END IF;
     INSERT INTO Quartier (nom_quartier, id_ville) VALUES
-        ('Songon-Agban'), ('Songon-Dagbé'), ('Songon-Kassemblé')
+        ('Songon-Agban', v_id), ('Songon-Dagbé', v_id), ('Songon-Kassemblé', v_id)
     ON CONFLICT (nom_quartier, id_ville) DO NOTHING;
 
     ---------------------------------------------------------
@@ -365,8 +366,8 @@ BEGIN
         INSERT INTO Ville (nom_ville, id_departement) VALUES ('Yamoussoukro', d_id) RETURNING id_ville INTO v_id;
     END IF;
     INSERT INTO Quartier (nom_quartier, id_ville) VALUES
-        ('Assabou'), ('N''Gokro'), ('220 Logements'), ('Habitat'),
-        ('Fondation'), ('Dioulabougou'), ('Morofé')
+        ('Assabou', v_id), ('N''Gokro', v_id), ('220 Logements', v_id), ('Habitat', v_id),
+        ('Fondation', v_id), ('Dioulabougou', v_id), ('Morofé', v_id)
     ON CONFLICT (nom_quartier, id_ville) DO NOTHING;
 
     SELECT id_departement INTO d_id FROM Departement WHERE nom_departement = 'Attiégouakro' AND id_region = r_id;
@@ -378,7 +379,7 @@ BEGIN
         INSERT INTO Ville (nom_ville, id_departement) VALUES ('Attiégouakro', d_id) RETURNING id_ville INTO v_id;
     END IF;
     INSERT INTO Quartier (nom_quartier, id_ville) VALUES
-        ('Résidentiel'), ('Commerce')
+        ('Résidentiel', v_id), ('Commerce', v_id)
     ON CONFLICT (nom_quartier, id_ville) DO NOTHING;
 
     ---------------------------------------------------------
@@ -395,8 +396,8 @@ BEGIN
         INSERT INTO Ville (nom_ville, id_departement) VALUES ('Bouaké', d_id) RETURNING id_ville INTO v_id;
     END IF;
     INSERT INTO Quartier (nom_quartier, id_ville) VALUES
-        ('Commerce'), ('Nimbo'), ('Dar-Es-Salam'), ('Koko'),
-        ('Ahougnansou'), ('Air France'), ('Belleville'), ('Broukro')
+        ('Commerce', v_id), ('Nimbo', v_id), ('Dar-Es-Salam', v_id), ('Koko', v_id),
+        ('Ahougnansou', v_id), ('Air France', v_id), ('Belleville', v_id), ('Broukro', v_id)
     ON CONFLICT (nom_quartier, id_ville) DO NOTHING;
 
     SELECT id_departement INTO d_id FROM Departement WHERE nom_departement = 'Béoumi' AND id_region = r_id;
@@ -408,7 +409,7 @@ BEGIN
         INSERT INTO Ville (nom_ville, id_departement) VALUES ('Béoumi', d_id) RETURNING id_ville INTO v_id;
     END IF;
     INSERT INTO Quartier (nom_quartier, id_ville) VALUES
-        ('Résidentiel'), ('Commerce'), ('Zêdê')
+        ('Résidentiel', v_id), ('Commerce', v_id), ('Zêdê', v_id)
     ON CONFLICT (nom_quartier, id_ville) DO NOTHING;
 
     SELECT id_departement INTO d_id FROM Departement WHERE nom_departement = 'Sakassou' AND id_region = r_id;
@@ -420,7 +421,7 @@ BEGIN
         INSERT INTO Ville (nom_ville, id_departement) VALUES ('Sakassou', d_id) RETURNING id_ville INTO v_id;
     END IF;
     INSERT INTO Quartier (nom_quartier, id_ville) VALUES
-        ('Résidentiel'), ('Walèbo')
+        ('Résidentiel', v_id), ('Walèbo', v_id)
     ON CONFLICT (nom_quartier, id_ville) DO NOTHING;
 
     SELECT id_departement INTO d_id FROM Departement WHERE nom_departement = 'Botro' AND id_region = r_id;
@@ -432,7 +433,7 @@ BEGIN
         INSERT INTO Ville (nom_ville, id_departement) VALUES ('Botro', d_id) RETURNING id_ville INTO v_id;
     END IF;
     INSERT INTO Quartier (nom_quartier, id_ville) VALUES
-        ('Centre'), ('Dioulabougou')
+        ('Centre', v_id), ('Dioulabougou', v_id)
     ON CONFLICT (nom_quartier, id_ville) DO NOTHING;
 
     ---------------------------------------------------------
@@ -449,7 +450,7 @@ BEGIN
         INSERT INTO Ville (nom_ville, id_departement) VALUES ('Katiola', d_id) RETURNING id_ville INTO v_id;
     END IF;
     INSERT INTO Quartier (nom_quartier, id_ville) VALUES
-        ('Centre'), ('Résidentiel'), ('Commerce'), ('Dioulabougou')
+        ('Centre', v_id), ('Résidentiel', v_id), ('Commerce', v_id), ('Dioulabougou', v_id)
     ON CONFLICT (nom_quartier, id_ville) DO NOTHING;
 
     SELECT id_departement INTO d_id FROM Departement WHERE nom_departement = 'Dabakala' AND id_region = r_id;
@@ -461,7 +462,7 @@ BEGIN
         INSERT INTO Ville (nom_ville, id_departement) VALUES ('Dabakala', d_id) RETURNING id_ville INTO v_id;
     END IF;
     INSERT INTO Quartier (nom_quartier, id_ville) VALUES
-        ('Centre'), ('Résidentiel'), ('Commerce')
+        ('Centre', v_id), ('Résidentiel', v_id), ('Commerce', v_id)
     ON CONFLICT (nom_quartier, id_ville) DO NOTHING;
 
     SELECT id_departement INTO d_id FROM Departement WHERE nom_departement = 'Niakaramadougou' AND id_region = r_id;
@@ -473,7 +474,7 @@ BEGIN
         INSERT INTO Ville (nom_ville, id_departement) VALUES ('Niakaramadougou', d_id) RETURNING id_ville INTO v_id;
     END IF;
     INSERT INTO Quartier (nom_quartier, id_ville) VALUES
-        ('Centre'), ('Résidentiel')
+        ('Centre', v_id), ('Résidentiel', v_id)
     ON CONFLICT (nom_quartier, id_ville) DO NOTHING;
 
     ---------------------------------------------------------
@@ -490,7 +491,7 @@ BEGIN
         INSERT INTO Ville (nom_ville, id_departement) VALUES ('San-Pédro', d_id) RETURNING id_ville INTO v_id;
     END IF;
     INSERT INTO Quartier (nom_quartier, id_ville) VALUES
-        ('Cité'), ('Bardot'), ('Seweke'), ('Balmer'), ('Mhoye'), ('Lac'), ('Zone Industrielle')
+        ('Cité', v_id), ('Bardot', v_id), ('Seweke', v_id), ('Balmer', v_id), ('Mhoye', v_id), ('Lac', v_id), ('Zone Industrielle', v_id)
     ON CONFLICT (nom_quartier, id_ville) DO NOTHING;
 
     SELECT id_departement INTO d_id FROM Departement WHERE nom_departement = 'Tabou' AND id_region = r_id;
@@ -502,7 +503,7 @@ BEGIN
         INSERT INTO Ville (nom_ville, id_departement) VALUES ('Tabou', d_id) RETURNING id_ville INTO v_id;
     END IF;
     INSERT INTO Quartier (nom_quartier, id_ville) VALUES
-        ('Kablaké'), ('Résidentiel')
+        ('Kablaké', v_id), ('Résidentiel', v_id)
     ON CONFLICT (nom_quartier, id_ville) DO NOTHING;
 
     ---------------------------------------------------------
@@ -519,7 +520,7 @@ BEGIN
         INSERT INTO Ville (nom_ville, id_departement) VALUES ('Sassandra', d_id) RETURNING id_ville INTO v_id;
     END IF;
     INSERT INTO Quartier (nom_quartier, id_ville) VALUES
-        ('Centre'), ('Port'), ('Résidentiel'), ('Commerce')
+        ('Centre', v_id), ('Port', v_id), ('Résidentiel', v_id), ('Commerce', v_id)
     ON CONFLICT (nom_quartier, id_ville) DO NOTHING;
 
     SELECT id_departement INTO d_id FROM Departement WHERE nom_departement = 'Fresco' AND id_region = r_id;
@@ -531,7 +532,7 @@ BEGIN
         INSERT INTO Ville (nom_ville, id_departement) VALUES ('Fresco', d_id) RETURNING id_ville INTO v_id;
     END IF;
     INSERT INTO Quartier (nom_quartier, id_ville) VALUES
-        ('Centre'), ('Résidentiel')
+        ('Centre', v_id), ('Résidentiel', v_id)
     ON CONFLICT (nom_quartier, id_ville) DO NOTHING;
 
     ---------------------------------------------------------
@@ -548,7 +549,7 @@ BEGIN
         INSERT INTO Ville (nom_ville, id_departement) VALUES ('Soubré', d_id) RETURNING id_ville INTO v_id;
     END IF;
     INSERT INTO Quartier (nom_quartier, id_ville) VALUES
-        ('Centre'), ('Résidentiel'), ('Commerce'), ('Dioulabougou')
+        ('Centre', v_id), ('Résidentiel', v_id), ('Commerce', v_id), ('Dioulabougou', v_id)
     ON CONFLICT (nom_quartier, id_ville) DO NOTHING;
 
     SELECT id_departement INTO d_id FROM Departement WHERE nom_departement = 'Méagui' AND id_region = r_id;
@@ -560,7 +561,7 @@ BEGIN
         INSERT INTO Ville (nom_ville, id_departement) VALUES ('Méagui', d_id) RETURNING id_ville INTO v_id;
     END IF;
     INSERT INTO Quartier (nom_quartier, id_ville) VALUES
-        ('Centre'), ('Résidentiel')
+        ('Centre', v_id), ('Résidentiel', v_id)
     ON CONFLICT (nom_quartier, id_ville) DO NOTHING;
 
     SELECT id_departement INTO d_id FROM Departement WHERE nom_departement = 'Buyo' AND id_region = r_id;
@@ -572,7 +573,7 @@ BEGIN
         INSERT INTO Ville (nom_ville, id_departement) VALUES ('Buyo', d_id) RETURNING id_ville INTO v_id;
     END IF;
     INSERT INTO Quartier (nom_quartier, id_ville) VALUES
-        ('Centre'), ('Résidentiel')
+        ('Centre', v_id), ('Résidentiel', v_id)
     ON CONFLICT (nom_quartier, id_ville) DO NOTHING;
 
     SELECT id_departement INTO d_id FROM Departement WHERE nom_departement = 'Guéyo' AND id_region = r_id;
@@ -584,7 +585,7 @@ BEGIN
         INSERT INTO Ville (nom_ville, id_departement) VALUES ('Guéyo', d_id) RETURNING id_ville INTO v_id;
     END IF;
     INSERT INTO Quartier (nom_quartier, id_ville) VALUES
-        ('Centre')
+        ('Centre', v_id)
     ON CONFLICT (nom_quartier, id_ville) DO NOTHING;
 
     ---------------------------------------------------------
@@ -601,7 +602,7 @@ BEGIN
         INSERT INTO Ville (nom_ville, id_departement) VALUES ('Daloa', d_id) RETURNING id_ville INTO v_id;
     END IF;
     INSERT INTO Quartier (nom_quartier, id_ville) VALUES
-        ('Tazibouo'), ('Labia'), ('Garage'), ('Orly'), ('Marais'), ('Baoulébougou')
+        ('Tazibouo', v_id), ('Labia', v_id), ('Garage', v_id), ('Orly', v_id), ('Marais', v_id), ('Baoulébougou', v_id)
     ON CONFLICT (nom_quartier, id_ville) DO NOTHING;
 
     SELECT id_departement INTO d_id FROM Departement WHERE nom_departement = 'Issia' AND id_region = r_id;
@@ -613,7 +614,7 @@ BEGIN
         INSERT INTO Ville (nom_ville, id_departement) VALUES ('Issia', d_id) RETURNING id_ville INTO v_id;
     END IF;
     INSERT INTO Quartier (nom_quartier, id_ville) VALUES
-        ('Issia-Kpassaré'), ('Wandaguhé')
+        ('Issia-Kpassaré', v_id), ('Wandaguhé', v_id)
     ON CONFLICT (nom_quartier, id_ville) DO NOTHING;
 
     SELECT id_departement INTO d_id FROM Departement WHERE nom_departement = 'Vavoua' AND id_region = r_id;
@@ -625,7 +626,7 @@ BEGIN
         INSERT INTO Ville (nom_ville, id_departement) VALUES ('Vavoua', d_id) RETURNING id_ville INTO v_id;
     END IF;
     INSERT INTO Quartier (nom_quartier, id_ville) VALUES
-        ('Dioulabougou'), ('Baoulébougou')
+        ('Dioulabougou', v_id), ('Baoulébougou', v_id)
     ON CONFLICT (nom_quartier, id_ville) DO NOTHING;
 
     SELECT id_departement INTO d_id FROM Departement WHERE nom_departement = 'Zoukougbeu' AND id_region = r_id;
@@ -637,7 +638,7 @@ BEGIN
         INSERT INTO Ville (nom_ville, id_departement) VALUES ('Zoukougbeu', d_id) RETURNING id_ville INTO v_id;
     END IF;
     INSERT INTO Quartier (nom_quartier, id_ville) VALUES
-        ('Centre'), ('Résidentiel')
+        ('Centre', v_id), ('Résidentiel', v_id)
     ON CONFLICT (nom_quartier, id_ville) DO NOTHING;
 
     ---------------------------------------------------------
@@ -654,7 +655,7 @@ BEGIN
         INSERT INTO Ville (nom_ville, id_departement) VALUES ('Bouaflé', d_id) RETURNING id_ville INTO v_id;
     END IF;
     INSERT INTO Quartier (nom_quartier, id_ville) VALUES
-        ('Centre'), ('Résidentiel'), ('Commerce'), ('Dioulabougou')
+        ('Centre', v_id), ('Résidentiel', v_id), ('Commerce', v_id), ('Dioulabougou', v_id)
     ON CONFLICT (nom_quartier, id_ville) DO NOTHING;
 
     SELECT id_departement INTO d_id FROM Departement WHERE nom_departement = 'Sinfra' AND id_region = r_id;
@@ -666,7 +667,7 @@ BEGIN
         INSERT INTO Ville (nom_ville, id_departement) VALUES ('Sinfra', d_id) RETURNING id_ville INTO v_id;
     END IF;
     INSERT INTO Quartier (nom_quartier, id_ville) VALUES
-        ('Centre'), ('Résidentiel'), ('Commerce')
+        ('Centre', v_id), ('Résidentiel', v_id), ('Commerce', v_id)
     ON CONFLICT (nom_quartier, id_ville) DO NOTHING;
 
     SELECT id_departement INTO d_id FROM Departement WHERE nom_departement = 'Zuénoula' AND id_region = r_id;
@@ -678,7 +679,7 @@ BEGIN
         INSERT INTO Ville (nom_ville, id_departement) VALUES ('Zuénoula', d_id) RETURNING id_ville INTO v_id;
     END IF;
     INSERT INTO Quartier (nom_quartier, id_ville) VALUES
-        ('Centre'), ('Résidentiel')
+        ('Centre', v_id), ('Résidentiel', v_id)
     ON CONFLICT (nom_quartier, id_ville) DO NOTHING;
 
     SELECT id_departement INTO d_id FROM Departement WHERE nom_departement = 'Bonon' AND id_region = r_id;
@@ -690,7 +691,7 @@ BEGIN
         INSERT INTO Ville (nom_ville, id_departement) VALUES ('Bonon', d_id) RETURNING id_ville INTO v_id;
     END IF;
     INSERT INTO Quartier (nom_quartier, id_ville) VALUES
-        ('Centre'), ('Résidentiel')
+        ('Centre', v_id), ('Résidentiel', v_id)
     ON CONFLICT (nom_quartier, id_ville) DO NOTHING;
 
     SELECT id_departement INTO d_id FROM Departement WHERE nom_departement = 'Gohitafla' AND id_region = r_id;
@@ -702,7 +703,7 @@ BEGIN
         INSERT INTO Ville (nom_ville, id_departement) VALUES ('Gohitafla', d_id) RETURNING id_ville INTO v_id;
     END IF;
     INSERT INTO Quartier (nom_quartier, id_ville) VALUES
-        ('Centre')
+        ('Centre', v_id)
     ON CONFLICT (nom_quartier, id_ville) DO NOTHING;
 
     ---------------------------------------------------------
@@ -719,8 +720,8 @@ BEGIN
         INSERT INTO Ville (nom_ville, id_departement) VALUES ('Korhogo', d_id) RETURNING id_ville INTO v_id;
     END IF;
     INSERT INTO Quartier (nom_quartier, id_ville) VALUES
-        ('Koko'), ('Soba'), ('Prefehua'), ('Petit-Paris'),
-        ('Quatorze'), ('Haoussabougou'), ('Bannaï')
+        ('Koko', v_id), ('Soba', v_id), ('Prefehua', v_id), ('Petit-Paris', v_id),
+        ('Quatorze', v_id), ('Haoussabougou', v_id), ('Bannaï', v_id)
     ON CONFLICT (nom_quartier, id_ville) DO NOTHING;
 
     SELECT id_departement INTO d_id FROM Departement WHERE nom_departement = 'Dikodougou' AND id_region = r_id;
@@ -732,7 +733,7 @@ BEGIN
         INSERT INTO Ville (nom_ville, id_departement) VALUES ('Dikodougou', d_id) RETURNING id_ville INTO v_id;
     END IF;
     INSERT INTO Quartier (nom_quartier, id_ville) VALUES
-        ('Dioulabougou'), ('Centre')
+        ('Dioulabougou', v_id), ('Centre', v_id)
     ON CONFLICT (nom_quartier, id_ville) DO NOTHING;
 
     SELECT id_departement INTO d_id FROM Departement WHERE nom_departement = 'M''Bengué' AND id_region = r_id;
@@ -744,7 +745,7 @@ BEGIN
         INSERT INTO Ville (nom_ville, id_departement) VALUES ('M''Bengué', d_id) RETURNING id_ville INTO v_id;
     END IF;
     INSERT INTO Quartier (nom_quartier, id_ville) VALUES
-        ('M''Benguékaha'), ('Résidentiel')
+        ('M''Benguékaha', v_id), ('Résidentiel', v_id)
     ON CONFLICT (nom_quartier, id_ville) DO NOTHING;
 
     SELECT id_departement INTO d_id FROM Departement WHERE nom_departement = 'Sinématiali' AND id_region = r_id;
@@ -756,7 +757,7 @@ BEGIN
         INSERT INTO Ville (nom_ville, id_departement) VALUES ('Sinématiali', d_id) RETURNING id_ville INTO v_id;
     END IF;
     INSERT INTO Quartier (nom_quartier, id_ville) VALUES
-        ('Sinéma'), ('Koko')
+        ('Sinéma', v_id), ('Koko', v_id)
     ON CONFLICT (nom_quartier, id_ville) DO NOTHING;
 
     ---------------------------------------------------------
@@ -773,7 +774,7 @@ BEGIN
         INSERT INTO Ville (nom_ville, id_departement) VALUES ('Boundiali', d_id) RETURNING id_ville INTO v_id;
     END IF;
     INSERT INTO Quartier (nom_quartier, id_ville) VALUES
-        ('Centre'), ('Résidentiel'), ('Commerce'), ('Dioulabougou')
+        ('Centre', v_id), ('Résidentiel', v_id), ('Commerce', v_id), ('Dioulabougou', v_id)
     ON CONFLICT (nom_quartier, id_ville) DO NOTHING;
 
     SELECT id_departement INTO d_id FROM Departement WHERE nom_departement = 'Tengréla' AND id_region = r_id;
@@ -785,7 +786,7 @@ BEGIN
         INSERT INTO Ville (nom_ville, id_departement) VALUES ('Tengréla', d_id) RETURNING id_ville INTO v_id;
     END IF;
     INSERT INTO Quartier (nom_quartier, id_ville) VALUES
-        ('Centre'), ('Résidentiel')
+        ('Centre', v_id), ('Résidentiel', v_id)
     ON CONFLICT (nom_quartier, id_ville) DO NOTHING;
 
     SELECT id_departement INTO d_id FROM Departement WHERE nom_departement = 'Kouto' AND id_region = r_id;
@@ -797,7 +798,7 @@ BEGIN
         INSERT INTO Ville (nom_ville, id_departement) VALUES ('Kouto', d_id) RETURNING id_ville INTO v_id;
     END IF;
     INSERT INTO Quartier (nom_quartier, id_ville) VALUES
-        ('Centre')
+        ('Centre', v_id)
     ON CONFLICT (nom_quartier, id_ville) DO NOTHING;
 
     ---------------------------------------------------------
@@ -814,7 +815,7 @@ BEGIN
         INSERT INTO Ville (nom_ville, id_departement) VALUES ('Ferkessédougou', d_id) RETURNING id_ville INTO v_id;
     END IF;
     INSERT INTO Quartier (nom_quartier, id_ville) VALUES
-        ('Centre'), ('Résidentiel'), ('Commerce'), ('Dioulabougou')
+        ('Centre', v_id), ('Résidentiel', v_id), ('Commerce', v_id), ('Dioulabougou', v_id)
     ON CONFLICT (nom_quartier, id_ville) DO NOTHING;
 
     SELECT id_departement INTO d_id FROM Departement WHERE nom_departement = 'Ouangolodougou' AND id_region = r_id;
@@ -826,7 +827,7 @@ BEGIN
         INSERT INTO Ville (nom_ville, id_departement) VALUES ('Ouangolodougou', d_id) RETURNING id_ville INTO v_id;
     END IF;
     INSERT INTO Quartier (nom_quartier, id_ville) VALUES
-        ('Centre'), ('Résidentiel')
+        ('Centre', v_id), ('Résidentiel', v_id)
     ON CONFLICT (nom_quartier, id_ville) DO NOTHING;
 
     SELECT id_departement INTO d_id FROM Departement WHERE nom_departement = 'Kong' AND id_region = r_id;
@@ -838,7 +839,7 @@ BEGIN
         INSERT INTO Ville (nom_ville, id_departement) VALUES ('Kong', d_id) RETURNING id_ville INTO v_id;
     END IF;
     INSERT INTO Quartier (nom_quartier, id_ville) VALUES
-        ('Centre')
+        ('Centre', v_id)
     ON CONFLICT (nom_quartier, id_ville) DO NOTHING;
 
     ---------------------------------------------------------
@@ -855,7 +856,7 @@ BEGIN
         INSERT INTO Ville (nom_ville, id_departement) VALUES ('Gagnoa', d_id) RETURNING id_ville INTO v_id;
     END IF;
     INSERT INTO Quartier (nom_quartier, id_ville) VALUES
-        ('Garahio'), ('Babré'), ('Dioulabougou'), ('Zapato'), ('Soleil'), ('Barouhio')
+        ('Garahio', v_id), ('Babré', v_id), ('Dioulabougou', v_id), ('Zapato', v_id), ('Soleil', v_id), ('Barouhio', v_id)
     ON CONFLICT (nom_quartier, id_ville) DO NOTHING;
 
     SELECT id_departement INTO d_id FROM Departement WHERE nom_departement = 'Oumé' AND id_region = r_id;
@@ -867,7 +868,7 @@ BEGIN
         INSERT INTO Ville (nom_ville, id_departement) VALUES ('Oumé', d_id) RETURNING id_ville INTO v_id;
     END IF;
     INSERT INTO Quartier (nom_quartier, id_ville) VALUES
-        ('Oumé-Kassipri'), ('Dioulabougou')
+        ('Oumé-Kassipri', v_id), ('Dioulabougou', v_id)
     ON CONFLICT (nom_quartier, id_ville) DO NOTHING;
 
     ---------------------------------------------------------
@@ -884,7 +885,7 @@ BEGIN
         INSERT INTO Ville (nom_ville, id_departement) VALUES ('Divo', d_id) RETURNING id_ville INTO v_id;
     END IF;
     INSERT INTO Quartier (nom_quartier, id_ville) VALUES
-        ('Centre'), ('Résidentiel'), ('Commerce'), ('Dioulabougou')
+        ('Centre', v_id), ('Résidentiel', v_id), ('Commerce', v_id), ('Dioulabougou', v_id)
     ON CONFLICT (nom_quartier, id_ville) DO NOTHING;
 
     SELECT id_departement INTO d_id FROM Departement WHERE nom_departement = 'Lakota' AND id_region = r_id;
@@ -896,7 +897,7 @@ BEGIN
         INSERT INTO Ville (nom_ville, id_departement) VALUES ('Lakota', d_id) RETURNING id_ville INTO v_id;
     END IF;
     INSERT INTO Quartier (nom_quartier, id_ville) VALUES
-        ('Centre'), ('Résidentiel')
+        ('Centre', v_id), ('Résidentiel', v_id)
     ON CONFLICT (nom_quartier, id_ville) DO NOTHING;
 
     SELECT id_departement INTO d_id FROM Departement WHERE nom_departement = 'Guitry' AND id_region = r_id;
@@ -908,7 +909,7 @@ BEGIN
         INSERT INTO Ville (nom_ville, id_departement) VALUES ('Guitry', d_id) RETURNING id_ville INTO v_id;
     END IF;
     INSERT INTO Quartier (nom_quartier, id_ville) VALUES
-        ('Centre')
+        ('Centre', v_id)
     ON CONFLICT (nom_quartier, id_ville) DO NOTHING;
 
     ---------------------------------------------------------
@@ -925,7 +926,7 @@ BEGIN
         INSERT INTO Ville (nom_ville, id_departement) VALUES ('Man', d_id) RETURNING id_ville INTO v_id;
     END IF;
     INSERT INTO Quartier (nom_quartier, id_ville) VALUES
-        ('Grand-Gbapleu'), ('Koko'), ('Sari'), ('Domoraud'), ('Doyagouiné'), ('Belleville')
+        ('Grand-Gbapleu', v_id), ('Koko', v_id), ('Sari', v_id), ('Domoraud', v_id), ('Doyagouiné', v_id), ('Belleville', v_id)
     ON CONFLICT (nom_quartier, id_ville) DO NOTHING;
 
     SELECT id_departement INTO d_id FROM Departement WHERE nom_departement = 'Danané' AND id_region = r_id;
@@ -937,7 +938,7 @@ BEGIN
         INSERT INTO Ville (nom_ville, id_departement) VALUES ('Danané', d_id) RETURNING id_ville INTO v_id;
     END IF;
     INSERT INTO Quartier (nom_quartier, id_ville) VALUES
-        ('Doyagouiné'), ('Dioulabougou')
+        ('Doyagouiné', v_id), ('Dioulabougou', v_id)
     ON CONFLICT (nom_quartier, id_ville) DO NOTHING;
 
     SELECT id_departement INTO d_id FROM Departement WHERE nom_departement = 'Biankouma' AND id_region = r_id;
@@ -949,7 +950,7 @@ BEGIN
         INSERT INTO Ville (nom_ville, id_departement) VALUES ('Biankouma', d_id) RETURNING id_ville INTO v_id;
     END IF;
     INSERT INTO Quartier (nom_quartier, id_ville) VALUES
-        ('Gbonné'), ('Centre')
+        ('Gbonné', v_id), ('Centre', v_id)
     ON CONFLICT (nom_quartier, id_ville) DO NOTHING;
 
     SELECT id_departement INTO d_id FROM Departement WHERE nom_departement = 'Zouan-Hounien' AND id_region = r_id;
@@ -961,7 +962,7 @@ BEGIN
         INSERT INTO Ville (nom_ville, id_departement) VALUES ('Zouan-Hounien', d_id) RETURNING id_ville INTO v_id;
     END IF;
     INSERT INTO Quartier (nom_quartier, id_ville) VALUES
-        ('Mine'), ('Centre')
+        ('Mine', v_id), ('Centre', v_id)
     ON CONFLICT (nom_quartier, id_ville) DO NOTHING;
 
     SELECT id_departement INTO d_id FROM Departement WHERE nom_departement = 'Sipilou' AND id_region = r_id;
@@ -973,7 +974,7 @@ BEGIN
         INSERT INTO Ville (nom_ville, id_departement) VALUES ('Sipilou', d_id) RETURNING id_ville INTO v_id;
     END IF;
     INSERT INTO Quartier (nom_quartier, id_ville) VALUES
-        ('Sipilou-Ville')
+        ('Sipilou-Ville', v_id)
     ON CONFLICT (nom_quartier, id_ville) DO NOTHING;
 
     ---------------------------------------------------------
@@ -990,7 +991,7 @@ BEGIN
         INSERT INTO Ville (nom_ville, id_departement) VALUES ('Duékoué', d_id) RETURNING id_ville INTO v_id;
     END IF;
     INSERT INTO Quartier (nom_quartier, id_ville) VALUES
-        ('Centre'), ('Résidentiel'), ('Commerce'), ('Dioulabougou')
+        ('Centre', v_id), ('Résidentiel', v_id), ('Commerce', v_id), ('Dioulabougou', v_id)
     ON CONFLICT (nom_quartier, id_ville) DO NOTHING;
 
     SELECT id_departement INTO d_id FROM Departement WHERE nom_departement = 'Bangolo' AND id_region = r_id;
@@ -1002,7 +1003,7 @@ BEGIN
         INSERT INTO Ville (nom_ville, id_departement) VALUES ('Bangolo', d_id) RETURNING id_ville INTO v_id;
     END IF;
     INSERT INTO Quartier (nom_quartier, id_ville) VALUES
-        ('Centre'), ('Résidentiel')
+        ('Centre', v_id), ('Résidentiel', v_id)
     ON CONFLICT (nom_quartier, id_ville) DO NOTHING;
 
     SELECT id_departement INTO d_id FROM Departement WHERE nom_departement = 'Kouibly' AND id_region = r_id;
@@ -1014,7 +1015,7 @@ BEGIN
         INSERT INTO Ville (nom_ville, id_departement) VALUES ('Kouibly', d_id) RETURNING id_ville INTO v_id;
     END IF;
     INSERT INTO Quartier (nom_quartier, id_ville) VALUES
-        ('Centre')
+        ('Centre', v_id)
     ON CONFLICT (nom_quartier, id_ville) DO NOTHING;
 
     SELECT id_departement INTO d_id FROM Departement WHERE nom_departement = 'Facobly' AND id_region = r_id;
@@ -1026,7 +1027,7 @@ BEGIN
         INSERT INTO Ville (nom_ville, id_departement) VALUES ('Facobly', d_id) RETURNING id_ville INTO v_id;
     END IF;
     INSERT INTO Quartier (nom_quartier, id_ville) VALUES
-        ('Centre')
+        ('Centre', v_id)
     ON CONFLICT (nom_quartier, id_ville) DO NOTHING;
 
     ---------------------------------------------------------
@@ -1043,7 +1044,7 @@ BEGIN
         INSERT INTO Ville (nom_ville, id_departement) VALUES ('Guiglo', d_id) RETURNING id_ville INTO v_id;
     END IF;
     INSERT INTO Quartier (nom_quartier, id_ville) VALUES
-        ('Centre'), ('Résidentiel'), ('Commerce')
+        ('Centre', v_id), ('Résidentiel', v_id), ('Commerce', v_id)
     ON CONFLICT (nom_quartier, id_ville) DO NOTHING;
 
     SELECT id_departement INTO d_id FROM Departement WHERE nom_departement = 'Bloléquin' AND id_region = r_id;
@@ -1055,7 +1056,7 @@ BEGIN
         INSERT INTO Ville (nom_ville, id_departement) VALUES ('Bloléquin', d_id) RETURNING id_ville INTO v_id;
     END IF;
     INSERT INTO Quartier (nom_quartier, id_ville) VALUES
-        ('Centre')
+        ('Centre', v_id)
     ON CONFLICT (nom_quartier, id_ville) DO NOTHING;
 
     SELECT id_departement INTO d_id FROM Departement WHERE nom_departement = 'Toulepleu' AND id_region = r_id;
@@ -1067,7 +1068,7 @@ BEGIN
         INSERT INTO Ville (nom_ville, id_departement) VALUES ('Toulepleu', d_id) RETURNING id_ville INTO v_id;
     END IF;
     INSERT INTO Quartier (nom_quartier, id_ville) VALUES
-        ('Centre')
+        ('Centre', v_id)
     ON CONFLICT (nom_quartier, id_ville) DO NOTHING;
 
     SELECT id_departement INTO d_id FROM Departement WHERE nom_departement = 'Taï' AND id_region = r_id;
@@ -1079,7 +1080,7 @@ BEGIN
         INSERT INTO Ville (nom_ville, id_departement) VALUES ('Taï', d_id) RETURNING id_ville INTO v_id;
     END IF;
     INSERT INTO Quartier (nom_quartier, id_ville) VALUES
-        ('Centre')
+        ('Centre', v_id)
     ON CONFLICT (nom_quartier, id_ville) DO NOTHING;
 
     ---------------------------------------------------------
@@ -1096,7 +1097,7 @@ BEGIN
         INSERT INTO Ville (nom_ville, id_departement) VALUES ('Agboville', d_id) RETURNING id_ville INTO v_id;
     END IF;
     INSERT INTO Quartier (nom_quartier, id_ville) VALUES
-        ('Gatcouleur'), ('Arti'), ('Sambregnan'), ('Offoriguié')
+        ('Gatcouleur', v_id), ('Arti', v_id), ('Sambregnan', v_id), ('Offoriguié', v_id)
     ON CONFLICT (nom_quartier, id_ville) DO NOTHING;
 
     SELECT id_departement INTO d_id FROM Departement WHERE nom_departement = 'Tiassalé' AND id_region = r_id;
@@ -1108,7 +1109,7 @@ BEGIN
         INSERT INTO Ville (nom_ville, id_departement) VALUES ('Tiassalé', d_id) RETURNING id_ville INTO v_id;
     END IF;
     INSERT INTO Quartier (nom_quartier, id_ville) VALUES
-        ('Brakagny'), ('Château')
+        ('Brakagny', v_id), ('Château', v_id)
     ON CONFLICT (nom_quartier, id_ville) DO NOTHING;
 
     SELECT id_departement INTO d_id FROM Departement WHERE nom_departement = 'Sikensi' AND id_region = r_id;
@@ -1120,7 +1121,7 @@ BEGIN
         INSERT INTO Ville (nom_ville, id_departement) VALUES ('Sikensi', d_id) RETURNING id_ville INTO v_id;
     END IF;
     INSERT INTO Quartier (nom_quartier, id_ville) VALUES
-        ('Sikensi 1'), ('Sikensi 2')
+        ('Sikensi 1', v_id), ('Sikensi 2', v_id)
     ON CONFLICT (nom_quartier, id_ville) DO NOTHING;
 
     SELECT id_departement INTO d_id FROM Departement WHERE nom_departement = 'Taabo' AND id_region = r_id;
@@ -1132,7 +1133,7 @@ BEGIN
         INSERT INTO Ville (nom_ville, id_departement) VALUES ('Taabo', d_id) RETURNING id_ville INTO v_id;
     END IF;
     INSERT INTO Quartier (nom_quartier, id_ville) VALUES
-        ('Taabo-Cité'), ('Taabo-Village')
+        ('Taabo-Cité', v_id), ('Taabo-Village', v_id)
     ON CONFLICT (nom_quartier, id_ville) DO NOTHING;
 
     ---------------------------------------------------------
@@ -1149,7 +1150,7 @@ BEGIN
         INSERT INTO Ville (nom_ville, id_departement) VALUES ('Dabou', d_id) RETURNING id_ville INTO v_id;
     END IF;
     INSERT INTO Quartier (nom_quartier, id_ville) VALUES
-        ('Centre'), ('Résidentiel'), ('Commerce')
+        ('Centre', v_id), ('Résidentiel', v_id), ('Commerce', v_id)
     ON CONFLICT (nom_quartier, id_ville) DO NOTHING;
 
     SELECT id_departement INTO d_id FROM Departement WHERE nom_departement = 'Jacqueville' AND id_region = r_id;
@@ -1161,7 +1162,7 @@ BEGIN
         INSERT INTO Ville (nom_ville, id_departement) VALUES ('Jacqueville', d_id) RETURNING id_ville INTO v_id;
     END IF;
     INSERT INTO Quartier (nom_quartier, id_ville) VALUES
-        ('Centre'), ('Résidentiel')
+        ('Centre', v_id), ('Résidentiel', v_id)
     ON CONFLICT (nom_quartier, id_ville) DO NOTHING;
 
     SELECT id_departement INTO d_id FROM Departement WHERE nom_departement = 'Grand-Lahou' AND id_region = r_id;
@@ -1173,7 +1174,7 @@ BEGIN
         INSERT INTO Ville (nom_ville, id_departement) VALUES ('Grand-Lahou', d_id) RETURNING id_ville INTO v_id;
     END IF;
     INSERT INTO Quartier (nom_quartier, id_ville) VALUES
-        ('Centre'), ('Résidentiel')
+        ('Centre', v_id), ('Résidentiel', v_id)
     ON CONFLICT (nom_quartier, id_ville) DO NOTHING;
 
     ---------------------------------------------------------
@@ -1190,7 +1191,7 @@ BEGIN
         INSERT INTO Ville (nom_ville, id_departement) VALUES ('Adzopé', d_id) RETURNING id_ville INTO v_id;
     END IF;
     INSERT INTO Quartier (nom_quartier, id_ville) VALUES
-        ('Centre'), ('Résidentiel'), ('Commerce')
+        ('Centre', v_id), ('Résidentiel', v_id), ('Commerce', v_id)
     ON CONFLICT (nom_quartier, id_ville) DO NOTHING;
 
     SELECT id_departement INTO d_id FROM Departement WHERE nom_departement = 'Akoupé' AND id_region = r_id;
@@ -1202,7 +1203,7 @@ BEGIN
         INSERT INTO Ville (nom_ville, id_departement) VALUES ('Akoupé', d_id) RETURNING id_ville INTO v_id;
     END IF;
     INSERT INTO Quartier (nom_quartier, id_ville) VALUES
-        ('Centre'), ('Résidentiel')
+        ('Centre', v_id), ('Résidentiel', v_id)
     ON CONFLICT (nom_quartier, id_ville) DO NOTHING;
 
     SELECT id_departement INTO d_id FROM Departement WHERE nom_departement = 'Alépé' AND id_region = r_id;
@@ -1214,7 +1215,7 @@ BEGIN
         INSERT INTO Ville (nom_ville, id_departement) VALUES ('Alépé', d_id) RETURNING id_ville INTO v_id;
     END IF;
     INSERT INTO Quartier (nom_quartier, id_ville) VALUES
-        ('Centre')
+        ('Centre', v_id)
     ON CONFLICT (nom_quartier, id_ville) DO NOTHING;
 
     SELECT id_departement INTO d_id FROM Departement WHERE nom_departement = 'Yakassé-Attobrou' AND id_region = r_id;
@@ -1226,7 +1227,7 @@ BEGIN
         INSERT INTO Ville (nom_ville, id_departement) VALUES ('Yakassé-Attobrou', d_id) RETURNING id_ville INTO v_id;
     END IF;
     INSERT INTO Quartier (nom_quartier, id_ville) VALUES
-        ('Centre')
+        ('Centre', v_id)
     ON CONFLICT (nom_quartier, id_ville) DO NOTHING;
 
     ---------------------------------------------------------
@@ -1243,7 +1244,7 @@ BEGIN
         INSERT INTO Ville (nom_ville, id_departement) VALUES ('Grand-Bassam', d_id) RETURNING id_ville INTO v_id;
     END IF;
     INSERT INTO Quartier (nom_quartier, id_ville) VALUES
-        ('Quartier France'), ('Impérial'), ('Mocker'), ('Rosiers'), ('Azuretti')
+        ('Quartier France', v_id), ('Impérial', v_id), ('Mocker', v_id), ('Rosiers', v_id), ('Azuretti', v_id)
     ON CONFLICT (nom_quartier, id_ville) DO NOTHING;
 
     SELECT id_departement INTO d_id FROM Departement WHERE nom_departement = 'Aboisso' AND id_region = r_id;
@@ -1255,7 +1256,7 @@ BEGIN
         INSERT INTO Ville (nom_ville, id_departement) VALUES ('Aboisso', d_id) RETURNING id_ville INTO v_id;
     END IF;
     INSERT INTO Quartier (nom_quartier, id_ville) VALUES
-        ('Sikèmssou'), ('Ebouakro'), ('Commerce')
+        ('Sikèmssou', v_id), ('Ebouakro', v_id), ('Commerce', v_id)
     ON CONFLICT (nom_quartier, id_ville) DO NOTHING;
 
     SELECT id_departement INTO d_id FROM Departement WHERE nom_departement = 'Adiaké' AND id_region = r_id;
@@ -1267,7 +1268,7 @@ BEGIN
         INSERT INTO Ville (nom_ville, id_departement) VALUES ('Adiaké', d_id) RETURNING id_ville INTO v_id;
     END IF;
     INSERT INTO Quartier (nom_quartier, id_ville) VALUES
-        ('Adiaké-Ville'), ('Roassal')
+        ('Adiaké-Ville', v_id), ('Roassal', v_id)
     ON CONFLICT (nom_quartier, id_ville) DO NOTHING;
 
     SELECT id_departement INTO d_id FROM Departement WHERE nom_departement = 'Tiapoum' AND id_region = r_id;
@@ -1279,7 +1280,7 @@ BEGIN
         INSERT INTO Ville (nom_ville, id_departement) VALUES ('Tiapoum', d_id) RETURNING id_ville INTO v_id;
     END IF;
     INSERT INTO Quartier (nom_quartier, id_ville) VALUES
-        ('Tiapoum-Ville')
+        ('Tiapoum-Ville', v_id)
     ON CONFLICT (nom_quartier, id_ville) DO NOTHING;
 
     ---------------------------------------------------------
@@ -1296,7 +1297,7 @@ BEGIN
         INSERT INTO Ville (nom_ville, id_departement) VALUES ('Abengourou', d_id) RETURNING id_ville INTO v_id;
     END IF;
     INSERT INTO Quartier (nom_quartier, id_ville) VALUES
-        ('Centre'), ('Résidentiel'), ('Commerce'), ('Dioulabougou')
+        ('Centre', v_id), ('Résidentiel', v_id), ('Commerce', v_id), ('Dioulabougou', v_id)
     ON CONFLICT (nom_quartier, id_ville) DO NOTHING;
 
     SELECT id_departement INTO d_id FROM Departement WHERE nom_departement = 'Agnibilékrou' AND id_region = r_id;
@@ -1308,7 +1309,7 @@ BEGIN
         INSERT INTO Ville (nom_ville, id_departement) VALUES ('Agnibilékrou', d_id) RETURNING id_ville INTO v_id;
     END IF;
     INSERT INTO Quartier (nom_quartier, id_ville) VALUES
-        ('Centre'), ('Résidentiel')
+        ('Centre', v_id), ('Résidentiel', v_id)
     ON CONFLICT (nom_quartier, id_ville) DO NOTHING;
 
     SELECT id_departement INTO d_id FROM Departement WHERE nom_departement = 'Bettié' AND id_region = r_id;
@@ -1320,7 +1321,7 @@ BEGIN
         INSERT INTO Ville (nom_ville, id_departement) VALUES ('Bettié', d_id) RETURNING id_ville INTO v_id;
     END IF;
     INSERT INTO Quartier (nom_quartier, id_ville) VALUES
-        ('Centre')
+        ('Centre', v_id)
     ON CONFLICT (nom_quartier, id_ville) DO NOTHING;
 
     ---------------------------------------------------------
@@ -1337,7 +1338,7 @@ BEGIN
         INSERT INTO Ville (nom_ville, id_departement) VALUES ('Bondoukou', d_id) RETURNING id_ville INTO v_id;
     END IF;
     INSERT INTO Quartier (nom_quartier, id_ville) VALUES
-        ('Centre'), ('Résidentiel'), ('Commerce'), ('Dioulabougou')
+        ('Centre', v_id), ('Résidentiel', v_id), ('Commerce', v_id), ('Dioulabougou', v_id)
     ON CONFLICT (nom_quartier, id_ville) DO NOTHING;
 
     SELECT id_departement INTO d_id FROM Departement WHERE nom_departement = 'Tanda' AND id_region = r_id;
@@ -1349,7 +1350,7 @@ BEGIN
         INSERT INTO Ville (nom_ville, id_departement) VALUES ('Tanda', d_id) RETURNING id_ville INTO v_id;
     END IF;
     INSERT INTO Quartier (nom_quartier, id_ville) VALUES
-        ('Centre'), ('Résidentiel')
+        ('Centre', v_id), ('Résidentiel', v_id)
     ON CONFLICT (nom_quartier, id_ville) DO NOTHING;
 
     SELECT id_departement INTO d_id FROM Departement WHERE nom_departement = 'Koun-Fao' AND id_region = r_id;
@@ -1361,7 +1362,7 @@ BEGIN
         INSERT INTO Ville (nom_ville, id_departement) VALUES ('Koun-Fao', d_id) RETURNING id_ville INTO v_id;
     END IF;
     INSERT INTO Quartier (nom_quartier, id_ville) VALUES
-        ('Centre')
+        ('Centre', v_id)
     ON CONFLICT (nom_quartier, id_ville) DO NOTHING;
 
     SELECT id_departement INTO d_id FROM Departement WHERE nom_departement = 'Sandégué' AND id_region = r_id;
@@ -1373,7 +1374,7 @@ BEGIN
         INSERT INTO Ville (nom_ville, id_departement) VALUES ('Sandégué', d_id) RETURNING id_ville INTO v_id;
     END IF;
     INSERT INTO Quartier (nom_quartier, id_ville) VALUES
-        ('Centre')
+        ('Centre', v_id)
     ON CONFLICT (nom_quartier, id_ville) DO NOTHING;
 
     SELECT id_departement INTO d_id FROM Departement WHERE nom_departement = 'Transua' AND id_region = r_id;
@@ -1385,7 +1386,7 @@ BEGIN
         INSERT INTO Ville (nom_ville, id_departement) VALUES ('Transua', d_id) RETURNING id_ville INTO v_id;
     END IF;
     INSERT INTO Quartier (nom_quartier, id_ville) VALUES
-        ('Centre')
+        ('Centre', v_id)
     ON CONFLICT (nom_quartier, id_ville) DO NOTHING;
 
     ---------------------------------------------------------
@@ -1402,7 +1403,7 @@ BEGIN
         INSERT INTO Ville (nom_ville, id_departement) VALUES ('Bouna', d_id) RETURNING id_ville INTO v_id;
     END IF;
     INSERT INTO Quartier (nom_quartier, id_ville) VALUES
-        ('Centre'), ('Résidentiel'), ('Commerce')
+        ('Centre', v_id), ('Résidentiel', v_id), ('Commerce', v_id)
     ON CONFLICT (nom_quartier, id_ville) DO NOTHING;
 
     SELECT id_departement INTO d_id FROM Departement WHERE nom_departement = 'Doropo' AND id_region = r_id;
@@ -1414,7 +1415,7 @@ BEGIN
         INSERT INTO Ville (nom_ville, id_departement) VALUES ('Doropo', d_id) RETURNING id_ville INTO v_id;
     END IF;
     INSERT INTO Quartier (nom_quartier, id_ville) VALUES
-        ('Centre')
+        ('Centre', v_id)
     ON CONFLICT (nom_quartier, id_ville) DO NOTHING;
 
     SELECT id_departement INTO d_id FROM Departement WHERE nom_departement = 'Nassian' AND id_region = r_id;
@@ -1426,7 +1427,7 @@ BEGIN
         INSERT INTO Ville (nom_ville, id_departement) VALUES ('Nassian', d_id) RETURNING id_ville INTO v_id;
     END IF;
     INSERT INTO Quartier (nom_quartier, id_ville) VALUES
-        ('Centre')
+        ('Centre', v_id)
     ON CONFLICT (nom_quartier, id_ville) DO NOTHING;
 
     SELECT id_departement INTO d_id FROM Departement WHERE nom_departement = 'Téhini' AND id_region = r_id;
@@ -1438,7 +1439,7 @@ BEGIN
         INSERT INTO Ville (nom_ville, id_departement) VALUES ('Téhini', d_id) RETURNING id_ville INTO v_id;
     END IF;
     INSERT INTO Quartier (nom_quartier, id_ville) VALUES
-        ('Centre')
+        ('Centre', v_id)
     ON CONFLICT (nom_quartier, id_ville) DO NOTHING;
 
     ---------------------------------------------------------
@@ -1455,7 +1456,7 @@ BEGIN
         INSERT INTO Ville (nom_ville, id_departement) VALUES ('Toumodi', d_id) RETURNING id_ville INTO v_id;
     END IF;
     INSERT INTO Quartier (nom_quartier, id_ville) VALUES
-        ('Centre'), ('Résidentiel'), ('Commerce')
+        ('Centre', v_id), ('Résidentiel', v_id), ('Commerce', v_id)
     ON CONFLICT (nom_quartier, id_ville) DO NOTHING;
 
     SELECT id_departement INTO d_id FROM Departement WHERE nom_departement = 'Tiébissou' AND id_region = r_id;
@@ -1467,7 +1468,7 @@ BEGIN
         INSERT INTO Ville (nom_ville, id_departement) VALUES ('Tiébissou', d_id) RETURNING id_ville INTO v_id;
     END IF;
     INSERT INTO Quartier (nom_quartier, id_ville) VALUES
-        ('Centre'), ('Résidentiel')
+        ('Centre', v_id), ('Résidentiel', v_id)
     ON CONFLICT (nom_quartier, id_ville) DO NOTHING;
 
     SELECT id_departement INTO d_id FROM Departement WHERE nom_departement = 'Didiévi' AND id_region = r_id;
@@ -1479,7 +1480,7 @@ BEGIN
         INSERT INTO Ville (nom_ville, id_departement) VALUES ('Didiévi', d_id) RETURNING id_ville INTO v_id;
     END IF;
     INSERT INTO Quartier (nom_quartier, id_ville) VALUES
-        ('Centre')
+        ('Centre', v_id)
     ON CONFLICT (nom_quartier, id_ville) DO NOTHING;
 
     SELECT id_departement INTO d_id FROM Departement WHERE nom_departement = 'Djékanou' AND id_region = r_id;
@@ -1491,7 +1492,7 @@ BEGIN
         INSERT INTO Ville (nom_ville, id_departement) VALUES ('Djékanou', d_id) RETURNING id_ville INTO v_id;
     END IF;
     INSERT INTO Quartier (nom_quartier, id_ville) VALUES
-        ('Centre')
+        ('Centre', v_id)
     ON CONFLICT (nom_quartier, id_ville) DO NOTHING;
 
     ---------------------------------------------------------
@@ -1508,7 +1509,7 @@ BEGIN
         INSERT INTO Ville (nom_ville, id_departement) VALUES ('Daoukro', d_id) RETURNING id_ville INTO v_id;
     END IF;
     INSERT INTO Quartier (nom_quartier, id_ville) VALUES
-        ('Centre'), ('Résidentiel'), ('Commerce')
+        ('Centre', v_id), ('Résidentiel', v_id), ('Commerce', v_id)
     ON CONFLICT (nom_quartier, id_ville) DO NOTHING;
 
     SELECT id_departement INTO d_id FROM Departement WHERE nom_departement = 'M’Bahiakro' AND id_region = r_id;
@@ -1520,7 +1521,7 @@ BEGIN
         INSERT INTO Ville (nom_ville, id_departement) VALUES ('M’Bahiakro', d_id) RETURNING id_ville INTO v_id;
     END IF;
     INSERT INTO Quartier (nom_quartier, id_ville) VALUES
-        ('Centre')
+        ('Centre', v_id)
     ON CONFLICT (nom_quartier, id_ville) DO NOTHING;
 
     SELECT id_departement INTO d_id FROM Departement WHERE nom_departement = 'Prikro' AND id_region = r_id;
@@ -1532,7 +1533,7 @@ BEGIN
         INSERT INTO Ville (nom_ville, id_departement) VALUES ('Prikro', d_id) RETURNING id_ville INTO v_id;
     END IF;
     INSERT INTO Quartier (nom_quartier, id_ville) VALUES
-        ('Centre')
+        ('Centre', v_id)
     ON CONFLICT (nom_quartier, id_ville) DO NOTHING;
 
     SELECT id_departement INTO d_id FROM Departement WHERE nom_departement = 'Ouellé' AND id_region = r_id;
@@ -1544,7 +1545,7 @@ BEGIN
         INSERT INTO Ville (nom_ville, id_departement) VALUES ('Ouellé', d_id) RETURNING id_ville INTO v_id;
     END IF;
     INSERT INTO Quartier (nom_quartier, id_ville) VALUES
-        ('Centre')
+        ('Centre', v_id)
     ON CONFLICT (nom_quartier, id_ville) DO NOTHING;
 
     ---------------------------------------------------------
@@ -1561,7 +1562,7 @@ BEGIN
         INSERT INTO Ville (nom_ville, id_departement) VALUES ('Dimbokro', d_id) RETURNING id_ville INTO v_id;
     END IF;
     INSERT INTO Quartier (nom_quartier, id_ville) VALUES
-        ('Centre'), ('Résidentiel'), ('Commerce')
+        ('Centre', v_id), ('Résidentiel', v_id), ('Commerce', v_id)
     ON CONFLICT (nom_quartier, id_ville) DO NOTHING;
 
     SELECT id_departement INTO d_id FROM Departement WHERE nom_departement = 'Bocanda' AND id_region = r_id;
@@ -1573,7 +1574,7 @@ BEGIN
         INSERT INTO Ville (nom_ville, id_departement) VALUES ('Bocanda', d_id) RETURNING id_ville INTO v_id;
     END IF;
     INSERT INTO Quartier (nom_quartier, id_ville) VALUES
-        ('Centre')
+        ('Centre', v_id)
     ON CONFLICT (nom_quartier, id_ville) DO NOTHING;
 
     SELECT id_departement INTO d_id FROM Departement WHERE nom_departement = 'Kouassi-Kouassikro' AND id_region = r_id;
@@ -1585,7 +1586,7 @@ BEGIN
         INSERT INTO Ville (nom_ville, id_departement) VALUES ('Kouassi-Kouassikro', d_id) RETURNING id_ville INTO v_id;
     END IF;
     INSERT INTO Quartier (nom_quartier, id_ville) VALUES
-        ('Centre')
+        ('Centre', v_id)
     ON CONFLICT (nom_quartier, id_ville) DO NOTHING;
 
     ---------------------------------------------------------
@@ -1602,7 +1603,7 @@ BEGIN
         INSERT INTO Ville (nom_ville, id_departement) VALUES ('Bongouanou', d_id) RETURNING id_ville INTO v_id;
     END IF;
     INSERT INTO Quartier (nom_quartier, id_ville) VALUES
-        ('Centre'), ('Résidentiel'), ('Commerce')
+        ('Centre', v_id), ('Résidentiel', v_id), ('Commerce', v_id)
     ON CONFLICT (nom_quartier, id_ville) DO NOTHING;
 
     SELECT id_departement INTO d_id FROM Departement WHERE nom_departement = 'Arrah' AND id_region = r_id;
@@ -1614,7 +1615,7 @@ BEGIN
         INSERT INTO Ville (nom_ville, id_departement) VALUES ('Arrah', d_id) RETURNING id_ville INTO v_id;
     END IF;
     INSERT INTO Quartier (nom_quartier, id_ville) VALUES
-        ('Centre')
+        ('Centre', v_id)
     ON CONFLICT (nom_quartier, id_ville) DO NOTHING;
 
     SELECT id_departement INTO d_id FROM Departement WHERE nom_departement = 'M’Batto' AND id_region = r_id;
@@ -1626,7 +1627,7 @@ BEGIN
         INSERT INTO Ville (nom_ville, id_departement) VALUES ('M’Batto', d_id) RETURNING id_ville INTO v_id;
     END IF;
     INSERT INTO Quartier (nom_quartier, id_ville) VALUES
-        ('Centre')
+        ('Centre', v_id)
     ON CONFLICT (nom_quartier, id_ville) DO NOTHING;
 
     ---------------------------------------------------------
@@ -1643,7 +1644,7 @@ BEGIN
         INSERT INTO Ville (nom_ville, id_departement) VALUES ('Séguéla', d_id) RETURNING id_ville INTO v_id;
     END IF;
     INSERT INTO Quartier (nom_quartier, id_ville) VALUES
-        ('Centre'), ('Résidentiel'), ('Commerce'), ('Dioulabougou')
+        ('Centre', v_id), ('Résidentiel', v_id), ('Commerce', v_id), ('Dioulabougou', v_id)
     ON CONFLICT (nom_quartier, id_ville) DO NOTHING;
 
     SELECT id_departement INTO d_id FROM Departement WHERE nom_departement = 'Kani' AND id_region = r_id;
@@ -1655,7 +1656,7 @@ BEGIN
         INSERT INTO Ville (nom_ville, id_departement) VALUES ('Kani', d_id) RETURNING id_ville INTO v_id;
     END IF;
     INSERT INTO Quartier (nom_quartier, id_ville) VALUES
-        ('Centre')
+        ('Centre', v_id)
     ON CONFLICT (nom_quartier, id_ville) DO NOTHING;
 
     ---------------------------------------------------------
@@ -1672,7 +1673,7 @@ BEGIN
         INSERT INTO Ville (nom_ville, id_departement) VALUES ('Mankono', d_id) RETURNING id_ville INTO v_id;
     END IF;
     INSERT INTO Quartier (nom_quartier, id_ville) VALUES
-        ('Centre'), ('Résidentiel'), ('Commerce')
+        ('Centre', v_id), ('Résidentiel', v_id), ('Commerce', v_id)
     ON CONFLICT (nom_quartier, id_ville) DO NOTHING;
 
     SELECT id_departement INTO d_id FROM Departement WHERE nom_departement = 'Dianra' AND id_region = r_id;
@@ -1684,7 +1685,7 @@ BEGIN
         INSERT INTO Ville (nom_ville, id_departement) VALUES ('Dianra', d_id) RETURNING id_ville INTO v_id;
     END IF;
     INSERT INTO Quartier (nom_quartier, id_ville) VALUES
-        ('Centre')
+        ('Centre', v_id)
     ON CONFLICT (nom_quartier, id_ville) DO NOTHING;
 
     SELECT id_departement INTO d_id FROM Departement WHERE nom_departement = 'Kounahiri' AND id_region = r_id;
@@ -1696,7 +1697,7 @@ BEGIN
         INSERT INTO Ville (nom_ville, id_departement) VALUES ('Kounahiri', d_id) RETURNING id_ville INTO v_id;
     END IF;
     INSERT INTO Quartier (nom_quartier, id_ville) VALUES
-        ('Centre')
+        ('Centre', v_id)
     ON CONFLICT (nom_quartier, id_ville) DO NOTHING;
 
     ---------------------------------------------------------
@@ -1713,7 +1714,7 @@ BEGIN
         INSERT INTO Ville (nom_ville, id_departement) VALUES ('Touba', d_id) RETURNING id_ville INTO v_id;
     END IF;
     INSERT INTO Quartier (nom_quartier, id_ville) VALUES
-        ('Centre'), ('Résidentiel'), ('Commerce')
+        ('Centre', v_id), ('Résidentiel', v_id), ('Commerce', v_id)
     ON CONFLICT (nom_quartier, id_ville) DO NOTHING;
 
     SELECT id_departement INTO d_id FROM Departement WHERE nom_departement = 'Koro' AND id_region = r_id;
@@ -1725,7 +1726,7 @@ BEGIN
         INSERT INTO Ville (nom_ville, id_departement) VALUES ('Koro', d_id) RETURNING id_ville INTO v_id;
     END IF;
     INSERT INTO Quartier (nom_quartier, id_ville) VALUES
-        ('Centre')
+        ('Centre', v_id)
     ON CONFLICT (nom_quartier, id_ville) DO NOTHING;
 
     SELECT id_departement INTO d_id FROM Departement WHERE nom_departement = 'Ouaninou' AND id_region = r_id;
@@ -1737,7 +1738,7 @@ BEGIN
         INSERT INTO Ville (nom_ville, id_departement) VALUES ('Ouaninou', d_id) RETURNING id_ville INTO v_id;
     END IF;
     INSERT INTO Quartier (nom_quartier, id_ville) VALUES
-        ('Centre')
+        ('Centre', v_id)
     ON CONFLICT (nom_quartier, id_ville) DO NOTHING;
 
     ---------------------------------------------------------
@@ -1754,7 +1755,7 @@ BEGIN
         INSERT INTO Ville (nom_ville, id_departement) VALUES ('Odienné', d_id) RETURNING id_ville INTO v_id;
     END IF;
     INSERT INTO Quartier (nom_quartier, id_ville) VALUES
-        ('Centre'), ('Résidentiel'), ('Commerce'), ('Dioulabougou')
+        ('Centre', v_id), ('Résidentiel', v_id), ('Commerce', v_id), ('Dioulabougou', v_id)
     ON CONFLICT (nom_quartier, id_ville) DO NOTHING;
 
     SELECT id_departement INTO d_id FROM Departement WHERE nom_departement = 'Madinani' AND id_region = r_id;
@@ -1766,7 +1767,7 @@ BEGIN
         INSERT INTO Ville (nom_ville, id_departement) VALUES ('Madinani', d_id) RETURNING id_ville INTO v_id;
     END IF;
     INSERT INTO Quartier (nom_quartier, id_ville) VALUES
-        ('Centre')
+        ('Centre', v_id)
     ON CONFLICT (nom_quartier, id_ville) DO NOTHING;
 
     SELECT id_departement INTO d_id FROM Departement WHERE nom_departement = 'Samatiguila' AND id_region = r_id;
@@ -1778,7 +1779,7 @@ BEGIN
         INSERT INTO Ville (nom_ville, id_departement) VALUES ('Samatiguila', d_id) RETURNING id_ville INTO v_id;
     END IF;
     INSERT INTO Quartier (nom_quartier, id_ville) VALUES
-        ('Centre')
+        ('Centre', v_id)
     ON CONFLICT (nom_quartier, id_ville) DO NOTHING;
 
     SELECT id_departement INTO d_id FROM Departement WHERE nom_departement = 'Séguélon' AND id_region = r_id;
@@ -1790,7 +1791,7 @@ BEGIN
         INSERT INTO Ville (nom_ville, id_departement) VALUES ('Séguélon', d_id) RETURNING id_ville INTO v_id;
     END IF;
     INSERT INTO Quartier (nom_quartier, id_ville) VALUES
-        ('Centre')
+        ('Centre', v_id)
     ON CONFLICT (nom_quartier, id_ville) DO NOTHING;
 
     SELECT id_departement INTO d_id FROM Departement WHERE nom_departement = 'Gbéléban' AND id_region = r_id;
@@ -1802,7 +1803,7 @@ BEGIN
         INSERT INTO Ville (nom_ville, id_departement) VALUES ('Gbéléban', d_id) RETURNING id_ville INTO v_id;
     END IF;
     INSERT INTO Quartier (nom_quartier, id_ville) VALUES
-        ('Centre')
+        ('Centre', v_id)
     ON CONFLICT (nom_quartier, id_ville) DO NOTHING;
 
     ---------------------------------------------------------
@@ -1819,7 +1820,7 @@ BEGIN
         INSERT INTO Ville (nom_ville, id_departement) VALUES ('Minignan', d_id) RETURNING id_ville INTO v_id;
     END IF;
     INSERT INTO Quartier (nom_quartier, id_ville) VALUES
-        ('Centre'), ('Résidentiel')
+        ('Centre', v_id), ('Résidentiel', v_id)
     ON CONFLICT (nom_quartier, id_ville) DO NOTHING;
 
     SELECT id_departement INTO d_id FROM Departement WHERE nom_departement = 'Kaniasso' AND id_region = r_id;
@@ -1831,7 +1832,7 @@ BEGIN
         INSERT INTO Ville (nom_ville, id_departement) VALUES ('Kaniasso', d_id) RETURNING id_ville INTO v_id;
     END IF;
     INSERT INTO Quartier (nom_quartier, id_ville) VALUES
-        ('Centre')
+        ('Centre', v_id)
     ON CONFLICT (nom_quartier, id_ville) DO NOTHING;
 
 END $$;

@@ -64,24 +64,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
         $msg = "Prestation supprimée.";
     }
 
-    elseif ($_POST['action'] === 'changer_statut') {
+    // Workflow strict : le prestataire réel est déduit en base (Cibler → Prestation →
+    // Utilisateur) à l'intérieur de changerStatutCommande(), jamais depuis le navigateur.
+    elseif (in_array($_POST['action'], ['accepter_commande', 'demarrer_commande', 'terminer_commande', 'annuler_commande_prest'], true)) {
         $id_cmd = (int)($_POST['id_commande'] ?? 0);
-        $statut = $_POST['statut'] ?? '';
-        if (in_array($statut, ['Acceptée', 'En attente', 'Terminé'], true)) {
-            $upd = $pdo->prepare("
-                UPDATE Commande cm
-                SET statut = ?
-                WHERE cm.id_commande = ?
-                  AND EXISTS (
-                      SELECT 1 FROM Cibler ci
-                      JOIN Prestation p ON ci.id_prestation = p.id_prestation
-                      WHERE ci.id_commande = cm.id_commande
-                        AND p.id_utilisateur = ?
-                  )
-            ");
-            $upd->execute([$statut, $id_cmd, $idUser]);
-            $msg = $statut === 'Acceptée' ? "Commande acceptée." : ($statut === 'Terminé' ? "Commande marquée comme terminée." : "Statut mis à jour.");
-        }
+        $motif  = trim($_POST['motif'] ?? '');
+        $action = match ($_POST['action']) {
+            'accepter_commande'       => 'accepter',
+            'demarrer_commande'       => 'demarrer',
+            'terminer_commande'       => 'terminer',
+            'annuler_commande_prest'  => 'annuler',
+        };
+        $res = changerStatutCommande($pdo, $id_cmd, $idUser, $action, $motif);
+        $res['ok'] ? $msg = $res['message'] : $err = $res['message'];
     }
 }
 
@@ -115,7 +110,7 @@ $st = $pdo->prepare("
     SELECT COALESCE(SUM(cm.montant_total), 0) FROM Commande cm
     JOIN Cibler ci ON cm.id_commande = ci.id_commande
     JOIN Prestation p ON ci.id_prestation = p.id_prestation
-    WHERE p.id_utilisateur = ? AND cm.statut = 'Terminé'
+    WHERE p.id_utilisateur = ? AND cm.statut = 'Terminée'
 ");
 $st->execute([$idUser]); $revenus_total = (float)$st->fetchColumn();
 
@@ -412,6 +407,7 @@ h2{font-size:22px;line-height:1.1}
 
 .status-badge{display:inline-flex;padding:5px 9px;border-radius:20px;font-size:9px;font-weight:800;letter-spacing:.02em}
 .status-amber{color:var(--amber-deep);background:var(--amber-tint)}
+.status-danger{color:var(--danger);background:var(--danger-tint)}
 .status-teal{color:var(--teal);background:var(--teal-tint)}
 .status-neutral{color:#62665d;background:#eeece5}
 
@@ -640,8 +636,12 @@ h2{font-size:22px;line-height:1.1}
           <?php else: ?>
           <div class="activity-list">
             <?php foreach ($recent_cmd as $c):
-              $isDone = $c['statut'] === 'Terminé'; $isPending = $c['statut'] === 'En attente';
-              $badgeClass = $isDone ? 'status-teal' : ($isPending ? 'status-amber' : 'status-neutral');
+              $badgeClass = match($c['statut']) {
+                  'Terminée' => 'status-teal',
+                  'En attente', 'En cours' => 'status-amber',
+                  'Annulée', 'Litige' => 'status-danger',
+                  default => 'status-neutral',
+              };
             ?>
             <div class="activity-item">
               <div class="activity-icon"><?= icon('package-check', 15) ?></div>
@@ -740,10 +740,18 @@ h2{font-size:22px;line-height:1.1}
           <p><?= $search !== '' ? 'Essayez un autre mot-clé.' : "Vos futures commandes apparaîtront ici." ?></p>
         </div>
       <?php else: foreach ($commandes as $c):
-        $isDone = $c['statut'] === 'Terminé';
+        $isDone     = $c['statut'] === 'Terminée';
         $isAccepted = $c['statut'] === 'Acceptée';
-        $isPending = $c['statut'] === 'En attente';
-        $badgeClass = $isDone ? 'status-teal' : ($isPending ? 'status-amber' : 'status-neutral');
+        $isPending  = $c['statut'] === 'En attente';
+        $isEnCours  = $c['statut'] === 'En cours';
+        $isAnnulee  = $c['statut'] === 'Annulée';
+        $isLitige   = $c['statut'] === 'Litige';
+        $badgeClass = match($c['statut']) {
+            'Terminée' => 'status-teal',
+            'En attente', 'En cours' => 'status-amber',
+            'Annulée', 'Litige' => 'status-danger',
+            default => 'status-neutral',
+        };
         $telHref = 'tel:' . preg_replace('/\s+/', '', $c['num_utilisateur']);
       ?>
       <div class="order-card">
@@ -769,19 +777,32 @@ h2{font-size:22px;line-height:1.1}
               En attente de la note du client.
             <?php endif; ?>
           </div>
-          <div class="order-foot"><span class="order-note"><?= icon('check', 14) ?> Paiement crédité sur votre wallet</span></div>
+          <div class="order-foot"><span class="order-note"><?= icon('check', 14) ?> <?= $c['date_validation_client'] ? 'Paiement crédité sur votre wallet' : 'Paiement en attente de confirmation du client' ?></span></div>
+        <?php elseif ($isAnnulee): ?>
+          <div class="order-foot"><span style="font-size:12px;color:var(--ink-soft)">Commande annulée<?= $c['motif_annulation'] ? ' — ' . htmlspecialchars($c['motif_annulation']) : '' ?>.</span></div>
+        <?php elseif ($isLitige): ?>
+          <div class="order-foot"><span style="font-size:12px;color:var(--danger)"><?= icon('x', 14) ?> Litige ouvert<?= $c['motif_litige'] ? ' — ' . htmlspecialchars($c['motif_litige']) : '' ?>. En cours d'arbitrage par l'administration.</span></div>
         <?php else: ?>
           <div class="order-foot">
             <form method="POST" style="display:flex;gap:8px;flex-wrap:wrap">
               <?= champCSRF() ?>
-              <input type="hidden" name="action" value="changer_statut">
               <input type="hidden" name="id_commande" value="<?= (int)$c['id_commande'] ?>">
               <?php if ($isPending): ?>
-                <button type="submit" name="statut" value="Acceptée" class="button button-dark"><?= icon('check', 14) ?> Accepter la commande</button>
-              <?php else: ?>
-                <button type="submit" name="statut" value="Terminé" class="button button-dark" onclick="return confirm('Marquer cette commande comme terminée ?')"><?= icon('check', 14) ?> Marquer comme terminé</button>
+                <button type="submit" name="action" value="accepter_commande" class="button button-dark"><?= icon('check', 14) ?> Accepter la commande</button>
+              <?php elseif ($isAccepted): ?>
+                <button type="submit" name="action" value="demarrer_commande" class="button button-dark"><?= icon('zap', 14) ?> Démarrer la prestation</button>
+              <?php elseif ($isEnCours): ?>
+                <button type="submit" name="action" value="terminer_commande" class="button button-dark" onclick="return confirm('Marquer cette commande comme terminée ?')"><?= icon('check', 14) ?> Marquer comme terminé</button>
               <?php endif; ?>
             </form>
+            <?php if ($isPending || $isAccepted): ?>
+            <form method="POST" onsubmit="return confirm('Annuler cette commande ? Le client sera remboursé.');">
+              <?= champCSRF() ?>
+              <input type="hidden" name="action" value="annuler_commande_prest">
+              <input type="hidden" name="id_commande" value="<?= (int)$c['id_commande'] ?>">
+              <button type="submit" class="button button-outline">Refuser / Annuler</button>
+            </form>
+            <?php endif; ?>
             <a href="<?= htmlspecialchars($telHref) ?>" class="button button-outline"><?= icon('phone', 14) ?> Contacter le client</a>
           </div>
         <?php endif; ?>

@@ -18,53 +18,48 @@ $solde_cli  = (float)$wallet_cli['solde'];
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
     verifierTokenCSRF();
 
-    // Commander une prestation
+    // Commander une prestation (création + blocage escrow, prestataire déduit côté serveur)
     if ($_POST['action'] === 'commander') {
-        $id_prest = (int)($_POST['id_prestation'] ?? 0);
-        $qty      = max(1, (int)($_POST['quantite'] ?? 1));
+        $id_prest    = (int)($_POST['id_prestation'] ?? 0);
+        $qty         = max(1, (int)($_POST['quantite'] ?? 1));
         $id_quartier = (int)($_POST['id_quartier'] ?? 0);
 
         if ($id_prest <= 0) {
             $err = "Prestation invalide.";
         } else {
-            $prest = $pdo->prepare("SELECT * FROM Prestation WHERE id_prestation = ?");
-            $prest->execute([$id_prest]);
-            $p = $prest->fetch();
-
-            if (!$p) {
-                $err = "Prestation introuvable.";
+            $res = creerCommandeAvecEscrow($pdo, $idUser, $id_prest, $qty, $id_quartier);
+            if ($res['ok']) {
+                $msg = $res['message'];
             } else {
-                if ($id_quartier <= 0) {
-                    $uq = $pdo->prepare("SELECT id_quartier FROM Utilisateur WHERE id_utilisateur = ?");
-                    $uq->execute([$idUser]);
-                    $id_quartier = (int)$uq->fetchColumn();
-                }
-
-                $montant = (float)$p['prix_prestation'] * $qty;
-
-                try {
-                    $pdo->beginTransaction();
-
-                    $insCmd = $pdo->prepare("
-                        INSERT INTO Commande (montant_total, statut, id_quartier, id_utilisateur)
-                        VALUES (?, 'En attente', ?, ?)
-                    ");
-                    $insCmd->execute([$montant, $id_quartier, $idUser]);
-                    $id_cmd = (int)$pdo->lastInsertId();
-
-                    $insCib = $pdo->prepare("
-                        INSERT INTO Cibler (id_prestation, id_commande, prix_unitaire, quantite)
-                        VALUES (?, ?, ?, ?)
-                    ");
-                    $insCib->execute([$id_prest, $id_cmd, $p['prix_prestation'], $qty]);
-
-                    $pdo->commit();
-                    $msg = "Commande #{$id_cmd} passée avec succès ! Le prestataire va la traiter.";
-                } catch (Exception $e) {
-                    if ($pdo->inTransaction()) $pdo->rollBack();
-                    $err = "Erreur lors de la commande : " . $e->getMessage();
-                }
+                $err = $res['message'];
             }
+        }
+    }
+
+    // Annuler une commande (En attente ou Acceptée) — remboursement automatique
+    elseif ($_POST['action'] === 'annuler_commande') {
+        $id_cmd = (int)($_POST['id_commande'] ?? 0);
+        $motif  = trim($_POST['motif'] ?? '');
+        $res = changerStatutCommande($pdo, $id_cmd, $idUser, 'annuler', $motif);
+        $res['ok'] ? $msg = $res['message'] : $err = $res['message'];
+    }
+
+    // Confirmer la réception d'une commande terminée — libère le paiement
+    elseif ($_POST['action'] === 'confirmer_reception') {
+        $id_cmd = (int)($_POST['id_commande'] ?? 0);
+        $res = changerStatutCommande($pdo, $id_cmd, $idUser, 'confirmer_reception');
+        $res['ok'] ? $msg = $res['message'] : $err = $res['message'];
+    }
+
+    // Ouvrir un litige sur une commande en cours
+    elseif ($_POST['action'] === 'ouvrir_litige') {
+        $id_cmd = (int)($_POST['id_commande'] ?? 0);
+        $motif  = trim($_POST['motif'] ?? '');
+        if ($motif === '') {
+            $err = "Merci de préciser le motif du litige.";
+        } else {
+            $res = changerStatutCommande($pdo, $id_cmd, $idUser, 'ouvrir_litige', $motif);
+            $res['ok'] ? $msg = $res['message'] : $err = $res['message'];
         }
     }
 
@@ -81,7 +76,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
             $chk = $pdo->prepare("
                 SELECT cm.id_commande FROM Commande cm
                 JOIN Cibler ci ON cm.id_commande = ci.id_commande
-                WHERE cm.id_commande = ? AND cm.id_utilisateur = ? AND cm.statut = 'Terminé'
+                WHERE cm.id_commande = ? AND cm.id_utilisateur = ? AND cm.statut = 'Terminée'
                   AND ci.id_prestation = ?
             ");
             $chk->execute([$id_cmd, $idUser, $id_prest]);
@@ -111,12 +106,12 @@ $nb_cmd->execute([$idUser]); $nb_cmd = (int)$nb_cmd->fetchColumn();
 $nb_attente = $pdo->prepare("SELECT COUNT(*) FROM Commande WHERE id_utilisateur = ? AND statut = 'En attente'");
 $nb_attente->execute([$idUser]); $nb_attente = (int)$nb_attente->fetchColumn();
 
-$nb_termine = $pdo->prepare("SELECT COUNT(*) FROM Commande WHERE id_utilisateur = ? AND statut = 'Terminé'");
+$nb_termine = $pdo->prepare("SELECT COUNT(*) FROM Commande WHERE id_utilisateur = ? AND statut = 'Terminée'");
 $nb_termine->execute([$idUser]); $nb_termine = (int)$nb_termine->fetchColumn();
 
 $depense = $pdo->prepare("
     SELECT COALESCE(SUM(montant_total), 0) FROM Commande
-    WHERE id_utilisateur = ? AND statut = 'Terminé'
+    WHERE id_utilisateur = ? AND statut = 'Terminée'
 ");
 $depense->execute([$idUser]); $depense_total = (float)$depense->fetchColumn();
 
@@ -458,6 +453,7 @@ svg{display:block}
 .km-badge-teal{color:var(--teal);background:var(--teal-tint)}
 .km-badge-amber{color:var(--amber-deep);background:var(--amber-tint)}
 .km-badge-neutral{color:var(--ink-soft);background:var(--paper-deep)}
+.km-badge-danger{color:var(--danger);background:var(--danger-tint)}
 .km-activity-amount{font-family:'Fraunces',serif;font-weight:600;font-size:13.5px;white-space:nowrap}
 
 .km-quick-list{display:flex;flex-direction:column;gap:8px;padding:18px 20px}
@@ -689,9 +685,9 @@ svg{display:block}
         </div>
         <?php if (!empty($recent_cmd)): $dernier = $recent_cmd[0]; ?>
         <div class="km-hero-float">
-          <div class="km-hero-float-icon"><?= icon($dernier['statut'] === 'Terminé' ? 'check' : 'clock', 17) ?></div>
+          <div class="km-hero-float-icon"><?= icon($dernier['statut'] === 'Terminée' ? 'check' : 'clock', 17) ?></div>
           <div>
-            <strong><?= $dernier['statut'] === 'Terminé' ? 'Service terminé' : 'Service réservé' ?></strong>
+            <strong><?= $dernier['statut'] === 'Terminée' ? 'Service terminé' : 'Service réservé' ?></strong>
             <span><?= htmlspecialchars($dernier['nom_quartier']) ?></span>
           </div>
         </div>
@@ -735,7 +731,7 @@ svg{display:block}
           <?php else: ?>
           <div class="km-activity-list">
             <?php foreach ($recent_cmd as $c):
-              $isDone = $c['statut'] === 'Terminé'; $isPending = $c['statut'] === 'En attente';
+              $isDone = $c['statut'] === 'Terminée'; $isPending = $c['statut'] === 'En attente';
               $badgeClass = $isDone ? 'km-badge-teal' : ($isPending ? 'km-badge-amber' : 'km-badge-neutral');
             ?>
             <div class="km-activity">
@@ -856,7 +852,15 @@ svg{display:block}
         </div>
       <?php else: ?>
       <?php foreach ($commandes as $c):
-        $badgeClass = match($c['statut']) { 'Terminé' => 'km-badge-teal', 'Acceptée' => 'km-badge-amber', default => 'km-badge-neutral' };
+        $badgeClass = match($c['statut']) {
+            'Terminée' => 'km-badge-teal',
+            'En attente', 'En cours' => 'km-badge-amber',
+            'Annulée', 'Litige' => 'km-badge-danger',
+            default => 'km-badge-neutral',
+        };
+        $peutAnnuler = in_array($c['statut'], ['En attente', 'Acceptée'], true);
+        $peutConfirmer = $c['statut'] === 'Terminée' && $c['date_validation_client'] === null;
+        $peutLitige = $c['statut'] === 'En cours';
       ?>
       <div class="km-order-card">
         <div class="km-order-head">
@@ -873,8 +877,28 @@ svg{display:block}
           <div class="km-order-detail"><div class="km-order-label">Téléphone</div><div class="km-order-val"><?= htmlspecialchars($c['prest_tel']) ?></div></div>
           <div class="km-order-detail"><div class="km-order-label">Lieu d'intervention</div><div class="km-order-val"><?= htmlspecialchars($c['nom_quartier']) ?></div></div>
         </div>
-        <div class="km-order-foot">
-          <?php if ($c['statut'] === 'Terminé' && $c['evaluation'] === null): ?>
+        <div class="km-order-foot" style="flex-wrap:wrap;gap:.6rem">
+          <?php if ($peutConfirmer): ?>
+            <form method="POST" style="display:inline">
+              <?= champCSRF() ?>
+              <input type="hidden" name="action" value="confirmer_reception">
+              <input type="hidden" name="id_commande" value="<?= $c['id_commande'] ?>">
+              <button type="submit" class="km-btn km-btn-dark" style="height:38px;padding:0 16px"><?= icon('check', 15) ?> Confirmer la réception</button>
+            </form>
+          <?php endif; ?>
+          <?php if ($peutLitige): ?>
+            <button type="button" class="km-btn km-btn-outline" style="height:38px;padding:0 16px" onclick="ouvrirLitige(<?= $c['id_commande'] ?>)"><?= icon('x', 15) ?> Signaler un problème</button>
+          <?php endif; ?>
+          <?php if ($peutAnnuler): ?>
+            <form method="POST" style="display:inline" onsubmit="return confirm('Annuler cette commande ? Le montant vous sera remboursé.');">
+              <?= champCSRF() ?>
+              <input type="hidden" name="action" value="annuler_commande">
+              <input type="hidden" name="id_commande" value="<?= $c['id_commande'] ?>">
+              <button type="submit" class="km-btn km-btn-outline" style="height:38px;padding:0 16px">Annuler</button>
+            </form>
+          <?php endif; ?>
+
+          <?php if ($c['statut'] === 'Terminée' && $c['evaluation'] === null): ?>
             <form method="POST" class="km-rate-form" style="display:flex;align-items:center;gap:.7rem;flex-wrap:wrap;width:100%">
               <?= champCSRF() ?>
               <input type="hidden" name="action" value="noter">
@@ -902,14 +926,43 @@ svg{display:block}
               </span>
               <?php if ($c['commentaire']): ?> — <em><?= htmlspecialchars(mb_substr($c['commentaire'], 0, 60)) ?></em><?php endif; ?>
             </span>
-          <?php else: ?>
+          <?php elseif (!$peutAnnuler && !$peutLitige && !$peutConfirmer): ?>
             <span style="font-size:13px;color:var(--ink-soft)">
-              <?= $c['statut'] === 'En attente' ? 'En attente de confirmation du prestataire…' : 'Votre prestation est en cours.' ?>
+              <?php if ($c['statut'] === 'Annulée'): ?>
+                Commande annulée<?= $c['motif_annulation'] ? ' — ' . htmlspecialchars($c['motif_annulation']) : '' ?>. Montant remboursé.
+              <?php elseif ($c['statut'] === 'Litige'): ?>
+                Litige en cours d'examen par l'administration.
+              <?php else: ?>
+                <?= $c['statut'] === 'En attente' ? 'En attente de confirmation du prestataire…' : 'Votre prestation est en cours.' ?>
+              <?php endif; ?>
             </span>
           <?php endif; ?>
         </div>
       </div>
       <?php endforeach; ?>
+
+      <!-- Modal Litige -->
+      <div class="km-modal-overlay" id="modal-litige">
+        <div class="km-modal">
+          <div class="km-modal-head">
+            <h3>Signaler un problème</h3>
+            <button type="button" class="km-modal-close" onclick="document.getElementById('modal-litige').classList.remove('open')" aria-label="Fermer"><?= icon('x', 16) ?></button>
+          </div>
+          <form method="POST">
+            <?= champCSRF() ?>
+            <input type="hidden" name="action" value="ouvrir_litige">
+            <input type="hidden" name="id_commande" id="litige-id-commande" value="">
+            <div class="km-mfield"><label>Décrivez le problème</label><textarea name="motif" rows="4" style="width:100%;padding:10px 12px;border:1px solid var(--line);border-radius:9px;background:var(--paper);font-size:13px" required></textarea></div>
+            <button type="submit" class="km-btn km-btn-dark km-btn-block">Envoyer le litige</button>
+          </form>
+        </div>
+      </div>
+      <script>
+        function ouvrirLitige(id) {
+          document.getElementById('litige-id-commande').value = id;
+          document.getElementById('modal-litige').classList.add('open');
+        }
+      </script>
       <?php if ($nb_pages_cmd > 1): ?>
       <div class="km-pagination">
         <?php for ($i = 1; $i <= $nb_pages_cmd; $i++): ?>
