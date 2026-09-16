@@ -756,7 +756,6 @@ h2{font-size:22px;line-height:1.1}
   <aside class="sidebar" id="sidebar">
     <div class="brand">
       <a href="index.php" class="brand-logo">Koud<span>Main</span></a>
-      <div class="brand-tag">Votre argent, simplifié</div>
     </div>
     <div class="sidebar-scroll">
       <div class="nav-group">

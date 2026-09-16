@@ -601,7 +601,6 @@ svg{display:block}
   <aside class="km-sidebar" id="km-sidebar">
     <div class="km-sb-brand">
       <a href="index.php">Koud<span>Main</span></a>
-      <div class="km-sb-tag">Votre quotidien, simplifié</div>
     </div>
 
     <nav class="km-sb-scroll">
