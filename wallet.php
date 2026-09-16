@@ -210,6 +210,32 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
             $err = "Impossible d'ajouter la carte. Exécutez le script SQL mis à jour sur Supabase. (" . $e->getMessage() . ")";
         }
     }
+
+    elseif ($_POST['action'] === 'supprimer_carte') {
+        $id_carte = (int)($_POST['id_carte'] ?? 0);
+
+        if ($id_carte <= 0) {
+            $err = "Carte invalide.";
+        } else {
+            try {
+                $chk = $pdo->prepare("SELECT libelle, est_principale FROM Carte_Virtuelle WHERE id_carte = ? AND id_wallet = ?");
+                $chk->execute([$id_carte, $id_wallet]);
+                $carteASupprimer = $chk->fetch();
+
+                if (!$carteASupprimer) {
+                    $err = "Cette carte est introuvable.";
+                } elseif (!empty($carteASupprimer['est_principale'])) {
+                    $err = "Votre carte principale ne peut pas être supprimée.";
+                } else {
+                    $pdo->prepare("DELETE FROM Carte_Virtuelle WHERE id_carte = ? AND id_wallet = ?")
+                        ->execute([$id_carte, $id_wallet]);
+                    $msg = "Carte « " . htmlspecialchars($carteASupprimer['libelle']) . " » supprimée.";
+                }
+            } catch (Exception $e) {
+                $err = "Impossible de supprimer la carte. (" . $e->getMessage() . ")";
+            }
+        }
+    }
 }
 
 $cartes = [];
@@ -412,6 +438,7 @@ function icon(string $name, int $size = 17): string {
         'search'             => '<circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/>',
         'settings'           => '<path d="M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1Z"/>',
         'sparkles'           => '<path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"/>',
+        'trash'              => '<polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/>',
         'user-round'         => '<circle cx="12" cy="8" r="5"/><path d="M20 21a8 8 0 0 0-16 0"/>',
         'wallet-cards'       => '<path d="M17 14h.01"/><path d="M7 7h12a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5c0-1.1.9-2 2-2h9a2 2 0 0 1 2 2v2"/>',
         'x'                  => '<line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>',
@@ -660,6 +687,9 @@ h2{font-size:22px;line-height:1.1}
 .empty-state{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:160px;gap:8px;color:var(--ink-faint)}
 .empty-state p{margin:0;font-size:11px}
 .text-button{display:inline-flex;align-items:center;gap:5px;padding:0;color:var(--amber-deep);background:transparent;border:0;font-size:10px;font-weight:700}
+.delete-card-form{display:flex;justify-content:center;margin-top:11px}
+.text-button-danger{color:var(--danger);transition:color .16s ease}
+.text-button-danger:hover{color:#7a2e1d}
 .page-footer{display:flex;justify-content:space-between;padding:25px 3px 0;color:var(--ink-faint);font-size:9px;flex-wrap:wrap;gap:6px}
 
 .modal-overlay{position:fixed;inset:0;z-index:100;display:none;place-items:center;padding:20px;background:rgba(26,28,24,.55);backdrop-filter:blur(5px);animation:fade-in .18s ease both}
@@ -878,6 +908,12 @@ h2{font-size:22px;line-height:1.1}
             <button type="button" class="button button-outline" id="btn-cvv"><?= icon('eye', 15) ?> <span id="btn-cvv-label">Voir le CVV</span></button>
           </div>
           <div class="cvv-reveal" id="cvv-reveal" style="display:none">CVV · <strong id="cvv-value"></strong><span>Visible pendant votre session</span></div>
+          <form method="POST" action="wallet.php" class="delete-card-form" id="form-delete-carte" onsubmit="return confirm('Supprimer définitivement cette carte virtuelle ? Cette action est irréversible.');">
+            <?= champCSRF() ?>
+            <input type="hidden" name="action" value="supprimer_carte">
+            <input type="hidden" name="id_carte" class="js-id-carte" value="">
+            <button type="submit" class="text-button text-button-danger" id="btn-delete-card"><?= icon('trash', 13) ?> Supprimer cette carte</button>
+          </form>
           <p class="stack-hint"><?= icon('arrow-up', 13) ?> Glissez ou utilisez les flèches pour changer de carte <?= icon('arrow-down', 13) ?></p>
         </section>
 
@@ -1103,6 +1139,11 @@ function syncFreezeUi() {
   document.getElementById('btn-freeze-label').textContent = c.gelee ? 'Dégeler la carte' : 'Geler la carte';
   document.getElementById('quick-freeze-label').textContent = c.gelee ? 'Dégeler cette carte' : 'Geler cette carte';
   document.getElementById('quick-freeze-sub').textContent = c.gelee ? 'Réactiver les paiements' : 'Bloquer les paiements';
+
+  const deleteForm = document.getElementById('form-delete-carte');
+  if (deleteForm) {
+    deleteForm.style.display = (c.id > 0 && !c.principale) ? 'flex' : 'none';
+  }
 
   stackItems.forEach((item, i) => {
     const existing = item.querySelector('[data-frozen-overlay]');
