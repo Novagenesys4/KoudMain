@@ -10,6 +10,7 @@ $idUser = $_SESSION['id_utilisateur'];
 $msg    = "";
 $err    = "";
 $nb_notifs = nbNotificationsNonLues($pdo, $idUser);
+$nb_msgs   = nbMessagesNonLus($pdo, $idUser);
 
 $wallet_prest = getOuCreerWallet($pdo, $idUser);
 $solde_prest  = (float)$wallet_prest['solde'];
@@ -253,6 +254,7 @@ function icon(string $name, int $size = 17): string {
         'arrow-right'      => '<path d="M5 12h14"/><path d="m12 5 7 7-7 7"/>',
         'package-check'    => '<path d="M16 16h6"/><path d="M19 13v6"/><path d="M21 10V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l2-1.14"/><path d="m7.5 4.27 9 5.15"/><path d="M3.29 7 12 12l8.71-5"/><path d="M12 22V12"/>',
         'sparkles'         => '<path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"/>',
+        'message'          => '<path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>',
         'pencil'           => '<path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/><path d="m15 5 4 4"/>',
         'trash'            => '<polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/>',
         'phone'            => '<path d="M13.832 16.568a1 1 0 0 0 1.213-.303l.355-.465A2 2 0 0 1 17 15h3a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2A18 18 0 0 1 2 4a2 2 0 0 1 2-2h3a2 2 0 0 1 2 2v3a2 2 0 0 1-.633 1.4l-.465.354a1 1 0 0 0-.302 1.214 14.11 14.11 0 0 0 6.232 6.232"/>',
@@ -579,6 +581,7 @@ h2{font-size:22px;line-height:1.1}
           <?= icon('search', 16) ?>
           <input type="text" name="q" value="<?= htmlspecialchars($search) ?>" placeholder="<?= htmlspecialchars($search_placeholder) ?>">
         </form>
+        <a href="messages.php" class="icon-button" aria-label="Messages" title="<?= $nb_msgs > 0 ? $nb_msgs . ' message(s) non lu(s)' : 'Aucun nouveau message' ?>"><?= icon('message', 18) ?><?php if ($nb_msgs > 0): ?><i></i><?php endif; ?></a>
         <a href="notifications.php" class="icon-button" aria-label="Notifications" title="<?= $nb_notifs > 0 ? $nb_notifs . ' notification(s) non lue(s)' : 'Vous êtes à jour.' ?>"><?= icon('bell', 18) ?><?php if ($nb_notifs > 0): ?><i></i><?php endif; ?></a>
         <a href="wallet.php" class="top-profile"><div class="avatar avatar-sm"><?= htmlspecialchars($initiales) ?></div><?= icon('chevron-down', 14) ?></a>
       </div>
@@ -768,6 +771,13 @@ h2{font-size:22px;line-height:1.1}
           <div class="order-field"><div class="order-field-label">Prestation</div><div class="order-field-val"><?= htmlspecialchars($c['titre_prestation']) ?></div></div>
           <div class="order-field"><div class="order-field-label">Client</div><div class="order-field-val"><?= htmlspecialchars($c['prenom_utilisateur'] . ' ' . $c['nom_utilisateur']) ?></div></div>
           <div class="order-field"><div class="order-field-label">Lieu</div><div class="order-field-val"><?= icon('map-pin', 12) ?> <?= htmlspecialchars($c['nom_quartier']) ?></div></div>
+        </div>
+        <?php $nbMsgCmd = nbMessagesNonLusPourCommande($pdo, (int)$c['id_commande'], $idUser); ?>
+        <div class="order-avis" style="border-bottom:1px solid var(--line)">
+          <a href="conversation.php?id_commande=<?= (int)$c['id_commande'] ?>" class="button button-outline" style="position:relative">
+            <?= icon('sparkles', 14) ?> Discuter avec le client
+            <?php if ($nbMsgCmd > 0): ?><span style="position:absolute;top:-7px;right:-7px;min-width:18px;height:18px;display:grid;place-items:center;padding:0 4px;background:var(--amber);color:#fff;border-radius:20px;font-size:9.5px;font-weight:800"><?= $nbMsgCmd ?></span><?php endif; ?>
+          </a>
         </div>
         <?php if ($isDone): ?>
           <div class="order-avis">

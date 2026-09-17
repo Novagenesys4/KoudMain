@@ -715,3 +715,225 @@ function libererEscrowsExpires(PDO $pdo, int $joursDelai = 3): int
     }
     return $count;
 }
+// ---------------------------------------------------------------------------
+// 10. Messagerie interne (liée à la commande, pas à la seule prestation)
+// ---------------------------------------------------------------------------
+
+/**
+ * Vérifie que $idUtilisateur est autorisé à accéder à la conversation de
+ * cette commande : client réel, prestataire réel, ou administrateur
+ * (modération). Retourne la commande (avec ses acteurs réels + le rôle
+ * de l'acteur courant) ou null si l'accès est refusé.
+ */
+function commandeAccessibleA(PDO $pdo, int $idCommande, int $idUtilisateur): ?array
+{
+    $cmd = getCommandeAvecActeurs($pdo, $idCommande);
+    if (!$cmd) {
+        return null;
+    }
+
+    $estClient      = ((int)$cmd['id_utilisateur'] === $idUtilisateur);
+    $estPrestataire = ((int)$cmd['id_prestataire_reel'] === $idUtilisateur);
+    $estAdminActeur = estAdmin();
+
+    if (!$estClient && !$estPrestataire && !$estAdminActeur) {
+        return null;
+    }
+
+    $cmd['role_acteur'] = $estClient ? 'client' : ($estPrestataire ? 'prestataire' : 'admin');
+    return $cmd;
+}
+
+/**
+ * Récupère la conversation liée à une commande, en la créant si besoin.
+ */
+function getOuCreerConversation(PDO $pdo, int $idCommande): array
+{
+    $stmt = $pdo->prepare("SELECT * FROM Conversation WHERE id_commande = ?");
+    $stmt->execute([$idCommande]);
+    $conv = $stmt->fetch();
+
+    if (!$conv) {
+        try {
+            $pdo->prepare("INSERT INTO Conversation (id_commande) VALUES (?)")->execute([$idCommande]);
+        } catch (PDOException $e) {
+            // Conversation déjà créée entre-temps (contrainte UNIQUE sur id_commande)
+        }
+        $stmt->execute([$idCommande]);
+        $conv = $stmt->fetch();
+    }
+
+    return $conv;
+}
+
+/**
+ * Nettoie et valide le contenu d'un message avant envoi :
+ * - rejette le vide et les messages trop longs
+ * - retire toute balise HTML (défense en profondeur, en plus de
+ *   l'échappement systématique à l'affichage)
+ * - rejette les tentatives d'injection JS explicites
+ * - masque les coordonnées sensibles (email, téléphone) pour limiter les
+ *   échanges hors plateforme
+ *
+ * @return array{ok: bool, contenu?: string, message?: string}
+ */
+function nettoyerMessage(string $contenuBrut): array
+{
+    if (preg_match('/<\s*script|javascript\s*:|on\w+\s*=\s*["\']/i', $contenuBrut)) {
+        return ['ok' => false, 'message' => 'Contenu non autorisé détecté dans le message.'];
+    }
+
+    $contenu = trim(strip_tags($contenuBrut));
+
+    if ($contenu === '') {
+        return ['ok' => false, 'message' => 'Le message ne peut pas être vide.'];
+    }
+    if (mb_strlen($contenu) > 5000) {
+        return ['ok' => false, 'message' => 'Le message est trop long (5000 caractères maximum).'];
+    }
+
+    // Masque les adresses email et numéros de téléphone
+    $contenu = preg_replace('/[\w.+-]+@[\w-]+\.[a-z]{2,}/i', '[email masqué]', $contenu);
+    $contenu = preg_replace('/(\+?\d[\d .\-]{7,}\d)/', '[numéro masqué]', $contenu);
+
+    return ['ok' => true, 'contenu' => $contenu];
+}
+
+/**
+ * Envoie un message dans la conversation d'une commande, après vérification
+ * stricte de l'accès de l'expéditeur. Notifie l'autre partie.
+ *
+ * @return array{ok: bool, message: string}
+ */
+function envoyerMessage(PDO $pdo, int $idCommande, int $idExpediteur, string $contenuBrut): array
+{
+    $cmd = commandeAccessibleA($pdo, $idCommande, $idExpediteur);
+    if (!$cmd) {
+        return ['ok' => false, 'message' => "Vous n'êtes pas autorisé à écrire dans cette conversation."];
+    }
+
+    $nettoyage = nettoyerMessage($contenuBrut);
+    if (!$nettoyage['ok']) {
+        return ['ok' => false, 'message' => $nettoyage['message']];
+    }
+
+    $conv = getOuCreerConversation($pdo, $idCommande);
+
+    try {
+        $pdo->beginTransaction();
+
+        $pdo->prepare("
+            INSERT INTO Message (id_conversation, id_expediteur, contenu)
+            VALUES (?, ?, ?)
+        ")->execute([$conv['id_conversation'], $idExpediteur, $nettoyage['contenu']]);
+
+        $pdo->prepare("
+            UPDATE Conversation SET date_dernier_message = CURRENT_TIMESTAMP WHERE id_conversation = ?
+        ")->execute([$conv['id_conversation']]);
+
+        $pdo->commit();
+    } catch (Throwable $e) {
+        if ($pdo->inTransaction()) $pdo->rollBack();
+        error_log('[KoudMain] envoyerMessage : ' . $e->getMessage());
+        return ['ok' => false, 'message' => "Erreur lors de l'envoi du message."];
+    }
+
+    $idClientReel      = (int)$cmd['id_utilisateur'];
+    $idPrestataireReel = (int)$cmd['id_prestataire_reel'];
+    $idDestinataire    = ($idExpediteur === $idClientReel) ? $idPrestataireReel : $idClientReel;
+
+    if ($idDestinataire !== $idExpediteur) {
+        creerNotification(
+            $pdo,
+            $idDestinataire,
+            'nouveau_message',
+            'Nouveau message',
+            'Vous avez reçu un nouveau message concernant la commande #' . $idCommande . '.',
+            $idCommande
+        );
+    }
+
+    return ['ok' => true, 'message' => 'Message envoyé.'];
+}
+
+/**
+ * Marque comme lus tous les messages d'une conversation qui ne sont pas de
+ * $idUtilisateur (c'est-à-dire ceux qu'il a reçus).
+ */
+function marquerMessagesLus(PDO $pdo, int $idConversation, int $idUtilisateur): void
+{
+    $pdo->prepare("
+        UPDATE Message SET est_lu = true
+        WHERE id_conversation = ? AND id_expediteur != ? AND est_lu = false
+    ")->execute([$idConversation, $idUtilisateur]);
+}
+
+/**
+ * Nombre total de messages non lus reçus par un utilisateur, tous fils confondus.
+ */
+function nbMessagesNonLus(PDO $pdo, int $idUtilisateur): int
+{
+    $stmt = $pdo->prepare("
+        SELECT COUNT(*) FROM Message m
+        JOIN Conversation c ON c.id_conversation = m.id_conversation
+        JOIN Commande cm ON cm.id_commande = c.id_commande
+        WHERE m.est_lu = false
+          AND m.id_expediteur != ?
+          AND (cm.id_utilisateur = ? OR cm.id_prestataire = ?)
+    ");
+    $stmt->execute([$idUtilisateur, $idUtilisateur, $idUtilisateur]);
+    return (int)$stmt->fetchColumn();
+}
+
+/**
+ * Nombre de messages non lus pour une commande précise (utile pour
+ * afficher un badge sur le bouton "Discuter" de chaque commande).
+ */
+function nbMessagesNonLusPourCommande(PDO $pdo, int $idCommande, int $idUtilisateur): int
+{
+    $stmt = $pdo->prepare("
+        SELECT COUNT(*) FROM Message m
+        JOIN Conversation c ON c.id_conversation = m.id_conversation
+        WHERE c.id_commande = ? AND m.est_lu = false AND m.id_expediteur != ?
+    ");
+    $stmt->execute([$idCommande, $idUtilisateur]);
+    return (int)$stmt->fetchColumn();
+}
+
+/**
+ * Liste des conversations (une par commande où l'utilisateur est client ou
+ * prestataire), avec le dernier message et le nombre de non-lus. Inclut les
+ * commandes sans message encore échangé (conversation pas créée).
+ */
+function listerConversations(PDO $pdo, int $idUtilisateur): array
+{
+    $stmt = $pdo->prepare("
+        SELECT
+            cm.id_commande, cm.statut, cm.montant_total, cm.date_commande,
+            p.titre_prestation,
+            CASE WHEN cm.id_utilisateur = ? THEN pu.prenom_utilisateur ELSE u.prenom_utilisateur END AS interlocuteur_prenom,
+            CASE WHEN cm.id_utilisateur = ? THEN pu.nom_utilisateur ELSE u.nom_utilisateur END AS interlocuteur_nom,
+            c.id_conversation,
+            COALESCE(c.date_dernier_message, cm.date_commande) AS derniere_activite,
+            (
+                SELECT m2.contenu FROM Message m2
+                WHERE m2.id_conversation = c.id_conversation
+                ORDER BY m2.date_envoi DESC LIMIT 1
+            ) AS dernier_message,
+            (
+                SELECT COUNT(*) FROM Message m3
+                WHERE m3.id_conversation = c.id_conversation
+                  AND m3.est_lu = false AND m3.id_expediteur != ?
+            ) AS nb_non_lus
+        FROM Commande cm
+        JOIN Cibler ci ON ci.id_commande = cm.id_commande
+        JOIN Prestation p ON p.id_prestation = ci.id_prestation
+        JOIN Utilisateur u ON u.id_utilisateur = cm.id_utilisateur
+        JOIN Utilisateur pu ON pu.id_utilisateur = cm.id_prestataire
+        LEFT JOIN Conversation c ON c.id_commande = cm.id_commande
+        WHERE cm.id_utilisateur = ? OR cm.id_prestataire = ?
+        ORDER BY derniere_activite DESC
+    ");
+    $stmt->execute([$idUtilisateur, $idUtilisateur, $idUtilisateur, $idUtilisateur, $idUtilisateur]);
+    return $stmt->fetchAll();
+}

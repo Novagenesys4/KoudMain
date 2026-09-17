@@ -10,6 +10,7 @@ $idUser = $_SESSION['id_utilisateur'];
 $msg    = "";
 $err    = "";
 $nb_notifs = nbNotificationsNonLues($pdo, $idUser);
+$nb_msgs   = nbMessagesNonLus($pdo, $idUser);
 
 // --- Wallet ---
 $wallet_cli = getOuCreerWallet($pdo, $idUser);
@@ -266,6 +267,7 @@ function icon(string $name, int $size = 17): string {
         'chevron-left'  => '<path d="m15 18-6-6 6-6"/>',
         'bell'          => '<path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/>',
         'sparkles'      => '<path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"/>',
+        'message'       => '<path d="M18 10c0 3.87-3.58 7-8 7a9.06 9.06 0 0 1-2.5-.35L2 18l1.3-3.9A6.72 6.72 0 0 1 2 10c0-3.87 3.58-7 8-7s8 3.13 8 7Z"/>',
         'zap'           => '<polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>',
         'arrow-right'   => '<path d="M5 12h14"/><path d="m12 5 7 7-7 7"/>',
         'credit-card'   => '<rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/>',
@@ -649,6 +651,10 @@ svg{display:block}
       </form>
 
       <div class="km-topbar-actions">
+        <a href="messages.php" class="km-icon-btn" aria-label="Messages" title="<?= $nb_msgs > 0 ? $nb_msgs . ' message(s) non lu(s)' : 'Aucun nouveau message' ?>">
+          <?= icon('message', 18) ?>
+          <?php if ($nb_msgs > 0): ?><i></i><?php endif; ?>
+        </a>
         <a href="notifications.php" class="km-icon-btn" aria-label="Notifications" title="<?= $nb_notifs > 0 ? $nb_notifs . ' notification(s) non lue(s)' : 'Tout est à jour' ?>">
           <?= icon('bell', 18) ?>
           <?php if ($nb_notifs > 0): ?><i></i><?php endif; ?>
@@ -862,6 +868,7 @@ svg{display:block}
         $peutAnnuler = in_array($c['statut'], ['En attente', 'Acceptée'], true);
         $peutConfirmer = $c['statut'] === 'Terminée' && $c['date_validation_client'] === null;
         $peutLitige = $c['statut'] === 'En cours';
+        $nbMsgCmd = nbMessagesNonLusPourCommande($pdo, (int)$c['id_commande'], $idUser);
       ?>
       <div class="km-order-card">
         <div class="km-order-head">
@@ -879,6 +886,10 @@ svg{display:block}
           <div class="km-order-detail"><div class="km-order-label">Lieu d'intervention</div><div class="km-order-val"><?= htmlspecialchars($c['nom_quartier']) ?></div></div>
         </div>
         <div class="km-order-foot" style="flex-wrap:wrap;gap:.6rem">
+          <a href="conversation.php?id_commande=<?= (int)$c['id_commande'] ?>" class="km-btn km-btn-outline" style="height:38px;padding:0 16px;position:relative">
+            <?= icon('sparkles', 14) ?> Discuter avec le prestataire
+            <?php if ($nbMsgCmd > 0): ?><span style="position:absolute;top:-6px;right:-6px;min-width:18px;height:18px;display:grid;place-items:center;padding:0 4px;background:var(--amber);color:#fff;border-radius:20px;font-size:9.5px;font-weight:800"><?= $nbMsgCmd ?></span><?php endif; ?>
+          </a>
           <?php if ($peutConfirmer): ?>
             <form method="POST" style="display:inline">
               <?= champCSRF() ?>
