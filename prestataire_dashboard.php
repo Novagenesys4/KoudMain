@@ -9,6 +9,7 @@ $pdo    = getConnexion();
 $idUser = $_SESSION['id_utilisateur'];
 $msg    = "";
 $err    = "";
+$nb_notifs = nbNotificationsNonLues($pdo, $idUser);
 
 $wallet_prest = getOuCreerWallet($pdo, $idUser);
 $solde_prest  = (float)$wallet_prest['solde'];
@@ -578,7 +579,7 @@ h2{font-size:22px;line-height:1.1}
           <?= icon('search', 16) ?>
           <input type="text" name="q" value="<?= htmlspecialchars($search) ?>" placeholder="<?= htmlspecialchars($search_placeholder) ?>">
         </form>
-        <button class="icon-button" aria-label="Notifications" onclick="showToast('info','<?= $nb_attente > 0 ? $nb_attente . " commande(s) en attente." : "Vous êtes à jour." ?>')"><?= icon('bell', 18) ?><?php if ($nb_attente > 0): ?><i></i><?php endif; ?></button>
+        <a href="notifications.php" class="icon-button" aria-label="Notifications" title="<?= $nb_notifs > 0 ? $nb_notifs . ' notification(s) non lue(s)' : 'Vous êtes à jour.' ?>"><?= icon('bell', 18) ?><?php if ($nb_notifs > 0): ?><i></i><?php endif; ?></a>
         <a href="wallet.php" class="top-profile"><div class="avatar avatar-sm"><?= htmlspecialchars($initiales) ?></div><?= icon('chevron-down', 14) ?></a>
       </div>
     </header>

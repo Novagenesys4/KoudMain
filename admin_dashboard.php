@@ -3,8 +3,10 @@ require_once "config.php";
 requireAdmin();
 
 $pdo = getConnexion();
+$idUser = $_SESSION['id_utilisateur'];
 $msg = "";
 $err = "";
+$nb_notifs = nbNotificationsNonLues($pdo, $idUser);
 
 // ---------------------------------------------------------------------------
 // Actions admin (logique identique à la version précédente)
@@ -546,10 +548,10 @@ h1,h2,h3,.km-serif{font-family:'Fraunces',Georgia,serif}
       <button class="mobile-menu-button" onclick="document.getElementById('admin-sidebar').classList.add('open'); document.getElementById('sidebar-backdrop').style.display='block';" aria-label="Ouvrir le menu"><?= icon('menu', 21) ?></button>
       <div class="topbar-context"><span>Plateforme de services</span><strong>/ <?= htmlspecialchars($tab_label_courant) ?></strong></div>
       <div class="topbar-actions">
-        <button class="icon-button notification-button" aria-label="Notifications" title="<?= $nb_attente > 0 ? $nb_attente . ' profils attendent votre validation.' : 'Tout est à jour.' ?>">
+        <a href="notifications.php" class="icon-button notification-button" aria-label="Notifications" title="<?= $nb_notifs > 0 ? $nb_notifs . ' notification(s) non lue(s)' : 'Tout est à jour.' ?>">
           <?= icon('bell', 18) ?>
-          <?php if ($nb_attente > 0): ?><i></i><?php endif; ?>
-        </button>
+          <?php if ($nb_notifs > 0): ?><i></i><?php endif; ?>
+        </a>
         <div class="topbar-divider"></div>
         <div class="admin-profile">
           <div class="avatar"><?= htmlspecialchars($initiales) ?></div>

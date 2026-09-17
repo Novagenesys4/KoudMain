@@ -9,6 +9,7 @@ $pdo    = getConnexion();
 $idUser = $_SESSION['id_utilisateur'];
 $msg    = "";
 $err    = "";
+$nb_notifs = nbNotificationsNonLues($pdo, $idUser);
 
 // --- Wallet ---
 $wallet_cli = getOuCreerWallet($pdo, $idUser);
@@ -648,10 +649,10 @@ svg{display:block}
       </form>
 
       <div class="km-topbar-actions">
-        <button type="button" class="km-icon-btn" aria-label="Notifications" title="<?= $nb_attente > 0 ? $nb_attente . ' commande(s) en attente' : 'Tout est à jour' ?>">
+        <a href="notifications.php" class="km-icon-btn" aria-label="Notifications" title="<?= $nb_notifs > 0 ? $nb_notifs . ' notification(s) non lue(s)' : 'Tout est à jour' ?>">
           <?= icon('bell', 18) ?>
-          <?php if ($nb_attente > 0): ?><i></i><?php endif; ?>
-        </button>
+          <?php if ($nb_notifs > 0): ?><i></i><?php endif; ?>
+        </a>
         <div class="km-profile">
           <div class="km-avatar"><?= htmlspecialchars($initiales) ?></div>
           <div class="km-profile-copy"><strong><?= htmlspecialchars($nomFull ?: $prenom) ?></strong><span>Client</span></div>
