@@ -65,34 +65,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
         }
     }
 
-    // Noter une commande terminée
+    // Noter ou modifier son avis sur une commande terminée
     elseif ($_POST['action'] === 'noter') {
         $id_cmd   = (int)($_POST['id_commande'] ?? 0);
         $id_prest = (int)($_POST['id_prestation'] ?? 0);
         $note     = (int)($_POST['evaluation'] ?? 0);
         $commentaire = trim($_POST['commentaire'] ?? '');
 
-        if ($note < 1 || $note > 5 || $id_cmd <= 0 || $id_prest <= 0) {
-            $err = "Note invalide.";
-        } else {
-            $chk = $pdo->prepare("
-                SELECT cm.id_commande FROM Commande cm
-                JOIN Cibler ci ON cm.id_commande = ci.id_commande
-                WHERE cm.id_commande = ? AND cm.id_utilisateur = ? AND cm.statut = 'Terminée'
-                  AND ci.id_prestation = ?
-            ");
-            $chk->execute([$id_cmd, $idUser, $id_prest]);
-            if ($chk->fetch()) {
-                $upd = $pdo->prepare("
-                    UPDATE Cibler SET evaluation = ?, commentaire = ?
-                    WHERE id_commande = ? AND id_prestation = ?
-                ");
-                $upd->execute([$note, $commentaire, $id_cmd, $id_prest]);
-                $msg = "Merci pour votre avis !";
-            } else {
-                $err = "Impossible de noter cette commande.";
-            }
-        }
+        $res = noterPrestation($pdo, $id_cmd, $id_prest, $idUser, $note, $commentaire);
+        $res['ok'] ? $msg = $res['message'] : $err = $res['message'];
     }
 }
 
@@ -152,15 +133,17 @@ $sql_prest = "
     SELECT p.*, s.nom_service, c.nom_categorie, c.id_categorie,
            u.prenom_utilisateur, u.nom_utilisateur,
            COALESCE(AVG(ci.evaluation), 0) AS note_moy,
-           COUNT(ci.evaluation) AS nb_avis
+           COUNT(ci.evaluation) AS nb_avis,
+           MAX(CASE WHEN f.id_utilisateur IS NULL THEN 0 ELSE 1 END) AS est_favori
     FROM Prestation p
     JOIN Service s ON p.id_service = s.id_service
     JOIN Categorie c ON s.id_categorie = c.id_categorie
     JOIN Utilisateur u ON p.id_utilisateur = u.id_utilisateur
     LEFT JOIN Cibler ci ON p.id_prestation = ci.id_prestation AND ci.evaluation IS NOT NULL
+    LEFT JOIN Favori f ON f.id_prestation = p.id_prestation AND f.id_utilisateur = ?
     WHERE 1=1
 ";
-$params_prest = [];
+$params_prest = [$idUser];
 if ($cat_filter > 0) {
     $sql_prest .= " AND c.id_categorie = ?";
     $params_prest[] = $cat_filter;
@@ -189,7 +172,7 @@ $nb_pages_cmd = max(1, (int)ceil($nb_cmd / $limit_cmd));
 
 $stmt_c = $pdo->prepare("
     SELECT cm.*, ci.id_prestation, ci.prix_unitaire, ci.quantite,
-           ci.evaluation, ci.commentaire,
+           ci.evaluation, ci.commentaire, ci.date_modification_avis,
            p.titre_prestation,
            u.nom_utilisateur AS prest_nom, u.prenom_utilisateur AS prest_prenom, u.num_utilisateur AS prest_tel,
            q.nom_quartier
@@ -268,6 +251,7 @@ function icon(string $name, int $size = 17): string {
         'bell'          => '<path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/>',
         'sparkles'      => '<path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"/>',
         'message'       => '<path d="M18 10c0 3.87-3.58 7-8 7a9.06 9.06 0 0 1-2.5-.35L2 18l1.3-3.9A6.72 6.72 0 0 1 2 10c0-3.87 3.58-7 8-7s8 3.13 8 7Z"/>',
+        'heart'         => '<path d="M17.3 3.8a4.5 4.5 0 0 0-6.4 0L10 4.7l-.9-.9a4.5 4.5 0 0 0-6.4 6.4l.9.9L10 17.5l6.4-6.4.9-.9a4.5 4.5 0 0 0 0-6.4Z"/>',
         'zap'           => '<polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>',
         'arrow-right'   => '<path d="M5 12h14"/><path d="m12 5 7 7-7 7"/>',
         'credit-card'   => '<rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/>',
@@ -491,6 +475,9 @@ svg{display:block}
 .km-prest-card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;transition:transform .2s var(--ease),box-shadow .2s ease,border-color .2s ease}
 .km-prest-card:hover{transform:translateY(-3px);box-shadow:var(--shadow-md);border-color:#d6c9ae}
 .km-prest-thumb{position:relative;height:100px;display:flex;align-items:flex-start;justify-content:space-between;padding:15px}
+.km-fav-btn{position:absolute;top:11px;right:11px;display:grid;place-items:center;width:30px;height:30px;color:var(--ink);background:rgba(255,255,255,.72);border-radius:50%;transition:transform .16s ease,color .18s ease,background .18s ease}
+.km-fav-btn:hover{transform:scale(1.08)}
+.km-fav-btn.is-active{color:#c1425e;background:rgba(255,255,255,.85)}
 .km-prest-thumb-icon{display:grid;place-items:center;width:38px;height:38px;background:rgba(255,255,255,.62);color:var(--amber-deep);border-radius:11px}
 .km-prest-thumb-tag{align-self:flex-start;margin-top:2px;color:rgba(29,33,28,.55);font-size:9px;font-weight:800;letter-spacing:.1em;text-transform:uppercase}
 .km-thumb-peche{background:linear-gradient(135deg,#f1d9bd,#e9c69d)}
@@ -614,6 +601,7 @@ svg{display:block}
           <?= icon('package') ?><span>Mes commandes</span>
           <?php if ($nb_attente > 0): ?><span class="km-sb-badge"><?= $nb_attente ?></span><?php endif; ?>
         </a>
+        <a href="mes_favoris.php" class="km-sb-link"><?= icon('heart') ?><span>Mes favoris</span></a>
       </div>
 
       <div class="km-sb-group">
@@ -806,6 +794,9 @@ svg{display:block}
         <div class="km-prest-card">
           <div class="km-prest-thumb km-thumb-<?= $teinte ?>">
             <div class="km-prest-thumb-icon"><svg width="17" height="17" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><?= iconeCategorie($p['nom_categorie']) ?></svg></div>
+            <button type="button" class="km-fav-btn <?= $p['est_favori'] ? 'is-active' : '' ?>" data-id="<?= (int)$p['id_prestation'] ?>" aria-label="Ajouter aux favoris" onclick="toggleFavori(this)">
+              <svg viewBox="0 0 24 24" width="15" height="15" fill="<?= $p['est_favori'] ? 'currentColor' : 'none' ?>" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8Z"/></svg>
+            </button>
             <span class="km-prest-thumb-tag"><?= htmlspecialchars($p['nom_categorie']) ?></span>
           </div>
           <div class="km-prest-body">
@@ -910,34 +901,40 @@ svg{display:block}
             </form>
           <?php endif; ?>
 
-          <?php if ($c['statut'] === 'Terminée' && $c['evaluation'] === null): ?>
-            <form method="POST" class="km-rate-form" style="display:flex;align-items:center;gap:.7rem;flex-wrap:wrap;width:100%">
+          <?php if ($c['statut'] === 'Terminée'): $aDejaAvis = $c['evaluation'] !== null; ?>
+            <?php if ($aDejaAvis): ?>
+            <div class="avis-recap" id="avis-recap-<?= $c['id_commande'] ?>" style="width:100%;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.5rem">
+              <span style="font-size:13px;color:var(--ink-soft);display:inline-flex;align-items:center;gap:.5rem;flex-wrap:wrap">
+                Votre note :
+                <span class="km-stars km-stars-readonly" aria-label="<?= (int)$c['evaluation'] ?> sur 5">
+                  <?php for ($n = 1; $n <= 5; $n++): ?>
+                  <span class="km-star <?= $n <= (int)$c['evaluation'] ? 'is-active' : '' ?>"><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></span>
+                  <?php endfor; ?>
+                </span>
+                <?php if ($c['commentaire']): ?> — <em><?= htmlspecialchars(mb_substr($c['commentaire'], 0, 80)) ?></em><?php endif; ?>
+                <?php if ($c['date_modification_avis']): ?><span style="color:var(--ink-faint);font-size:11px">Avis modifié le <?= date('d/m/Y', strtotime($c['date_modification_avis'])) ?></span><?php endif; ?>
+              </span>
+              <button type="button" class="text-link" style="color:var(--amber-deep);font-weight:700;font-size:11.5px" onclick="toggleAvisForm(<?= $c['id_commande'] ?>)">Modifier mon avis</button>
+            </div>
+            <?php endif; ?>
+            <form method="POST" class="km-rate-form" id="avis-form-<?= $c['id_commande'] ?>" style="<?= $aDejaAvis ? 'display:none;' : '' ?>display:flex;align-items:center;gap:.7rem;flex-wrap:wrap;width:100%">
               <?= champCSRF() ?>
               <input type="hidden" name="action" value="noter">
               <input type="hidden" name="id_commande" value="<?= $c['id_commande'] ?>">
               <input type="hidden" name="id_prestation" value="<?= $c['id_prestation'] ?>">
-              <input type="hidden" name="evaluation" value="" required class="km-rate-value">
-              <span style="font-size:12.5px;color:var(--ink-soft)">Votre note :</span>
+              <input type="hidden" name="evaluation" value="<?= (int)$c['evaluation'] ?>" required class="km-rate-value">
+              <span style="font-size:12.5px;color:var(--ink-soft)"><?= $aDejaAvis ? 'Nouvelle note :' : 'Votre note :' ?></span>
               <div class="km-stars" role="radiogroup" aria-label="Note de 1 à 5">
                 <?php for ($n = 1; $n <= 5; $n++): ?>
-                <button type="button" class="km-star" data-value="<?= $n ?>" aria-label="<?= $n ?> étoile<?= $n > 1 ? 's' : '' ?>" role="radio" aria-checked="false">
+                <button type="button" class="km-star <?= $n <= (int)$c['evaluation'] ? 'is-active' : '' ?>" data-value="<?= $n ?>" aria-label="<?= $n ?> étoile<?= $n > 1 ? 's' : '' ?>" role="radio" aria-checked="<?= $n === (int)$c['evaluation'] ? 'true' : 'false' ?>">
                   <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
                 </button>
                 <?php endfor; ?>
               </div>
-              <input type="text" name="commentaire" placeholder="Commentaire (optionnel)" class="km-rate-input">
-              <button type="submit" class="km-btn km-btn-dark" style="height:38px;padding:0 16px">Envoyer</button>
+              <input type="text" name="commentaire" placeholder="Commentaire (optionnel)" class="km-rate-input" value="<?= htmlspecialchars($c['commentaire'] ?? '') ?>">
+              <button type="submit" class="km-btn km-btn-dark" style="height:38px;padding:0 16px"><?= $aDejaAvis ? 'Enregistrer' : 'Envoyer' ?></button>
+              <?php if ($aDejaAvis): ?><button type="button" class="km-btn km-btn-outline" style="height:38px;padding:0 14px" onclick="toggleAvisForm(<?= $c['id_commande'] ?>)">Annuler</button><?php endif; ?>
             </form>
-          <?php elseif ($c['evaluation'] !== null): ?>
-            <span style="font-size:13px;color:var(--ink-soft);display:inline-flex;align-items:center;gap:.5rem">
-              Votre note :
-              <span class="km-stars km-stars-readonly" aria-label="<?= (int)$c['evaluation'] ?> sur 5">
-                <?php for ($n = 1; $n <= 5; $n++): ?>
-                <span class="km-star <?= $n <= (int)$c['evaluation'] ? 'is-active' : '' ?>"><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></span>
-                <?php endfor; ?>
-              </span>
-              <?php if ($c['commentaire']): ?> — <em><?= htmlspecialchars(mb_substr($c['commentaire'], 0, 60)) ?></em><?php endif; ?>
-            </span>
           <?php elseif (!$peutAnnuler && !$peutLitige && !$peutConfirmer): ?>
             <span style="font-size:13px;color:var(--ink-soft)">
               <?php if ($c['statut'] === 'Annulée'): ?>
@@ -1023,6 +1020,25 @@ function openOrderModal(id, titre, prix) {
   document.getElementById('order-prix').value = new Intl.NumberFormat('fr-FR').format(prix) + ' FCFA';
   document.getElementById('modal-order').classList.add('open');
 }
+
+function toggleFavori(btn) {
+  var idPrest = btn.dataset.id;
+  var actif = btn.classList.contains('is-active');
+  var action = actif ? 'retirer' : 'ajouter';
+  var fd = new FormData();
+  fd.append('action', action);
+  fd.append('id_prestation', idPrest);
+  fd.append('csrf_token', <?= json_encode(genererTokenCSRF()) ?>);
+  btn.classList.toggle('is-active');
+  btn.querySelector('svg').setAttribute('fill', btn.classList.contains('is-active') ? 'currentColor' : 'none');
+  fetch('favoris_action.php', { method: 'POST', body: fd, headers: { 'X-Requested-With': 'XMLHttpRequest' } })
+    .then(function (r) { return r.json(); })
+    .catch(function () {
+      // En cas d'échec réseau, on annule le changement visuel
+      btn.classList.toggle('is-active');
+      btn.querySelector('svg').setAttribute('fill', btn.classList.contains('is-active') ? 'currentColor' : 'none');
+    });
+}
 document.getElementById('modal-order').addEventListener('mousedown', function(e){ if (e.target === this) this.classList.remove('open'); });
 document.addEventListener('keydown', function(e){
   if (e.key === 'Escape') {
@@ -1040,6 +1056,14 @@ document.addEventListener('click', function(e){
 });
 
 // Notation par étoiles
+function toggleAvisForm(idCommande) {
+  var recap = document.getElementById('avis-recap-' + idCommande);
+  var form = document.getElementById('avis-form-' + idCommande);
+  if (!form) return;
+  var visible = form.style.display !== 'none';
+  form.style.display = visible ? 'none' : 'flex';
+  if (recap) recap.style.display = visible ? 'flex' : 'none';
+}
 document.querySelectorAll('.km-rate-form').forEach(function (form) {
   const stars = form.querySelectorAll('.km-star');
   const hidden = form.querySelector('.km-rate-value');

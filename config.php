@@ -937,3 +937,137 @@ function listerConversations(PDO $pdo, int $idUtilisateur): array
     $stmt->execute([$idUtilisateur, $idUtilisateur, $idUtilisateur, $idUtilisateur, $idUtilisateur]);
     return $stmt->fetchAll();
 }
+
+// ---------------------------------------------------------------------------
+// 11. Avis clients modifiables (avec historique)
+// ---------------------------------------------------------------------------
+
+/**
+ * Crée ou met à jour l'avis d'un client sur une commande terminée. Contrôle
+ * strictement : commande du client connecté, statut Terminée, prestation
+ * bien liée à la commande, note entre 1 et 5. Conserve l'ancienne version
+ * dans Historique_Avis avant toute modification.
+ *
+ * @return array{ok: bool, message: string}
+ */
+function noterPrestation(
+    PDO $pdo,
+    int $idCommande,
+    int $idPrestation,
+    int $idClient,
+    int $note,
+    string $commentaire
+): array {
+    if ($note < 1 || $note > 5) {
+        return ['ok' => false, 'message' => 'La note doit être comprise entre 1 et 5.'];
+    }
+
+    $commentaire = trim(strip_tags($commentaire));
+    if (mb_strlen($commentaire) > 1000) {
+        $commentaire = mb_substr($commentaire, 0, 1000);
+    }
+
+    $chk = $pdo->prepare("
+        SELECT ci.evaluation, ci.commentaire
+        FROM Commande cm
+        JOIN Cibler ci ON ci.id_commande = cm.id_commande
+        WHERE cm.id_commande = ? AND cm.id_utilisateur = ? AND cm.statut = 'Terminée'
+          AND ci.id_prestation = ?
+        LIMIT 1
+    ");
+    $chk->execute([$idCommande, $idClient, $idPrestation]);
+    $existant = $chk->fetch();
+
+    if ($existant === false) {
+        return ['ok' => false, 'message' => "Impossible de noter cette commande."];
+    }
+
+    try {
+        $pdo->beginTransaction();
+
+        // Conserve la version précédente si un avis existait déjà (modification)
+        if ($existant['evaluation'] !== null) {
+            $pdo->prepare("
+                INSERT INTO Historique_Avis (id_commande, id_prestation, id_utilisateur, evaluation, commentaire)
+                VALUES (?, ?, ?, ?, ?)
+            ")->execute([$idCommande, $idPrestation, $idClient, $existant['evaluation'], $existant['commentaire']]);
+        }
+
+        $pdo->prepare("
+            UPDATE Cibler
+            SET evaluation = ?,
+                commentaire = ?,
+                date_evaluation = COALESCE(date_evaluation, CURRENT_TIMESTAMP),
+                date_modification_avis = CASE
+                    WHEN date_evaluation IS NOT NULL THEN CURRENT_TIMESTAMP
+                    ELSE NULL
+                END
+            WHERE id_commande = ? AND id_prestation = ?
+        ")->execute([$note, $commentaire, $idCommande, $idPrestation]);
+
+        $pdo->commit();
+    } catch (Throwable $e) {
+        if ($pdo->inTransaction()) $pdo->rollBack();
+        error_log('[KoudMain] noterPrestation : ' . $e->getMessage());
+        return ['ok' => false, 'message' => "Erreur lors de l'enregistrement de l'avis."];
+    }
+
+    $cmd = getCommandeAvecActeurs($pdo, $idCommande);
+    if ($cmd) {
+        creerNotification(
+            $pdo,
+            (int)$cmd['id_prestataire_reel'],
+            $existant['evaluation'] !== null ? 'avis_modifie' : 'nouvel_avis',
+            $existant['evaluation'] !== null ? 'Avis modifié' : 'Nouvel avis reçu',
+            'Un client a ' . ($existant['evaluation'] !== null ? 'modifié son avis' : 'laissé un avis') . " sur la commande #$idCommande.",
+            $idCommande
+        );
+    }
+
+    return ['ok' => true, 'message' => $existant['evaluation'] !== null ? 'Votre avis a été modifié.' : 'Merci pour votre avis !'];
+}
+
+// ---------------------------------------------------------------------------
+// 12. Favoris
+// ---------------------------------------------------------------------------
+
+/**
+ * Ajoute ou retire une prestation des favoris d'un utilisateur.
+ *
+ * @param string $action 'ajouter' | 'retirer'
+ * @return array{ok: bool, message: string, est_favori: bool}
+ */
+function basculerFavori(PDO $pdo, int $idUtilisateur, int $idPrestation, string $action): array
+{
+    if ($idPrestation <= 0) {
+        return ['ok' => false, 'message' => 'Prestation invalide.', 'est_favori' => false];
+    }
+
+    if ($action === 'ajouter') {
+        try {
+            $pdo->prepare("
+                INSERT INTO Favori (id_utilisateur, id_prestation) VALUES (?, ?)
+                ON CONFLICT (id_utilisateur, id_prestation) DO NOTHING
+            ")->execute([$idUtilisateur, $idPrestation]);
+        } catch (Exception $e) {
+            error_log('[KoudMain] basculerFavori (ajouter) : ' . $e->getMessage());
+            return ['ok' => false, 'message' => "Impossible d'ajouter ce favori.", 'est_favori' => false];
+        }
+        return ['ok' => true, 'message' => 'Ajouté à vos favoris.', 'est_favori' => true];
+    }
+
+    if ($action === 'retirer') {
+        $pdo->prepare("DELETE FROM Favori WHERE id_utilisateur = ? AND id_prestation = ?")
+            ->execute([$idUtilisateur, $idPrestation]);
+        return ['ok' => true, 'message' => 'Retiré de vos favoris.', 'est_favori' => false];
+    }
+
+    return ['ok' => false, 'message' => 'Action invalide.', 'est_favori' => false];
+}
+
+function estFavori(PDO $pdo, int $idUtilisateur, int $idPrestation): bool
+{
+    $stmt = $pdo->prepare("SELECT 1 FROM Favori WHERE id_utilisateur = ? AND id_prestation = ?");
+    $stmt->execute([$idUtilisateur, $idPrestation]);
+    return (bool)$stmt->fetchColumn();
+}
