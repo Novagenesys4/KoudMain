@@ -33,7 +33,10 @@ return Application::configure(basePath: dirname(__DIR__))
         }
 
         // HTTPS partout (règle 8) : en production, tout ce qui arrive en HTTP est redirigé avant même de lire un cookie.
-        $middleware->prepend(ForceHttps::class);
+        // append (et non prepend) : ForceHttps doit passer APRÈS TrustProxies, sinon X-Forwarded-Proto n'est pas encore lu,
+        // chaque requête semble « http » et le site redirige en boucle derrière le proxy de Render. Les cookies et la session
+        // ne sont lus que dans le groupe « web », donc toujours après ce middleware global.
+        $middleware->append(ForceHttps::class);
 
         $middleware->alias([
             'role' => EnsureRole::class,
