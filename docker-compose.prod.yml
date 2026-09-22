@@ -1,0 +1,28 @@
+# Essayer l'image de PRODUCTION sur votre ordinateur (Apache + PHP, planificateur inclus), contre la base de docker-compose.yml :
+#
+#   docker compose -f docker-compose.yml -f docker-compose.prod.yml up --build
+#
+# puis ouvrir http://localhost:8080. Il faut une APP_KEY : php artisan key:generate --show (ou APP_KEY=... dans votre terminal).
+# APP_ENV=staging (et non production) : en production l'application force les liens en https, ce que localhost n'a pas.
+services:
+  app:
+    build: .
+    ports:
+      - "8080:8080"
+    environment:
+      APP_ENV: staging
+      APP_KEY: ${APP_KEY:?Définissez APP_KEY (php artisan key:generate --show)}
+      APP_URL: http://localhost:8080
+      APP_DEBUG: "false"
+      DB_CONNECTION: pgsql
+      DB_HOST: db
+      DB_PORT: "5432"
+      DB_DATABASE: koudmain_laravel
+      DB_USERNAME: koudmain
+      DB_PASSWORD: koudmain_dev
+      DB_SSLMODE: prefer
+      MAIL_MAILER: log
+      PAIEMENT_DRIVER: simulation
+      TEMPS_REEL_MODE: sondage
+    depends_on:
+      - db

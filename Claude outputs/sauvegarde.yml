@@ -1,0 +1,140 @@
+# Règle 20 : sauvegarde automatique de la base de données, chiffrée, hors de Supabase et hors de Render.
+#
+#   Chaque nuit :  Supabase (session pooler) ──pg_dump──▶ vérifié (restauré dans une base jetable) ──chiffré (age)──▶ Cloudflare R2
+#
+# Pourquoi comme ça :
+#  - le fichier est CHIFFRÉ avant de quitter GitHub : il contient les données personnelles des utilisateurs. Seule la clé PRIVÉE age
+#    (gardée hors ligne, dans votre gestionnaire de mots de passe) peut le lire. Cloudflare, GitHub ou un voleur d'accès R2 n'obtiennent rien ;
+#  - la sauvegarde est RESTAURÉE chaque nuit dans une base PostgreSQL jetable : une sauvegarde jamais testée n'est pas une sauvegarde ;
+#  - Cloudflare R2 est un autre fournisseur que Supabase : une panne ou un compte suspendu chez l'un n'emporte pas l'autre ;
+#  - la durée de conservation (30 jours) se règle dans R2 (règle de cycle de vie), voir SECURITE.md.
+#
+# Réglages GitHub (Settings > Secrets and variables > Actions) : voir SECURITE.md, section « Sauvegardes ».
+name: Sauvegarde
+
+on:
+  schedule:
+    - cron: '30 2 * * *' # 02 h 30 UTC = 02 h 30 à Abidjan : le site est calme
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: sauvegarde
+  cancel-in-progress: false
+
+jobs:
+  base-de-donnees:
+    name: Sauvegarder la base
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    services:
+      postgres:
+        image: postgres:17
+        env:
+          POSTGRES_PASSWORD: verification-jetable
+        ports: ['5544:5432']
+        options: >-
+          --health-cmd "pg_isready -U postgres" --health-interval 5s --health-timeout 5s --health-retries 10
+    env:
+      # Version du client pg_dump : au moins celle de PostgreSQL chez Supabase (tableau de bord > Database > Infrastructure).
+      PG_CLIENT_VERSION: ${{ vars.BACKUP_PG_VERSION || '17' }}
+      DATABASE_URL: ${{ secrets.BACKUP_DATABASE_URL }}
+      AGE_RECIPIENT: ${{ vars.BACKUP_AGE_RECIPIENT }}
+      R2_ACCOUNT_ID: ${{ vars.R2_ACCOUNT_ID }}
+      R2_BUCKET: ${{ vars.R2_BUCKET }}
+      AWS_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
+      AWS_DEFAULT_REGION: auto
+      RENDER_API_KEY: ${{ secrets.RENDER_API_KEY }}
+      RENDER_SERVICE_ID: ${{ vars.RENDER_SERVICE_ID }}
+    steps:
+      - name: Vérifier les réglages
+        run: |
+          set -euo pipefail
+          manque=0
+          for v in DATABASE_URL AGE_RECIPIENT R2_ACCOUNT_ID R2_BUCKET AWS_ACCESS_KEY_ID AWS_SECRET_ACCESS_KEY; do
+            if [ -z "${!v}" ]; then echo "::error::Réglage manquant : $v (voir SECURITE.md, section Sauvegardes)"; manque=1; fi
+          done
+          case "$AGE_RECIPIENT" in age1*) ;; *) echo "::error::BACKUP_AGE_RECIPIENT doit être une clé PUBLIQUE age (age1...). Jamais la clé privée."; manque=1;; esac
+          exit $manque
+
+      - name: Installer pg_dump, age et le client PostgreSQL de la bonne version
+        run: |
+          set -euo pipefail
+          sudo install -d /usr/share/postgresql-common/pgdg
+          sudo curl -o /usr/share/postgresql-common/pgdg/apt.postgresql.org.asc --fail -sS https://www.postgresql.org/media/keys/ACCC4CF8.asc
+          echo "deb [signed-by=/usr/share/postgresql-common/pgdg/apt.postgresql.org.asc] https://apt.postgresql.org/pub/repos/apt $(lsb_release -cs)-pgdg main" | sudo tee /etc/apt/sources.list.d/pgdg.list
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq "postgresql-client-${PG_CLIENT_VERSION}" age
+          echo "/usr/lib/postgresql/${PG_CLIENT_VERSION}/bin" >> "$GITHUB_PATH"
+
+      - name: Exporter la base
+        run: |
+          set -euo pipefail
+          umask 077
+          horodatage="$(date -u +%Y-%m-%dT%H%MZ)"
+          echo "HORODATAGE=$horodatage" >> "$GITHUB_ENV"
+          # Schéma « public » = toutes les tables de KoudMain. Les sessions et le cache ne valent pas d'être gardés.
+          pg_dump "$DATABASE_URL" \
+            --format=custom --compress=9 --no-owner --no-privileges --schema=public \
+            --exclude-table-data='public.sessions' --exclude-table-data='public.cache' --exclude-table-data='public.cache_locks' \
+            --file="koudmain-$horodatage.dump"
+          ls -l "koudmain-$horodatage.dump"
+
+      - name: Vérifier que l'export est lisible et non vide
+        run: |
+          set -euo pipefail
+          f="koudmain-$HORODATAGE.dump"
+          taille=$(stat -c %s "$f")
+          if [ "$taille" -lt 10000 ]; then echo "::error::Export suspect ($taille octets)."; exit 1; fi
+          pg_restore --list "$f" > liste.txt
+          for table in users commandes wallets escrows; do
+            grep -Eq "TABLE DATA public $table( |$)" liste.txt || { echo "::error::La table $table est absente de l'export."; exit 1; }
+          done
+
+      - name: Restaurer dans une base jetable (preuve que la sauvegarde est utilisable)
+        run: |
+          set -euo pipefail
+          export PGPASSWORD=verification-jetable
+          psql -h 127.0.0.1 -p 5544 -U postgres -qc 'create extension if not exists unaccent' postgres
+          # Les erreurs sans gravité (rôles Supabase absents, etc.) n'arrêtent pas la restauration ; on contrôle le résultat ensuite.
+          pg_restore -h 127.0.0.1 -p 5544 -U postgres -d postgres --no-owner --no-privileges "koudmain-$HORODATAGE.dump" 2>restauration.log || true
+          tables=$(psql -h 127.0.0.1 -p 5544 -U postgres -Atc "select count(*) from information_schema.tables where table_schema='public' and table_type='BASE TABLE'" postgres)
+          lignes=$(psql -h 127.0.0.1 -p 5544 -U postgres -Atc "select count(*) from public.users" postgres)
+          echo "Base restaurée : $tables tables, $lignes utilisateurs."
+          [ "$tables" -ge 10 ] || { echo "::error::Restauration incomplète ($tables tables)."; tail -20 restauration.log; exit 1; }
+
+      - name: "Chiffrer (clé publique age : seule la clé privée hors ligne peut relire)"
+        run: |
+          set -euo pipefail
+          age -r "$AGE_RECIPIENT" -o "koudmain-$HORODATAGE.dump.age" "koudmain-$HORODATAGE.dump"
+          shred -u "koudmain-$HORODATAGE.dump" 2>/dev/null || rm -f "koudmain-$HORODATAGE.dump"
+          sha256sum "koudmain-$HORODATAGE.dump.age" | tee "koudmain-$HORODATAGE.dump.age.sha256"
+
+      - name: Envoyer vers Cloudflare R2 et vérifier
+        run: |
+          set -euo pipefail
+          fichier="koudmain-$HORODATAGE.dump.age"
+          destination="s3://$R2_BUCKET/base-de-donnees/$fichier"
+          point="https://$R2_ACCOUNT_ID.r2.cloudflarestorage.com"
+          aws s3 cp "$fichier" "$destination" --endpoint-url "$point" --only-show-errors
+          aws s3 cp "$fichier.sha256" "$destination.sha256" --endpoint-url "$point" --only-show-errors
+          distant=$(aws s3api head-object --bucket "$R2_BUCKET" --key "base-de-donnees/$fichier" --endpoint-url "$point" --query ContentLength --output text)
+          local=$(stat -c %s "$fichier")
+          [ "$distant" = "$local" ] || { echo "::error::Taille distante ($distant) différente de la taille locale ($local)."; exit 1; }
+          echo "Sauvegarde envoyée : $destination ($local octets)."
+
+      - name: Sauvegarder aussi les variables d'environnement de Render (facultatif, chiffrées)
+        if: ${{ env.RENDER_API_KEY != '' && env.RENDER_SERVICE_ID != '' }}
+        run: |
+          set -euo pipefail
+          umask 077
+          curl -fsS -H "Authorization: Bearer $RENDER_API_KEY" -H "Accept: application/json" \
+            "https://api.render.com/v1/services/$RENDER_SERVICE_ID/env-vars?limit=100" -o secrets.json
+          age -r "$AGE_RECIPIENT" -o "koudmain-secrets-$HORODATAGE.json.age" secrets.json
+          shred -u secrets.json 2>/dev/null || rm -f secrets.json
+          aws s3 cp "koudmain-secrets-$HORODATAGE.json.age" "s3://$R2_BUCKET/secrets/koudmain-secrets-$HORODATAGE.json.age" \
+            --endpoint-url "https://$R2_ACCOUNT_ID.r2.cloudflarestorage.com" --only-show-errors
+          echo "Variables d'environnement sauvegardées (chiffrées)."

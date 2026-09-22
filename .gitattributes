@@ -1,0 +1,12 @@
+# Les scripts lancés dans le conteneur Linux doivent garder des fins de ligne Unix, même si Git sous Windows les convertit (sinon : « /bin/sh^M: bad interpreter »).
+* text=auto
+*.sh text eol=lf
+Dockerfile text eol=lf
+*.conf text eol=lf
+*.ini text eol=lf
+*.yml text eol=lf
+*.yaml text eol=lf
+*.png binary
+*.jpg binary
+*.webp binary
+*.woff2 binary

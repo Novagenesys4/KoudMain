@@ -1,0 +1,27 @@
+# Ne jamais entrer dans l'image : secrets, historique, dépendances (reconstruites), caches locaux, tests.
+.git
+.gitignore
+.env
+.env.*
+!.env.example
+node_modules
+vendor
+public/build
+public/hot
+public/uploads
+storage/logs
+storage/framework/cache
+storage/framework/sessions
+storage/framework/views
+bootstrap/cache/*.php
+tests
+phpunit.xml
+.phpunit.result.cache
+.phpunit.cache
+docker-compose.yml
+docker-compose.prod.yml
+Dockerfile
+.dockerignore
+.idea
+.vscode
+*.log

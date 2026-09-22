@@ -1,0 +1,1672 @@
+[
+    {
+        "nom": "Abidjan",
+        "departements": [
+            {
+                "nom": "Abidjan",
+                "villes": [
+                    {
+                        "nom": "Abidjan (Cocody)",
+                        "quartiers": [
+                            "Riviera 1",
+                            "Riviera 2",
+                            "Riviera 3",
+                            "Riviera 4",
+                            "Angré",
+                            "Deux Plateaux",
+                            "Danga",
+                            "Attoban",
+                            "M'Badon"
+                        ]
+                    },
+                    {
+                        "nom": "Abidjan (Yopougon)",
+                        "quartiers": [
+                            "Niangon",
+                            "Selmer",
+                            "Sicogi",
+                            "Maroc",
+                            "Wassakara",
+                            "Toits Rouges",
+                            "Gesco"
+                        ]
+                    },
+                    {
+                        "nom": "Abidjan (Marcory)",
+                        "quartiers": [
+                            "Zone 4",
+                            "Biétry",
+                            "Champroux",
+                            "Anoumabo",
+                            "Hibiscus"
+                        ]
+                    },
+                    {
+                        "nom": "Abidjan (Abobo)",
+                        "quartiers": [
+                            "PK18",
+                            "Abobo-Baoulé",
+                            "Sogefiha",
+                            "Sagbé",
+                            "Samaké",
+                            "Akeïkoi"
+                        ]
+                    },
+                    {
+                        "nom": "Abidjan (Plateau)",
+                        "quartiers": [
+                            "Centre des affaires",
+                            "Cité Administrative",
+                            "RAN"
+                        ]
+                    },
+                    {
+                        "nom": "Abidjan (Adjamé)",
+                        "quartiers": [
+                            "Mirador",
+                            "Renault",
+                            "Paillet",
+                            "Williamsville",
+                            "220 Logements"
+                        ]
+                    },
+                    {
+                        "nom": "Abidjan (Treichville)",
+                        "quartiers": [
+                            "Arras",
+                            "Avenue 16",
+                            "Belleville",
+                            "Chicago",
+                            "Zone 2"
+                        ]
+                    },
+                    {
+                        "nom": "Abidjan (Koumassi)",
+                        "quartiers": [
+                            "Grand Campement",
+                            "Remblais",
+                            "Prodomo",
+                            "Sicogi"
+                        ]
+                    },
+                    {
+                        "nom": "Abidjan (Port-Bouët)",
+                        "quartiers": [
+                            "Vridi",
+                            "Gondwana",
+                            "Cité Universitaire",
+                            "Derrière L'Aéroport",
+                            "Jean-Folly"
+                        ]
+                    },
+                    {
+                        "nom": "Abidjan (Attécoubé)",
+                        "quartiers": [
+                            "Boribana",
+                            "Sebroko",
+                            "Locodjro",
+                            "Agban-Village"
+                        ]
+                    }
+                ]
+            },
+            {
+                "nom": "Anyama",
+                "villes": [
+                    {
+                        "nom": "Anyama",
+                        "quartiers": [
+                            "Zossonkoi",
+                            "Schneider",
+                            "Ran",
+                            "Christiankoi"
+                        ]
+                    }
+                ]
+            },
+            {
+                "nom": "Bingerville",
+                "villes": [
+                    {
+                        "nom": "Bingerville",
+                        "quartiers": [
+                            "Santé 2",
+                            "Marché",
+                            "Cité FEH",
+                            "Gbagba"
+                        ]
+                    }
+                ]
+            },
+            {
+                "nom": "Songon",
+                "villes": [
+                    {
+                        "nom": "Songon",
+                        "quartiers": [
+                            "Songon-Agban",
+                            "Songon-Dagbé",
+                            "Songon-Kassemblé"
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "nom": "Yamoussoukro",
+        "departements": [
+            {
+                "nom": "Yamoussoukro",
+                "villes": [
+                    {
+                        "nom": "Yamoussoukro",
+                        "quartiers": [
+                            "Assabou",
+                            "N'Gokro",
+                            "220 Logements",
+                            "Habitat",
+                            "Fondation",
+                            "Dioulabougou",
+                            "Morofé"
+                        ]
+                    }
+                ]
+            },
+            {
+                "nom": "Attiégouakro",
+                "villes": [
+                    {
+                        "nom": "Attiégouakro",
+                        "quartiers": [
+                            "Résidentiel",
+                            "Commerce"
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "nom": "Gbêkê",
+        "departements": [
+            {
+                "nom": "Bouaké",
+                "villes": [
+                    {
+                        "nom": "Bouaké",
+                        "quartiers": [
+                            "Commerce",
+                            "Nimbo",
+                            "Dar-Es-Salam",
+                            "Koko",
+                            "Ahougnansou",
+                            "Air France",
+                            "Belleville",
+                            "Broukro"
+                        ]
+                    }
+                ]
+            },
+            {
+                "nom": "Béoumi",
+                "villes": [
+                    {
+                        "nom": "Béoumi",
+                        "quartiers": [
+                            "Résidentiel",
+                            "Commerce",
+                            "Zêdê"
+                        ]
+                    }
+                ]
+            },
+            {
+                "nom": "Sakassou",
+                "villes": [
+                    {
+                        "nom": "Sakassou",
+                        "quartiers": [
+                            "Résidentiel",
+                            "Walèbo"
+                        ]
+                    }
+                ]
+            },
+            {
+                "nom": "Botro",
+                "villes": [
+                    {
+                        "nom": "Botro",
+                        "quartiers": [
+                            "Centre",
+                            "Dioulabougou"
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "nom": "Hambol",
+        "departements": [
+            {
+                "nom": "Katiola",
+                "villes": [
+                    {
+                        "nom": "Katiola",
+                        "quartiers": [
+                            "Centre",
+                            "Résidentiel",
+                            "Commerce",
+                            "Dioulabougou"
+                        ]
+                    }
+                ]
+            },
+            {
+                "nom": "Dabakala",
+                "villes": [
+                    {
+                        "nom": "Dabakala",
+                        "quartiers": [
+                            "Centre",
+                            "Résidentiel",
+                            "Commerce"
+                        ]
+                    }
+                ]
+            },
+            {
+                "nom": "Niakaramadougou",
+                "villes": [
+                    {
+                        "nom": "Niakaramadougou",
+                        "quartiers": [
+                            "Centre",
+                            "Résidentiel"
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "nom": "San-Pédro",
+        "departements": [
+            {
+                "nom": "San-Pédro",
+                "villes": [
+                    {
+                        "nom": "San-Pédro",
+                        "quartiers": [
+                            "Cité",
+                            "Bardot",
+                            "Seweke",
+                            "Balmer",
+                            "Mhoye",
+                            "Lac",
+                            "Zone Industrielle"
+                        ]
+                    }
+                ]
+            },
+            {
+                "nom": "Tabou",
+                "villes": [
+                    {
+                        "nom": "Tabou",
+                        "quartiers": [
+                            "Kablaké",
+                            "Résidentiel"
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "nom": "Gbôklé",
+        "departements": [
+            {
+                "nom": "Sassandra",
+                "villes": [
+                    {
+                        "nom": "Sassandra",
+                        "quartiers": [
+                            "Centre",
+                            "Port",
+                            "Résidentiel",
+                            "Commerce"
+                        ]
+                    }
+                ]
+            },
+            {
+                "nom": "Fresco",
+                "villes": [
+                    {
+                        "nom": "Fresco",
+                        "quartiers": [
+                            "Centre",
+                            "Résidentiel"
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "nom": "Nawa",
+        "departements": [
+            {
+                "nom": "Soubré",
+                "villes": [
+                    {
+                        "nom": "Soubré",
+                        "quartiers": [
+                            "Centre",
+                            "Résidentiel",
+                            "Commerce",
+                            "Dioulabougou"
+                        ]
+                    }
+                ]
+            },
+            {
+                "nom": "Méagui",
+                "villes": [
+                    {
+                        "nom": "Méagui",
+                        "quartiers": [
+                            "Centre",
+                            "Résidentiel"
+                        ]
+                    }
+                ]
+            },
+            {
+                "nom": "Buyo",
+                "villes": [
+                    {
+                        "nom": "Buyo",
+                        "quartiers": [
+                            "Centre",
+                            "Résidentiel"
+                        ]
+                    }
+                ]
+            },
+            {
+                "nom": "Guéyo",
+                "villes": [
+                    {
+                        "nom": "Guéyo",
+                        "quartiers": [
+                            "Centre"
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "nom": "Haut-Sassandra",
+        "departements": [
+            {
+                "nom": "Daloa",
+                "villes": [
+                    {
+                        "nom": "Daloa",
+                        "quartiers": [
+                            "Tazibouo",
+                            "Labia",
+                            "Garage",
+                            "Orly",
+                            "Marais",
+                            "Baoulébougou"
+                        ]
+                    }
+                ]
+            },
+            {
+                "nom": "Issia",
+                "villes": [
+                    {
+                        "nom": "Issia",
+                        "quartiers": [
+                            "Issia-Kpassaré",
+                            "Wandaguhé"
+                        ]
+                    }
+                ]
+            },
+            {
+                "nom": "Vavoua",
+                "villes": [
+                    {
+                        "nom": "Vavoua",
+                        "quartiers": [
+                            "Dioulabougou",
+                            "Baoulébougou"
+                        ]
+                    }
+                ]
+            },
+            {
+                "nom": "Zoukougbeu",
+                "villes": [
+                    {
+                        "nom": "Zoukougbeu",
+                        "quartiers": [
+                            "Centre",
+                            "Résidentiel"
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "nom": "Marahoué",
+        "departements": [
+            {
+                "nom": "Bouaflé",
+                "villes": [
+                    {
+                        "nom": "Bouaflé",
+                        "quartiers": [
+                            "Centre",
+                            "Résidentiel",
+                            "Commerce",
+                            "Dioulabougou"
+                        ]
+                    }
+                ]
+            },
+            {
+                "nom": "Sinfra",
+                "villes": [
+                    {
+                        "nom": "Sinfra",
+                        "quartiers": [
+                            "Centre",
+                            "Résidentiel",
+                            "Commerce"
+                        ]
+                    }
+                ]
+            },
+            {
+                "nom": "Zuénoula",
+                "villes": [
+                    {
+                        "nom": "Zuénoula",
+                        "quartiers": [
+                            "Centre",
+                            "Résidentiel"
+                        ]
+                    }
+                ]
+            },
+            {
+                "nom": "Bonon",
+                "villes": [
+                    {
+                        "nom": "Bonon",
+                        "quartiers": [
+                            "Centre",
+                            "Résidentiel"
+                        ]
+                    }
+                ]
+            },
+            {
+                "nom": "Gohitafla",
+                "villes": [
+                    {
+                        "nom": "Gohitafla",
+                        "quartiers": [
+                            "Centre"
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "nom": "Poro",
+        "departements": [
+            {
+                "nom": "Korhogo",
+                "villes": [
+                    {
+                        "nom": "Korhogo",
+                        "quartiers": [
+                            "Koko",
+                            "Soba",
+                            "Prefehua",
+                            "Petit-Paris",
+                            "Quatorze",
+                            "Haoussabougou",
+                            "Bannaï"
+                        ]
+                    }
+                ]
+            },
+            {
+                "nom": "Dikodougou",
+                "villes": [
+                    {
+                        "nom": "Dikodougou",
+                        "quartiers": [
+                            "Dioulabougou",
+                            "Centre"
+                        ]
+                    }
+                ]
+            },
+            {
+                "nom": "M'Bengué",
+                "villes": [
+                    {
+                        "nom": "M'Bengué",
+                        "quartiers": [
+                            "M'Benguékaha",
+                            "Résidentiel"
+                        ]
+                    }
+                ]
+            },
+            {
+                "nom": "Sinématiali",
+                "villes": [
+                    {
+                        "nom": "Sinématiali",
+                        "quartiers": [
+                            "Sinéma",
+                            "Koko"
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "nom": "Bagoué",
+        "departements": [
+            {
+                "nom": "Boundiali",
+                "villes": [
+                    {
+                        "nom": "Boundiali",
+                        "quartiers": [
+                            "Centre",
+                            "Résidentiel",
+                            "Commerce",
+                            "Dioulabougou"
+                        ]
+                    }
+                ]
+            },
+            {
+                "nom": "Tengréla",
+                "villes": [
+                    {
+                        "nom": "Tengréla",
+                        "quartiers": [
+                            "Centre",
+                            "Résidentiel"
+                        ]
+                    }
+                ]
+            },
+            {
+                "nom": "Kouto",
+                "villes": [
+                    {
+                        "nom": "Kouto",
+                        "quartiers": [
+                            "Centre"
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "nom": "Tchologo",
+        "departements": [
+            {
+                "nom": "Ferkessédougou",
+                "villes": [
+                    {
+                        "nom": "Ferkessédougou",
+                        "quartiers": [
+                            "Centre",
+                            "Résidentiel",
+                            "Commerce",
+                            "Dioulabougou"
+                        ]
+                    }
+                ]
+            },
+            {
+                "nom": "Ouangolodougou",
+                "villes": [
+                    {
+                        "nom": "Ouangolodougou",
+                        "quartiers": [
+                            "Centre",
+                            "Résidentiel"
+                        ]
+                    }
+                ]
+            },
+            {
+                "nom": "Kong",
+                "villes": [
+                    {
+                        "nom": "Kong",
+                        "quartiers": [
+                            "Centre"
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "nom": "Gôh",
+        "departements": [
+            {
+                "nom": "Gagnoa",
+                "villes": [
+                    {
+                        "nom": "Gagnoa",
+                        "quartiers": [
+                            "Garahio",
+                            "Babré",
+                            "Dioulabougou",
+                            "Zapato",
+                            "Soleil",
+                            "Barouhio"
+                        ]
+                    }
+                ]
+            },
+            {
+                "nom": "Oumé",
+                "villes": [
+                    {
+                        "nom": "Oumé",
+                        "quartiers": [
+                            "Oumé-Kassipri",
+                            "Dioulabougou"
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "nom": "Lôh-Djiboua",
+        "departements": [
+            {
+                "nom": "Divo",
+                "villes": [
+                    {
+                        "nom": "Divo",
+                        "quartiers": [
+                            "Centre",
+                            "Résidentiel",
+                            "Commerce",
+                            "Dioulabougou"
+                        ]
+                    }
+                ]
+            },
+            {
+                "nom": "Lakota",
+                "villes": [
+                    {
+                        "nom": "Lakota",
+                        "quartiers": [
+                            "Centre",
+                            "Résidentiel"
+                        ]
+                    }
+                ]
+            },
+            {
+                "nom": "Guitry",
+                "villes": [
+                    {
+                        "nom": "Guitry",
+                        "quartiers": [
+                            "Centre"
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "nom": "Tonkpi",
+        "departements": [
+            {
+                "nom": "Man",
+                "villes": [
+                    {
+                        "nom": "Man",
+                        "quartiers": [
+                            "Grand-Gbapleu",
+                            "Koko",
+                            "Sari",
+                            "Domoraud",
+                            "Doyagouiné",
+                            "Belleville"
+                        ]
+                    }
+                ]
+            },
+            {
+                "nom": "Danané",
+                "villes": [
+                    {
+                        "nom": "Danané",
+                        "quartiers": [
+                            "Doyagouiné",
+                            "Dioulabougou"
+                        ]
+                    }
+                ]
+            },
+            {
+                "nom": "Biankouma",
+                "villes": [
+                    {
+                        "nom": "Biankouma",
+                        "quartiers": [
+                            "Gbonné",
+                            "Centre"
+                        ]
+                    }
+                ]
+            },
+            {
+                "nom": "Zouan-Hounien",
+                "villes": [
+                    {
+                        "nom": "Zouan-Hounien",
+                        "quartiers": [
+                            "Mine",
+                            "Centre"
+                        ]
+                    }
+                ]
+            },
+            {
+                "nom": "Sipilou",
+                "villes": [
+                    {
+                        "nom": "Sipilou",
+                        "quartiers": [
+                            "Sipilou-Ville"
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "nom": "Guémon",
+        "departements": [
+            {
+                "nom": "Duékoué",
+                "villes": [
+                    {
+                        "nom": "Duékoué",
+                        "quartiers": [
+                            "Centre",
+                            "Résidentiel",
+                            "Commerce",
+                            "Dioulabougou"
+                        ]
+                    }
+                ]
+            },
+            {
+                "nom": "Bangolo",
+                "villes": [
+                    {
+                        "nom": "Bangolo",
+                        "quartiers": [
+                            "Centre",
+                            "Résidentiel"
+                        ]
+                    }
+                ]
+            },
+            {
+                "nom": "Kouibly",
+                "villes": [
+                    {
+                        "nom": "Kouibly",
+                        "quartiers": [
+                            "Centre"
+                        ]
+                    }
+                ]
+            },
+            {
+                "nom": "Facobly",
+                "villes": [
+                    {
+                        "nom": "Facobly",
+                        "quartiers": [
+                            "Centre"
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "nom": "Cavally",
+        "departements": [
+            {
+                "nom": "Guiglo",
+                "villes": [
+                    {
+                        "nom": "Guiglo",
+                        "quartiers": [
+                            "Centre",
+                            "Résidentiel",
+                            "Commerce"
+                        ]
+                    }
+                ]
+            },
+            {
+                "nom": "Bloléquin",
+                "villes": [
+                    {
+                        "nom": "Bloléquin",
+                        "quartiers": [
+                            "Centre"
+                        ]
+                    }
+                ]
+            },
+            {
+                "nom": "Toulepleu",
+                "villes": [
+                    {
+                        "nom": "Toulepleu",
+                        "quartiers": [
+                            "Centre"
+                        ]
+                    }
+                ]
+            },
+            {
+                "nom": "Taï",
+                "villes": [
+                    {
+                        "nom": "Taï",
+                        "quartiers": [
+                            "Centre"
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "nom": "Agnéby-Tiassa",
+        "departements": [
+            {
+                "nom": "Agboville",
+                "villes": [
+                    {
+                        "nom": "Agboville",
+                        "quartiers": [
+                            "Gatcouleur",
+                            "Arti",
+                            "Sambregnan",
+                            "Offoriguié"
+                        ]
+                    }
+                ]
+            },
+            {
+                "nom": "Tiassalé",
+                "villes": [
+                    {
+                        "nom": "Tiassalé",
+                        "quartiers": [
+                            "Brakagny",
+                            "Château"
+                        ]
+                    }
+                ]
+            },
+            {
+                "nom": "Sikensi",
+                "villes": [
+                    {
+                        "nom": "Sikensi",
+                        "quartiers": [
+                            "Sikensi 1",
+                            "Sikensi 2"
+                        ]
+                    }
+                ]
+            },
+            {
+                "nom": "Taabo",
+                "villes": [
+                    {
+                        "nom": "Taabo",
+                        "quartiers": [
+                            "Taabo-Cité",
+                            "Taabo-Village"
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "nom": "Grands-Ponts",
+        "departements": [
+            {
+                "nom": "Dabou",
+                "villes": [
+                    {
+                        "nom": "Dabou",
+                        "quartiers": [
+                            "Centre",
+                            "Résidentiel",
+                            "Commerce"
+                        ]
+                    }
+                ]
+            },
+            {
+                "nom": "Jacqueville",
+                "villes": [
+                    {
+                        "nom": "Jacqueville",
+                        "quartiers": [
+                            "Centre",
+                            "Résidentiel"
+                        ]
+                    }
+                ]
+            },
+            {
+                "nom": "Grand-Lahou",
+                "villes": [
+                    {
+                        "nom": "Grand-Lahou",
+                        "quartiers": [
+                            "Centre",
+                            "Résidentiel"
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "nom": "La Mé",
+        "departements": [
+            {
+                "nom": "Adzopé",
+                "villes": [
+                    {
+                        "nom": "Adzopé",
+                        "quartiers": [
+                            "Centre",
+                            "Résidentiel",
+                            "Commerce"
+                        ]
+                    }
+                ]
+            },
+            {
+                "nom": "Akoupé",
+                "villes": [
+                    {
+                        "nom": "Akoupé",
+                        "quartiers": [
+                            "Centre",
+                            "Résidentiel"
+                        ]
+                    }
+                ]
+            },
+            {
+                "nom": "Alépé",
+                "villes": [
+                    {
+                        "nom": "Alépé",
+                        "quartiers": [
+                            "Centre"
+                        ]
+                    }
+                ]
+            },
+            {
+                "nom": "Yakassé-Attobrou",
+                "villes": [
+                    {
+                        "nom": "Yakassé-Attobrou",
+                        "quartiers": [
+                            "Centre"
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "nom": "Sud-Comoé",
+        "departements": [
+            {
+                "nom": "Grand-Bassam",
+                "villes": [
+                    {
+                        "nom": "Grand-Bassam",
+                        "quartiers": [
+                            "Quartier France",
+                            "Impérial",
+                            "Mocker",
+                            "Rosiers",
+                            "Azuretti"
+                        ]
+                    }
+                ]
+            },
+            {
+                "nom": "Aboisso",
+                "villes": [
+                    {
+                        "nom": "Aboisso",
+                        "quartiers": [
+                            "Sikèmssou",
+                            "Ebouakro",
+                            "Commerce"
+                        ]
+                    }
+                ]
+            },
+            {
+                "nom": "Adiaké",
+                "villes": [
+                    {
+                        "nom": "Adiaké",
+                        "quartiers": [
+                            "Adiaké-Ville",
+                            "Roassal"
+                        ]
+                    }
+                ]
+            },
+            {
+                "nom": "Tiapoum",
+                "villes": [
+                    {
+                        "nom": "Tiapoum",
+                        "quartiers": [
+                            "Tiapoum-Ville"
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "nom": "Indénié-Djuablin",
+        "departements": [
+            {
+                "nom": "Abengourou",
+                "villes": [
+                    {
+                        "nom": "Abengourou",
+                        "quartiers": [
+                            "Centre",
+                            "Résidentiel",
+                            "Commerce",
+                            "Dioulabougou"
+                        ]
+                    }
+                ]
+            },
+            {
+                "nom": "Agnibilékrou",
+                "villes": [
+                    {
+                        "nom": "Agnibilékrou",
+                        "quartiers": [
+                            "Centre",
+                            "Résidentiel"
+                        ]
+                    }
+                ]
+            },
+            {
+                "nom": "Bettié",
+                "villes": [
+                    {
+                        "nom": "Bettié",
+                        "quartiers": [
+                            "Centre"
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "nom": "Gontougo",
+        "departements": [
+            {
+                "nom": "Bondoukou",
+                "villes": [
+                    {
+                        "nom": "Bondoukou",
+                        "quartiers": [
+                            "Centre",
+                            "Résidentiel",
+                            "Commerce",
+                            "Dioulabougou"
+                        ]
+                    }
+                ]
+            },
+            {
+                "nom": "Tanda",
+                "villes": [
+                    {
+                        "nom": "Tanda",
+                        "quartiers": [
+                            "Centre",
+                            "Résidentiel"
+                        ]
+                    }
+                ]
+            },
+            {
+                "nom": "Koun-Fao",
+                "villes": [
+                    {
+                        "nom": "Koun-Fao",
+                        "quartiers": [
+                            "Centre"
+                        ]
+                    }
+                ]
+            },
+            {
+                "nom": "Sandégué",
+                "villes": [
+                    {
+                        "nom": "Sandégué",
+                        "quartiers": [
+                            "Centre"
+                        ]
+                    }
+                ]
+            },
+            {
+                "nom": "Transua",
+                "villes": [
+                    {
+                        "nom": "Transua",
+                        "quartiers": [
+                            "Centre"
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "nom": "Bounkani",
+        "departements": [
+            {
+                "nom": "Bouna",
+                "villes": [
+                    {
+                        "nom": "Bouna",
+                        "quartiers": [
+                            "Centre",
+                            "Résidentiel",
+                            "Commerce"
+                        ]
+                    }
+                ]
+            },
+            {
+                "nom": "Doropo",
+                "villes": [
+                    {
+                        "nom": "Doropo",
+                        "quartiers": [
+                            "Centre"
+                        ]
+                    }
+                ]
+            },
+            {
+                "nom": "Nassian",
+                "villes": [
+                    {
+                        "nom": "Nassian",
+                        "quartiers": [
+                            "Centre"
+                        ]
+                    }
+                ]
+            },
+            {
+                "nom": "Téhini",
+                "villes": [
+                    {
+                        "nom": "Téhini",
+                        "quartiers": [
+                            "Centre"
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "nom": "Bélier",
+        "departements": [
+            {
+                "nom": "Toumodi",
+                "villes": [
+                    {
+                        "nom": "Toumodi",
+                        "quartiers": [
+                            "Centre",
+                            "Résidentiel",
+                            "Commerce"
+                        ]
+                    }
+                ]
+            },
+            {
+                "nom": "Tiébissou",
+                "villes": [
+                    {
+                        "nom": "Tiébissou",
+                        "quartiers": [
+                            "Centre",
+                            "Résidentiel"
+                        ]
+                    }
+                ]
+            },
+            {
+                "nom": "Didiévi",
+                "villes": [
+                    {
+                        "nom": "Didiévi",
+                        "quartiers": [
+                            "Centre"
+                        ]
+                    }
+                ]
+            },
+            {
+                "nom": "Djékanou",
+                "villes": [
+                    {
+                        "nom": "Djékanou",
+                        "quartiers": [
+                            "Centre"
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "nom": "Iffou",
+        "departements": [
+            {
+                "nom": "Daoukro",
+                "villes": [
+                    {
+                        "nom": "Daoukro",
+                        "quartiers": [
+                            "Centre",
+                            "Résidentiel",
+                            "Commerce"
+                        ]
+                    }
+                ]
+            },
+            {
+                "nom": "M’Bahiakro",
+                "villes": [
+                    {
+                        "nom": "M’Bahiakro",
+                        "quartiers": [
+                            "Centre"
+                        ]
+                    }
+                ]
+            },
+            {
+                "nom": "Prikro",
+                "villes": [
+                    {
+                        "nom": "Prikro",
+                        "quartiers": [
+                            "Centre"
+                        ]
+                    }
+                ]
+            },
+            {
+                "nom": "Ouellé",
+                "villes": [
+                    {
+                        "nom": "Ouellé",
+                        "quartiers": [
+                            "Centre"
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "nom": "N'Zi",
+        "departements": [
+            {
+                "nom": "Dimbokro",
+                "villes": [
+                    {
+                        "nom": "Dimbokro",
+                        "quartiers": [
+                            "Centre",
+                            "Résidentiel",
+                            "Commerce"
+                        ]
+                    }
+                ]
+            },
+            {
+                "nom": "Bocanda",
+                "villes": [
+                    {
+                        "nom": "Bocanda",
+                        "quartiers": [
+                            "Centre"
+                        ]
+                    }
+                ]
+            },
+            {
+                "nom": "Kouassi-Kouassikro",
+                "villes": [
+                    {
+                        "nom": "Kouassi-Kouassikro",
+                        "quartiers": [
+                            "Centre"
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "nom": "Moronou",
+        "departements": [
+            {
+                "nom": "Bongouanou",
+                "villes": [
+                    {
+                        "nom": "Bongouanou",
+                        "quartiers": [
+                            "Centre",
+                            "Résidentiel",
+                            "Commerce"
+                        ]
+                    }
+                ]
+            },
+            {
+                "nom": "Arrah",
+                "villes": [
+                    {
+                        "nom": "Arrah",
+                        "quartiers": [
+                            "Centre"
+                        ]
+                    }
+                ]
+            },
+            {
+                "nom": "M’Batto",
+                "villes": [
+                    {
+                        "nom": "M’Batto",
+                        "quartiers": [
+                            "Centre"
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "nom": "Worodougou",
+        "departements": [
+            {
+                "nom": "Séguéla",
+                "villes": [
+                    {
+                        "nom": "Séguéla",
+                        "quartiers": [
+                            "Centre",
+                            "Résidentiel",
+                            "Commerce",
+                            "Dioulabougou"
+                        ]
+                    }
+                ]
+            },
+            {
+                "nom": "Kani",
+                "villes": [
+                    {
+                        "nom": "Kani",
+                        "quartiers": [
+                            "Centre"
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "nom": "Béré",
+        "departements": [
+            {
+                "nom": "Mankono",
+                "villes": [
+                    {
+                        "nom": "Mankono",
+                        "quartiers": [
+                            "Centre",
+                            "Résidentiel",
+                            "Commerce"
+                        ]
+                    }
+                ]
+            },
+            {
+                "nom": "Dianra",
+                "villes": [
+                    {
+                        "nom": "Dianra",
+                        "quartiers": [
+                            "Centre"
+                        ]
+                    }
+                ]
+            },
+            {
+                "nom": "Kounahiri",
+                "villes": [
+                    {
+                        "nom": "Kounahiri",
+                        "quartiers": [
+                            "Centre"
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "nom": "Bafing",
+        "departements": [
+            {
+                "nom": "Touba",
+                "villes": [
+                    {
+                        "nom": "Touba",
+                        "quartiers": [
+                            "Centre",
+                            "Résidentiel",
+                            "Commerce"
+                        ]
+                    }
+                ]
+            },
+            {
+                "nom": "Koro",
+                "villes": [
+                    {
+                        "nom": "Koro",
+                        "quartiers": [
+                            "Centre"
+                        ]
+                    }
+                ]
+            },
+            {
+                "nom": "Ouaninou",
+                "villes": [
+                    {
+                        "nom": "Ouaninou",
+                        "quartiers": [
+                            "Centre"
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "nom": "Kabadougou",
+        "departements": [
+            {
+                "nom": "Odienné",
+                "villes": [
+                    {
+                        "nom": "Odienné",
+                        "quartiers": [
+                            "Centre",
+                            "Résidentiel",
+                            "Commerce",
+                            "Dioulabougou"
+                        ]
+                    }
+                ]
+            },
+            {
+                "nom": "Madinani",
+                "villes": [
+                    {
+                        "nom": "Madinani",
+                        "quartiers": [
+                            "Centre"
+                        ]
+                    }
+                ]
+            },
+            {
+                "nom": "Samatiguila",
+                "villes": [
+                    {
+                        "nom": "Samatiguila",
+                        "quartiers": [
+                            "Centre"
+                        ]
+                    }
+                ]
+            },
+            {
+                "nom": "Séguélon",
+                "villes": [
+                    {
+                        "nom": "Séguélon",
+                        "quartiers": [
+                            "Centre"
+                        ]
+                    }
+                ]
+            },
+            {
+                "nom": "Gbéléban",
+                "villes": [
+                    {
+                        "nom": "Gbéléban",
+                        "quartiers": [
+                            "Centre"
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "nom": "Folon",
+        "departements": [
+            {
+                "nom": "Minignan",
+                "villes": [
+                    {
+                        "nom": "Minignan",
+                        "quartiers": [
+                            "Centre",
+                            "Résidentiel"
+                        ]
+                    }
+                ]
+            },
+            {
+                "nom": "Kaniasso",
+                "villes": [
+                    {
+                        "nom": "Kaniasso",
+                        "quartiers": [
+                            "Centre"
+                        ]
+                    }
+                ]
+            }
+        ]
+    }
+]

@@ -1,0 +1,43 @@
+# Règle 2 : aucun secret dans le dépôt. Analyse de secrets (gitleaks) lancée par .github/workflows/securite.yml sur TOUT l'historique.
+# Elle reprend les règles par défaut de gitleaks (clés AWS, jetons GitHub, JWT Supabase « service_role », clés Stripe, etc.)
+# et y ajoute ce qui est propre à KoudMain.
+title = "KoudMain"
+
+[extend]
+useDefault = true
+
+# Adresse de connexion PostgreSQL avec mot de passe dedans (postgresql://utilisateur:motdepasse@hôte/base).
+[[rules]]
+id = "koudmain-postgres-url"
+description = "Adresse PostgreSQL contenant un mot de passe"
+regex = '''postgres(?:ql)?://[^:\s/@]+:([^@\s'"]{6,})@[^\s'"]+'''
+secretGroup = 1
+keywords = ["postgres"]
+
+# Variables de secrets de l'application collées avec une vraie valeur (les exemples vides ou factices sont autorisés plus bas).
+[[rules]]
+id = "koudmain-secret-assigne"
+description = "Variable secrète de KoudMain avec une valeur"
+regex = '''(?i)\b(APP_KEY|DB_PASSWORD|SUPABASE_SERVICE_KEY|CINETPAY_(?:API_KEY|SECRET_KEY)|MAIL_PASSWORD|SENTRY_DSN|R2_SECRET_ACCESS_KEY|AGE_SECRET_KEY)\s*[:=]\s*['"]?([A-Za-z0-9+/=_\-\.:@]{16,})['"]?'''
+secretGroup = 2
+keywords = ["app_key", "db_password", "service_key", "cinetpay", "mail_password", "sentry_dsn", "secret_access_key", "age_secret_key"]
+
+[allowlist]
+description = "Fichiers et valeurs qui ne sont pas des secrets"
+paths = [
+    '''^\.env\.example$''',
+    '''^composer\.lock$''',
+    '''^package-lock\.json$''',
+    '''^tests/''',
+    '''^\.gitleaks\.toml$''',
+    '''^SECURITE\.md$''',
+    '''^DEPLOIEMENT\.md$''',
+    '''^CINETPAY\.md$''',
+]
+regexes = [
+    # Mot de passe de la base de DÉVELOPPEMENT (docker-compose.yml, local uniquement) : jamais utilisé en production
+    # (koudmain:controle-production le refuse).
+    '''koudmain_dev''',
+    # Valeurs de remplissage dans la documentation.
+    '''(?i)(votre|exemple|example|changeme|xxxx|\.\.\.|<[^>]+>)''',
+]

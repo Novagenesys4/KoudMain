@@ -1,0 +1,114 @@
+# Sécurité continue (règles 2 et 18) : à chaque envoi de code, et chaque lundi (une faille est parfois publiée sans qu'on ait touché au code).
+#   1. gitleaks : aucun secret dans le code NI dans l'historique Git ;
+#   2. composer audit / npm audit : aucune dépendance avec une faille connue ;
+#   3. la suite de tests complète (555+ tests, sur une vraie base PostgreSQL) ;
+#   4. la construction des fichiers du navigateur (Vite) : aucun console.* ne doit y subsister.
+name: Sécurité
+
+on:
+  push:
+    branches: [main, master, laravel]
+  pull_request:
+  schedule:
+    - cron: '17 5 * * 1'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: securite-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  secrets:
+    name: Aucun secret dans le dépôt (gitleaks)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # tout l'historique : un secret supprimé plus tard reste lisible dans un ancien commit
+
+      - name: Installer gitleaks (version fixée, somme de contrôle vérifiée)
+        run: |
+          set -euo pipefail
+          v=8.24.2
+          curl -sSfL -O "https://github.com/gitleaks/gitleaks/releases/download/v${v}/gitleaks_${v}_linux_x64.tar.gz"
+          curl -sSfL -O "https://github.com/gitleaks/gitleaks/releases/download/v${v}/gitleaks_${v}_checksums.txt"
+          sha256sum -c gitleaks_${v}_checksums.txt --ignore-missing
+          tar -xzf "gitleaks_${v}_linux_x64.tar.gz" gitleaks
+
+      - name: Analyser l'historique complet
+        run: ./gitleaks git . --config .gitleaks.toml --redact --verbose --exit-code 1
+
+      - name: Aucun fichier .env versionné
+        run: |
+          if git ls-files | grep -E '(^|/)\.env($|\.)' | grep -v '^\.env\.example$'; then
+            echo "::error::Un fichier .env est suivi par Git. Retirez-le (git rm --cached) et changez les secrets qu'il contenait."
+            exit 1
+          fi
+
+  dependances:
+    name: Dépendances sans faille connue
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.4'
+          tools: composer:v2
+
+      - name: composer audit (paquets PHP, y compris outils de test)
+        run: composer audit --locked --format=plain
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: npm audit (paquets du navigateur livrés aux visiteurs)
+        run: npm audit --omit=dev --audit-level=high
+
+      - name: npm audit (outils de construction, information)
+        run: npm audit --audit-level=critical
+
+  tests:
+    name: Tests et construction
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: koudmain
+          POSTGRES_PASSWORD: koudmain_dev # base éphémère du test (phpunit.xml impose ce mot de passe) : sans lien avec la production
+          POSTGRES_DB: koudmain_test
+        ports: ['5433:5432']
+        options: >-
+          --health-cmd "pg_isready -U koudmain" --health-interval 5s --health-timeout 5s --health-retries 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.4'
+          extensions: pdo_pgsql, gd, intl, zip
+          tools: composer:v2
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+
+      - run: composer install --no-interaction --no-progress --prefer-dist
+      - run: npm ci --no-audit --no-fund
+      - run: cp .env.example .env && php artisan key:generate --force
+      - run: npm run build
+
+      - name: Aucun console.* dans le JavaScript de production
+        run: |
+          if grep -rEl 'console\.(log|debug|info|trace)\(' public/build/assets/*.js; then
+            echo "::error::console.* trouvé dans le JavaScript construit (règle 15)."
+            exit 1
+          fi
+
+      - run: php artisan test

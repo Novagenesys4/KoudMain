@@ -1,0 +1,16 @@
+services:
+  db:
+    image: postgres:16
+    environment:
+      POSTGRES_DB: koudmain_laravel
+      POSTGRES_USER: koudmain
+      POSTGRES_PASSWORD: koudmain_dev
+    ports:
+      - "5433:5432"   # 5433 pour ne pas entrer en conflit avec votre ancienne base Docker
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      # Créé la base « koudmain_test » au tout premier démarrage du volume (voir le fichier).
+      - ./docker/postgres/01-base-de-test.sql:/docker-entrypoint-initdb.d/01-base-de-test.sql:ro
+
+volumes:
+  pgdata:

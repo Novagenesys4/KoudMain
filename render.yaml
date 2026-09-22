@@ -1,0 +1,118 @@
+# SECRETS (règle 1) : aucun fichier .env en production. Les secrets vivent UNIQUEMENT dans le coffre de Render (variables d'environnement,
+# chiffrées, jamais écrites dans Git ni dans l'image Docker) :
+#   - ce fichier ne contient jamais une valeur secrète : elles sont marquées `sync: false` et saisies dans le tableau de bord ;
+#   - pour les partager entre plusieurs services (production + préproduction) : tableau de bord > Environment Groups > New, puis
+#     Service > Environment > Linked Environment Groups. (Un Blueprint ne sait pas créer un groupe dont les valeurs sont secrètes.)
+#   - au démarrage, `koudmain:controle-production` REFUSE de lancer le site si un secret par défaut, un .env ou APP_DEBUG=true est détecté.
+# Blueprint Render : « New > Blueprint » sur le dépôt GitHub crée le service web avec tous ses réglages.
+# Les valeurs marquées `sync: false` sont des SECRETS ou des adresses propres à vous : Render les demande à la création
+# et ne les écrit jamais dans ce fichier (donc jamais dans Git). Guide pas à pas : DEPLOIEMENT.md.
+services:
+  - type: web
+    # Nom distinct de l'ancien service PHP "koudmain" (koudmain.onrender.com) pour ne pas entrer en collision avec lui.
+    name: koudmain-laravel
+    runtime: docker
+    dockerfilePath: ./Dockerfile
+    dockerContext: .
+    # Choisissez la région la plus PROCHE de votre projet Supabase (chaque requête SQL fait l'aller-retour vers la base).
+    region: frankfurt
+    # 0.5c-512mb = l'ancien plan « Starter » (0,5 CPU, 512 Mo), le minimum pour de vrais clients : toujours allumé, donc le
+    # planificateur (paiements libérés, nettoyage) tourne en permanence. Le plan « free » se met en veille : à éviter en production.
+    # Plus de monde ou de photos envoyées en même temps ? 1c-2g (avec APACHE_MAX_WORKERS=15 si la base le supporte).
+    # TEMPORAIRE : plan free (pas de carte bancaire pour l'instant) le temps de tester/présenter le projet.
+    # Repasser à 0.5c-512mb avant une vraie ouverture au public (le plan free s'endort et le planificateur ne tourne pas en continu).
+    plan: free
+    healthCheckPath: /up
+    autoDeployTrigger: commit
+    envVars:
+      # --- Application ---
+      - key: APP_ENV
+        value: production
+      - key: APP_DEBUG
+        value: "false"
+      - key: APP_NAME
+        value: KoudMain
+      - key: APP_KEY            # php artisan key:generate --show   (copiez le résultat, y compris « base64: »)
+        sync: false
+      - key: APP_URL            # https://votre-service.onrender.com (ou votre domaine)
+        sync: false
+      - key: APP_LOCALE
+        value: fr
+      - key: TRUST_PROXY        # Render est un proxy : l'adresse IP réelle du visiteur est lue dans X-Forwarded-For
+        value: "true"
+      - key: SESSION_SECURE_COOKIE   # le cookie de session ne voyage qu'en HTTPS
+        value: "true"
+      - key: SESSION_LIFETIME        # déconnexion après 2 heures d'inactivité
+        value: "120"
+      - key: SESSION_ENCRYPT         # contenu des sessions chiffré sur le disque
+        value: "true"
+      - key: CONTROLE_PRODUCTION     # « strict » : le site ne démarre pas avec une configuration dangereuse. « avertir » : affiche sans bloquer (premier déploiement seulement)
+        value: strict
+      - key: LOG_CHANNEL        # journal JSON sur la sortie d'erreur : Render l'affiche et permet d'y chercher
+        value: json
+      - key: LOG_LEVEL
+        value: info
+
+      # --- Base de données : Supabase, « Session pooler » (port 5432 du pooler, PAS 6543) ---
+      - key: DB_CONNECTION
+        value: pgsql
+      - key: DB_HOST
+        sync: false
+      - key: DB_PORT
+        value: "5432"
+      - key: DB_DATABASE
+        value: postgres
+      - key: DB_USERNAME
+        sync: false
+      - key: DB_PASSWORD
+        sync: false
+      - key: DB_SSLMODE
+        value: require
+      - key: DB_PERSISTENT      # garde la connexion ouverte d'une page à l'autre : le gain de vitesse le plus important
+        value: "true"
+
+      # --- Photos : Supabase Storage (le disque de Render est effacé à chaque déploiement) ---
+      - key: MEDIA_DRIVER
+        value: supabase
+      - key: SUPABASE_URL
+        sync: false
+      - key: SUPABASE_SERVICE_KEY
+        sync: false
+      - key: SUPABASE_BUCKET
+        value: medias
+
+      # --- E-mails (Brevo, Resend... en SMTP) ---
+      - key: MAIL_MAILER
+        value: smtp
+      - key: MAIL_HOST
+        sync: false
+      - key: MAIL_PORT
+        value: "587"
+      - key: MAIL_USERNAME
+        sync: false
+      - key: MAIL_PASSWORD
+        sync: false
+      - key: MAIL_FROM_ADDRESS
+        sync: false
+
+      # --- Paiement Mobile Money : « aucun » tant que votre compte CinetPay n'est pas prêt (jamais « simulation » en production) ---
+      # Le jour où vous activez CinetPay : PAIEMENT_DRIVER=cinetpay, puis ajoutez dans le tableau de bord (coffre de Render) :
+      # CINETPAY_API_KEY, CINETPAY_SITE_ID et CINETPAY_SECRET_KEY. Sans la clé secrète, les notifications de paiement sont refusées (règle 17).
+      - key: PAIEMENT_DRIVER
+        value: aucun
+
+      # --- Temps réel : interrogation toutes les 3 s. Le flux continu occuperait un processus Apache par onglet ouvert. ---
+      - key: TEMPS_REEL_MODE
+        value: sondage
+
+      # --- Suivi des erreurs : laissez vide pour désactiver (Sentry > Settings > Client Keys) ---
+      - key: SENTRY_DSN
+        sync: false
+
+      # --- Conteneur ---
+      - key: APACHE_MAX_WORKERS # nombre maximal de connexions ouvertes vers la base (une par processus Apache) ; 8 tiennent dans 512 Mo
+        value: "8"
+      - key: RUN_MIGRATIONS
+        value: "1"
+      - key: RUN_SCHEDULER
+        value: "1"
