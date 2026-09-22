@@ -20,7 +20,7 @@ class EmailConfirme
     {
         $utilisateur = $request->user();
 
-        if ($utilisateur !== null && $utilisateur->email_verified_at === null) {
+        if (config('koudmain.securite.confirmation_email') && $utilisateur !== null && $utilisateur->email_verified_at === null) {
             Auth::guard('web')->logout();
 
             $request->session()->invalidate();

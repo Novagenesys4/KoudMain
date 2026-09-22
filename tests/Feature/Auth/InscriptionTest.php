@@ -62,6 +62,24 @@ class InscriptionTest extends TestCase
         $this->assertSame('0.00', $user->wallet->solde);
     }
 
+    public function test_sans_confirmation_par_email_le_compte_est_actif_et_peut_se_connecter(): void
+    {
+        config(['koudmain.securite.confirmation_email' => false]);
+        Mail::fake();
+
+        $this->post('/inscription', $this->donnees())
+            ->assertRedirect(route('connexion'))
+            ->assertSessionHas('succes');
+
+        $user = User::where('email', 'aya.kone@exemple.ci')->firstOrFail();
+        $this->assertNotNull($user->email_verified_at);
+        Mail::assertNothingOutgoing();
+
+        $this->post('/connexion', ['email' => 'aya.kone@exemple.ci', 'password' => 'Motdepasse1'])
+            ->assertSessionHasNoErrors();
+        $this->assertAuthenticatedAs($user);
+    }
+
     public function test_un_prestataire_attend_la_validation_d_un_administrateur(): void
     {
         $this->post('/inscription', $this->donnees(['role' => 'prestataire']))

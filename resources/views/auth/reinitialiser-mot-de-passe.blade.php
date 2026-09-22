@@ -1,11 +1,11 @@
 <x-layouts.auth titre="Nouveau mot de passe" variante="connexion">
     <p class="etiquette" data-reveal>Réinitialisation</p>
-    <h1 class="mt-5 text-[clamp(2.25rem,4vw,3.25rem)]" data-mots>Choisir un nouveau mot de passe</h1>
+    <h1 class="mt-3 text-[clamp(1.9rem,3vw,2.6rem)]" data-mots>Choisir un nouveau mot de passe</h1>
     <p class="mt-4 text-soft" data-reveal style="--i: 2">Ce lien ne sert qu'une fois et n'est valable qu'un temps limité.</p>
 
     {{-- L'action reprend l'URL signée telle quelle (signature et expiration comprises) : le middleware « signed:relative »
          la revérifie aussi sur cet envoi. --}}
-    <form method="POST" action="{{ url()->full() }}" class="mt-8 grid gap-7" novalidate>
+    <form method="POST" action="{{ url()->full() }}" class="mt-6 grid gap-5" novalidate>
         @csrf
 
         <x-champ nom="password" libelle="Nouveau mot de passe" type="password" autocomplete="new-password"

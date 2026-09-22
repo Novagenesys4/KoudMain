@@ -59,15 +59,15 @@ function TrajetArgent() {
  */
 export default function AuthShowcase({ variante = 'connexion', accueil = '/' }) {
     return (
-        <div className="relative flex h-full flex-col justify-between gap-10">
+        <div className="relative flex h-full flex-col justify-between gap-[clamp(1rem,4vh,2.5rem)]">
             <a href={accueil} className="w-fit text-on-panel [--logo-accent:var(--on-panel-accent)]" aria-label="KoudMain, retour à l'accueil">
-                <Logo className="text-[1.75rem]" />
+                <Logo className="text-[1.5rem] lg:text-[1.75rem]" />
             </a>
 
             <div className="hidden lg:block">
                 <p className="etiquette etiquette-trait text-on-panel-accent">Paiement sécurisé par séquestre</p>
-                <TextEffect as="p" parts={TITRES[variante] ?? TITRES.connexion} className="mt-6 font-serif text-[2.6rem] font-semibold leading-[1.03] tracking-[-0.055em] text-on-panel xl:text-[3.4rem] [&_em]:font-medium [&_em]:italic [&_em]:text-on-panel-accent" />
-                <div className="mt-10 max-w-md">
+                <TextEffect as="p" parts={TITRES[variante] ?? TITRES.connexion} className="mt-[clamp(0.75rem,2.5vh,1.5rem)] font-serif text-[clamp(1.9rem,min(3.2vw,6vh),3.1rem)] font-semibold leading-[1.03] tracking-[-0.055em] text-on-panel [&_em]:font-medium [&_em]:italic [&_em]:text-on-panel-accent" />
+                <div className="mt-[clamp(1rem,4vh,2.5rem)] max-w-md [@media(max-height:640px)]:hidden">
                     <TrajetArgent />
                 </div>
             </div>

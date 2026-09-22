@@ -76,7 +76,7 @@ class ConnexionRequest extends FormRequest
 
         // Mot de passe juste, mais l'adresse e-mail n'a jamais été confirmée (règle 19) : on ne connecte pas. Ce message n'est vu que
         // par quelqu'un qui connaît le mot de passe du compte : il ne révèle rien à un curieux. Le formulaire propose de renvoyer le lien.
-        if ($user->email_verified_at === null) {
+        if (config('koudmain.securite.confirmation_email') && $user->email_verified_at === null) {
             Journal::info('connexion.email_non_confirme', ['utilisateur' => $user->id, 'ip' => $ip]);
 
             $this->session()->flash('email_a_confirmer', true);

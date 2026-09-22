@@ -31,6 +31,9 @@ return [
         'hsts_secondes' => 31_536_000,
         'remember_minutes' => 20_160,
         'confirmation_heures' => 48,
+        // EMAIL_CONFIRMATION=false : les comptes sont actifs dès l'inscription, sans e-mail de confirmation. À utiliser tant qu'aucun
+        // SMTP n'est configuré (MAIL_MAILER=log). Remettre à true (ou supprimer la variable) dès que les e-mails partent vraiment.
+        'confirmation_email' => filter_var(env('EMAIL_CONFIRMATION', true), FILTER_VALIDATE_BOOL),
         // Validité du lien de réinitialisation de mot de passe (même mécanisme que la confirmation d'adresse, en plus court :
         // un lien qui donne accès au compte doit rester valable moins longtemps qu'un lien qui se contente de le confirmer).
         'reinitialisation_minutes' => 60,

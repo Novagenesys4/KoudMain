@@ -1,11 +1,11 @@
 <x-layouts.auth titre="Confirmer mon adresse" variante="connexion">
     <p class="etiquette" data-reveal>Confirmation</p>
-    <h1 class="mt-5 text-[clamp(2.25rem,4vw,3.25rem)]" data-mots>Renvoyer l'e-mail</h1>
+    <h1 class="mt-3 text-[clamp(1.9rem,3vw,2.6rem)]" data-mots>Renvoyer l'e-mail</h1>
     <p class="mt-4 text-soft" data-reveal style="--i: 2">
         Saisissez l'adresse utilisée à l'inscription. Si un compte attend sa confirmation, nous vous renvoyons le lien.
     </p>
 
-    <form method="POST" action="{{ route('email.renvoyer.envoyer') }}" class="mt-8 grid gap-7" novalidate>
+    <form method="POST" action="{{ route('email.renvoyer.envoyer') }}" class="mt-6 grid gap-5" novalidate>
         @csrf
 
         <x-champ nom="email" libelle="Adresse e-mail" type="email" autocomplete="email" inputmode="email" autofocus />

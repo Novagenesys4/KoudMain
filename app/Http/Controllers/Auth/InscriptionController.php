@@ -52,6 +52,7 @@ class InscriptionController extends Controller
         $estPrestataire = $donnees['role'] === 'prestataire';
 
         $existant = $this->chercher($donnees['email']);
+        $confirmationActive = (bool) config('koudmain.securite.confirmation_email');
 
         if ($existant === null) {
             try {
@@ -65,10 +66,22 @@ class InscriptionController extends Controller
         if ($existant !== null) {
             // Même coût de calcul que pour une vraie inscription : le temps de réponse ne trahit rien non plus.
             Hash::make($donnees['password']);
-            $confirmations->prevenirCompteExistant($existant);
+            if ($confirmationActive) {
+                $confirmations->prevenirCompteExistant($existant);
+            }
         } else {
             Journal::info('inscription', ['role' => $donnees['role'], 'email' => $user->email, 'utilisateur' => $user->id]);
-            $confirmations->envoyer($user);
+            if ($confirmationActive) {
+                $confirmations->envoyer($user);
+            }
+        }
+
+        // Sans confirmation par e-mail (EMAIL_CONFIRMATION=false) : le compte est actif tout de suite. Le message reste le même que
+        // l'adresse soit nouvelle ou déjà inscrite (règle 16) : il ne révèle pas qui possède un compte.
+        if (! $confirmationActive) {
+            return redirect()->route('connexion')->with('succes', 'Votre compte est créé. Connectez-vous avec votre adresse e-mail et votre mot de passe'
+                .($estPrestataire ? ' : un administrateur doit encore valider votre profil prestataire avant votre première connexion' : '')
+                .'.');
         }
 
         return redirect()->route('connexion')->with('succes', 'Presque terminé ! Si cette adresse peut être utilisée, un e-mail de confirmation vient d\'y être envoyé : ouvrez-le et cliquez sur le lien pour activer votre compte'
@@ -102,7 +115,7 @@ class InscriptionController extends Controller
                 'est_prestataire' => $estPrestataire,
                 'est_admin' => false,
                 'est_valide' => ! $estPrestataire,
-                'email_verified_at' => null,
+                'email_verified_at' => config('koudmain.securite.confirmation_email') ? null : now(),
             ])->save();
 
             $user->wallet()->create(); // solde à 0

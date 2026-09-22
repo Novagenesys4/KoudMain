@@ -1,10 +1,10 @@
 <x-layouts.auth titre="Créer un compte" variante="inscription">
     <p class="etiquette" data-reveal>Bienvenue</p>
-    <h1 class="mt-5 text-[clamp(2.25rem,4vw,3.25rem)]" data-mots>Créer un compte</h1>
+    <h1 class="mt-3 text-[clamp(1.9rem,3vw,2.6rem)]" data-mots>Créer un compte</h1>
     <p class="mt-4 text-soft" data-reveal style="--i: 2">Deux minutes suffisent. Vous pourrez changer de projet plus tard.</p>
 
     @if ($errors->any())
-        <p class="message message-erreur mt-8" role="alert">Certains champs sont à corriger.</p>
+        <p class="message message-erreur mt-6" role="alert">Certains champs sont à corriger.</p>
     @endif
 
     {{--
@@ -13,7 +13,7 @@
         avec un seul bouton d'envoi. Avec JavaScript, une seule étape est visible à la fois, la page ne défile plus,
         et si le serveur renvoie une erreur, on retombe directement sur l'étape à corriger.
     --}}
-    <form method="POST" action="{{ route('inscription') }}" class="mt-8 grid gap-7" novalidate data-etapes>
+    <form method="POST" action="{{ route('inscription') }}" class="mt-6 grid gap-5" novalidate data-etapes>
         @csrf
 
         <div class="flex items-center justify-between gap-3 text-sm text-soft" data-etape-info hidden>
@@ -22,7 +22,7 @@
         <div class="progres" aria-hidden="true" data-progres-barre><i></i></div>
 
         {{-- Étape 1 : qui s'inscrit --}}
-        <div class="grid gap-7" data-etape>
+        <div class="grid gap-5" data-etape>
             <fieldset class="grid gap-3">
                 <legend class="champ-legende mb-1">Vous êtes…</legend>
                 {{-- Choix segmenté : la pastille glisse d'un choix à l'autre (CSS pur, voir .seg). --}}
@@ -51,7 +51,7 @@
                 @error('role')<p class="champ-erreur">{{ $message }}</p>@enderror
             </fieldset>
 
-            <div class="grid items-start gap-7 sm:grid-cols-2">
+            <div class="grid items-start gap-5 sm:grid-cols-2">
                 <x-champ nom="prenom" libelle="Prénom" autocomplete="given-name" />
                 <x-champ nom="nom" libelle="Nom" autocomplete="family-name" />
             </div>
@@ -66,7 +66,7 @@
         </div>
 
         {{-- Étape 2 : où --}}
-        <div class="grid gap-7" data-etape>
+        <div class="grid gap-5" data-etape>
             <x-champ nom="telephone" libelle="Téléphone" type="tel" autocomplete="tel" inputmode="tel"
                      aide="10 chiffres, par exemple 07 12 34 56 78." />
 
@@ -117,7 +117,7 @@
         </div>
 
         {{-- Étape 3 : identifiants --}}
-        <div class="grid gap-7" data-etape>
+        <div class="grid gap-5" data-etape>
             <x-champ nom="email" libelle="Adresse e-mail" type="email" autocomplete="email" inputmode="email" />
             <x-champ nom="password" libelle="Mot de passe" type="password" autocomplete="new-password"
                      aide="8 caractères minimum, avec au moins une lettre et un chiffre." />

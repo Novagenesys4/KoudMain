@@ -112,7 +112,10 @@ class ControleProduction
         }
 
         // Règle 19 : la confirmation de l'adresse exige de VRAIS e-mails.
-        if (in_array(mb_strtolower((string) ($env['MAIL_MAILER'] ?? 'log')), ['log', 'array', ''], true)) {
+        $confirmationEmail = filter_var($env['EMAIL_CONFIRMATION'] ?? true, FILTER_VALIDATE_BOOL, FILTER_NULL_ON_FAILURE) ?? true;
+        if (! $confirmationEmail) {
+            $ajouter('attention', 19, 'EMAIL_CONFIRMATION=false : les comptes sont actifs sans confirmer leur adresse e-mail. À réactiver dès qu\'un SMTP est configuré.');
+        } elseif (in_array(mb_strtolower((string) ($env['MAIL_MAILER'] ?? 'log')), ['log', 'array', ''], true)) {
             $ajouter('erreur', 19, 'MAIL_MAILER=log : aucun e-mail ne part, donc personne ne peut confirmer son adresse. Configurez un SMTP (Brevo, Resend...).');
         }
 

@@ -1,11 +1,11 @@
 <x-layouts.auth titre="Connexion" variante="connexion">
     <p class="etiquette" data-reveal>Bon retour</p>
-    <h1 class="mt-5 text-[clamp(2.25rem,4vw,3.25rem)]" data-mots>Connexion</h1>
+    <h1 class="mt-3 text-[clamp(1.9rem,3vw,2.6rem)]" data-mots>Connexion</h1>
     <p class="mt-4 text-soft" data-reveal style="--i: 2">Retrouvez vos commandes, vos messages et votre porte-monnaie.</p>
 
     @if ($errors->has('email'))
         {{-- Erreur générale (identifiants faux, compte en attente, trop de tentatives) : annoncée immédiatement. --}}
-        <p id="erreur-connexion" class="message message-erreur mt-8" role="alert">{{ $errors->first('email') }}</p>
+        <p id="erreur-connexion" class="message message-erreur mt-6" role="alert">{{ $errors->first('email') }}</p>
     @endif
 
     @if (session('email_a_confirmer'))
@@ -17,7 +17,7 @@
         </form>
     @endif
 
-    <form method="POST" action="{{ route('connexion') }}" class="mt-8 grid gap-7" novalidate>
+    <form method="POST" action="{{ route('connexion') }}" class="mt-6 grid gap-5" novalidate>
         @csrf
 
         <div class="champ">
@@ -41,7 +41,9 @@
         <div class="flex flex-wrap items-center gap-x-8 gap-y-4">
             <x-bouton chargement="Connexion…">Se connecter</x-bouton>
             <a href="{{ route('inscription') }}" class="lien text-sm">Pas encore de compte ? S'inscrire</a>
-            <a href="{{ route('email.renvoyer') }}" class="lien text-sm">E-mail de confirmation non reçu ?</a>
+            @if (config('koudmain.securite.confirmation_email'))
+                <a href="{{ route('email.renvoyer') }}" class="lien text-sm">E-mail de confirmation non reçu ?</a>
+            @endif
         </div>
     </form>
 </x-layouts.auth>
