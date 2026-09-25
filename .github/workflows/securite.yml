@@ -19,7 +19,7 @@ jobs:
     env:
       GITLEAKS_VERSION: 8.21.2
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with:
           fetch-depth: 0 # tout l'historique : un secret supprimé reste dans les anciens commits
       - name: Installer gitleaks (empreinte vérifiée)
@@ -37,7 +37,7 @@ jobs:
     name: Dépendances (failles connues)
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - uses: shivammathur/setup-php@v2
         with:
           php-version: '8.4'
@@ -68,7 +68,7 @@ jobs:
           --health-timeout 5s
           --health-retries 10
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - uses: shivammathur/setup-php@v2
         with:
           php-version: '8.4'
