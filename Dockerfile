@@ -12,7 +12,7 @@ COPY composer.json composer.lock ./
 RUN composer install --no-dev --no-interaction --no-progress --no-scripts --no-autoloader --prefer-dist --ignore-platform-reqs
 
 # ---------------------------------------------------------------- 2. Fichiers du navigateur (Vite : CSS, JS, React, Motion)
-FROM node:22-alpine AS assets
+FROM node:25-alpine AS assets
 WORKDIR /app
 COPY package.json package-lock.json ./
 RUN npm ci --no-audit --no-fund
