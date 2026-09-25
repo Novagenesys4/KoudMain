@@ -8,10 +8,10 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 
-/** /prestataire/disponibilites : les horaires d'ouverture de la semaine (deux plages possibles par jour). */
+/** /prestataire/disponibilites : les horaires d'ouverture de la semaine (trois plages possibles par jour, comme l'application). */
 class DisponibiliteController extends Controller
 {
-    private const PLAGES_PAR_JOUR = 2;
+    private const PLAGES_PAR_JOUR = \App\Http\Controllers\Api\V1\PrestataireController::PLAGES_PAR_JOUR;
 
     public function edit(Request $request, DisponibiliteService $service): View
     {
@@ -64,7 +64,7 @@ class DisponibiliteController extends Controller
 
             for ($i = 1; $i < count($plages); $i++) {
                 if ($plages[$i][0] < $plages[$i - 1][1]) {
-                    $erreurs[] = "$nom : les deux plages horaires se chevauchent.";
+                    $erreurs[] = "$nom : deux plages horaires se chevauchent.";
                     break;
                 }
             }

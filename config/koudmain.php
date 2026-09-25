@@ -31,8 +31,11 @@ return [
         'hsts_secondes' => 31_536_000,
         'remember_minutes' => 20_160,
         'confirmation_heures' => 48,
-        // EMAIL_CONFIRMATION=false : les comptes sont actifs dès l'inscription, sans e-mail de confirmation. À utiliser tant qu'aucun
-        // SMTP n'est configuré (MAIL_MAILER=log). Remettre à true (ou supprimer la variable) dès que les e-mails partent vraiment.
+        // Règle d'accès (voir User::aUnIdentifiantVerifie) : un compte s'utilise dès qu'il a UN identifiant vérifié, le numéro
+        // (code SMS, application) ou l'e-mail (lien, site). Confirmer l'e-mail n'est plus obligatoire sur l'application : cela
+        // « certifie » le compte. On ne se connecte qu'avec un identifiant vérifié.
+        // EMAIL_CONFIRMATION=false : mode sans e-mail (aucun SMTP, MAIL_MAILER=log) : aucun lien n'est envoyé, un compte créé sur le
+        // site est actif tout de suite, et ces contrôles sont levés. Remettre à true dès que les e-mails partent vraiment.
         'confirmation_email' => filter_var(env('EMAIL_CONFIRMATION', true), FILTER_VALIDATE_BOOL),
         // Validité du lien de réinitialisation de mot de passe (même mécanisme que la confirmation d'adresse, en plus court :
         // un lien qui donne accès au compte doit rester valable moins longtemps qu'un lien qui se contente de le confirmer).
@@ -250,6 +253,48 @@ return [
         'metriques_etats_jours' => 730,
         'journaux_jours' => 30,
         'battement_max_secondes' => 180,
+    ],
+
+    /*
+     * API mobile (application Flutter) : jetons Sanctum, vérification du téléphone par SMS.
+     *  - jeton_jours        : durée de vie d'un jeton de connexion (l'application se reconnecte ensuite) ;
+     *  - otp                : codes à 6 chiffres envoyés par SMS (inscription, vérification du numéro, mot de passe oublié) ;
+     *  - sms.driver         : « journal » (développement : le code est écrit dans storage/logs et renvoyé dans la réponse
+     *                         sous « code_debug » hors production), « email » (le code part par e-mail à l'adresse du compte,
+     *                         via MAIL_* : solution d'attente sans fournisseur SMS ; il prouve l'adresse, pas le numéro),
+     *                         « aucun » (valeur par défaut en production : aucune inscription par l'application).
+     */
+    'api' => [
+        'jeton_jours' => (int) env('API_JETON_JOURS', 60),
+        'otp' => [
+            'longueur' => 6,
+            'validite_minutes' => 10,
+            'renvoi_secondes' => 30,
+            'tentatives_max' => 5,
+            'envois_max_par_heure' => 5,
+        ],
+        'sms' => [
+            'driver' => env('SMS_DRIVER', env('APP_ENV') === 'production' ? 'aucun' : 'journal'),
+        ],
+        'limites' => [
+            'utilisateur_par_minute' => 120,
+            'visiteur_par_minute' => 60,
+            'auth_par_minute_et_ip' => 20,
+            'otp_par_heure_et_ip' => 20,
+        ],
+        /*
+         * Vérification d'identité des prestataires (KYC) : pièce recto, verso et selfie.
+         * Les photos sont nettoyées (ImageProcessor), puis CHIFFRÉES (APP_KEY) avant d'être rangées :
+         *  - « local »    : storage/app/private/kyc (jamais servi par le serveur web) ;
+         *  - « supabase » : un bucket PRIVÉ distinct des photos publiques (SUPABASE_BUCKET_KYC, « kyc-prive » par défaut).
+         */
+        'kyc' => [
+            'stockage' => env('KYC_STOCKAGE', env('MEDIA_DRIVER', 'local')),
+            'bucket' => env('SUPABASE_BUCKET_KYC', 'kyc-prive'),
+            'taille_max_ko' => 8192,
+            'categories_max' => 10,
+            'villes_max' => 20,
+        ],
     ],
 
     'metriques' => [

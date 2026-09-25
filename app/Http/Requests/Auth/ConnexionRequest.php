@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Auth;
 
+use App\Http\Requests\Api\ConnexionApiRequest;
 use App\Support\Saisie;
 use App\Models\User;
 use App\Services\Metriques\Enregistreur;
@@ -16,6 +17,10 @@ use Illuminate\Validation\ValidationException;
 /**
  * Connexion (ex-authentifier() de auth_service.php) : validation, limitation des tentatives,
  * vérification du mot de passe, refus des prestataires non validés, ouverture de session.
+ *
+ * Identifiant : adresse e-mail OU numéro de téléphone (le champ du formulaire garde le nom « email »). On ne se connecte qu'avec un
+ * identifiant VÉRIFIÉ : l'e-mail confirmé par son lien, ou le numéro vérifié par code SMS dans l'application. Un compte créé sur
+ * l'application entre donc sur le site avec son numéro tant que son adresse n'est pas confirmée.
  */
 class ConnexionRequest extends FormRequest
 {
@@ -39,10 +44,10 @@ class ConnexionRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'email.required' => 'Veuillez saisir votre adresse e-mail.',
-            'email.max' => 'Adresse e-mail ou mot de passe incorrect.',
+            'email.required' => 'Veuillez saisir votre adresse e-mail ou votre numéro de téléphone.',
+            'email.max' => 'Identifiant ou mot de passe incorrect.',
             'password.required' => 'Veuillez saisir votre mot de passe.',
-            'password.max' => 'Adresse e-mail ou mot de passe incorrect.',
+            'password.max' => 'Identifiant ou mot de passe incorrect.',
         ];
     }
 
@@ -56,12 +61,15 @@ class ConnexionRequest extends FormRequest
      */
     public function authentifier(): void
     {
-        $email = Saisie::chaine($this->input('email'));
+        $login = Saisie::chaine($this->input('email'));
         $ip = ClientIp::resoudre($this);
 
-        $this->verifierLimites($email, $ip);
+        // Même recherche que l'application (e-mail, ou numéro vérifié). Compteur d'échecs PAR COMPTE (clé = son adresse), partagé
+        // avec l'application : changer d'identifiant ou de porte ne contourne pas la limite.
+        $user = ConnexionApiRequest::trouver($login);
+        $email = $user !== null ? mb_strtolower($user->email) : $login;
 
-        $user = User::query()->whereRaw('LOWER(email) = ?', [$email])->first();
+        $this->verifierLimites($email, $ip);
 
         // On compare TOUJOURS à un hash, même si le compte n'existe pas.
         $motDePasseCorrect = Hash::check(Saisie::chaine($this->input('password')), $user?->password ?? self::HASH_FACTICE);
@@ -71,23 +79,33 @@ class ConnexionRequest extends FormRequest
             Journal::info('connexion.echec', ['email' => $email, 'ip' => $ip, 'compte_existe' => $user !== null]);
             app(Enregistreur::class)->evenement('connexion.echec');
 
-            throw ValidationException::withMessages(['email' => 'Adresse e-mail ou mot de passe incorrect.']);
+            throw ValidationException::withMessages(['email' => 'Identifiant ou mot de passe incorrect.']);
         }
 
-        // Mot de passe juste, mais l'adresse e-mail n'a jamais été confirmée (règle 19) : on ne connecte pas. Ce message n'est vu que
-        // par quelqu'un qui connaît le mot de passe du compte : il ne révèle rien à un curieux. Le formulaire propose de renvoyer le lien.
-        if (config('koudmain.securite.confirmation_email') && $user->email_verified_at === null) {
-            Journal::info('connexion.email_non_confirme', ['utilisateur' => $user->id, 'ip' => $ip]);
+        // Mot de passe juste, mais l'identifiant saisi n'est pas vérifié (règle 19). Ce message n'est vu que par quelqu'un qui connaît
+        // le mot de passe du compte : il ne révèle rien à un curieux.
+        if (config('koudmain.securite.confirmation_email') && ! $user->identifiantVerifie($login)) {
+            Journal::info('connexion.identifiant_non_verifie', ['utilisateur' => $user->id, 'ip' => $ip]);
 
-            $this->session()->flash('email_a_confirmer', true);
+            // Compte du site qui n'a encore rien confirmé : le formulaire propose de renvoyer le lien de confirmation.
+            if (! $user->aUnIdentifiantVerifie() && str_contains($login, '@')) {
+                $this->session()->flash('email_a_confirmer', true);
 
-            throw ValidationException::withMessages([
-                'email' => 'Votre adresse e-mail n\'est pas encore confirmée. Ouvrez le message que nous vous avons envoyé et cliquez sur le lien, puis reconnectez-vous.',
-            ]);
+                throw ValidationException::withMessages([
+                    'email' => 'Votre adresse e-mail n\'est pas encore confirmée. Ouvrez le message que nous vous avons envoyé et cliquez sur le lien, puis reconnectez-vous.',
+                ]);
+            }
+
+            throw ValidationException::withMessages(['email' => match (true) {
+                ! $user->aUnIdentifiantVerifie() => 'Votre compte n\'est pas encore vérifié : connectez-vous avec votre adresse e-mail après avoir cliqué sur le lien de confirmation reçu.',
+                str_contains($login, '@') => 'Votre adresse e-mail n\'est pas encore confirmée : connectez-vous avec votre numéro de téléphone. Vous pourrez confirmer votre adresse depuis l\'application KoudMain.',
+                default => 'Ce numéro n\'est pas encore vérifié : connectez-vous avec votre adresse e-mail.',
+            }]);
         }
 
         // Mot de passe juste, mais le prestataire n'a pas encore été validé par un administrateur.
-        if ($user->enAttenteValidation()) {
+        // Un client qui a demandé à devenir aussi prestataire (application mobile) garde l'accès à son espace client.
+        if ($user->enAttenteValidation() && ! $user->est_client) {
             throw ValidationException::withMessages([
                 'email' => "Votre compte prestataire est en attente de validation par l'administrateur. "
                     ."Vous recevrez l'accès dès qu'il sera vérifié.",

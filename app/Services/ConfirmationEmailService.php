@@ -10,7 +10,8 @@ use App\Support\Journal;
 use Illuminate\Support\Facades\URL;
 
 /**
- * Confirmation de l'adresse e-mail (règle 19) : un compte n'est activé qu'après un clic sur un lien envoyé à SON adresse.
+ * Confirmation de l'adresse e-mail (règle 19). Un compte créé sur le SITE n'est activé qu'après un clic sur ce lien. Un compte
+ * créé sur l'APPLICATION est déjà actif par son numéro (code SMS) : confirmer l'adresse le « certifie » (badge).
  *
  * Le lien :
  *  - est signé (HMAC avec APP_KEY) : le modifier, ou en fabriquer un, est impossible ;
@@ -77,6 +78,15 @@ class ConfirmationEmailService
     public function prevenirCompteExistant(User $utilisateur): void
     {
         if ($utilisateur->email_verified_at === null) {
+            // Compte déjà actif par son numéro (application) : le lien n'est PAS envoyé à la demande d'un tiers. Sinon, quiconque
+            // lit cette boîte pourrait confirmer l'adresse d'un compte qui a déjà de la valeur (wallet), puis réinitialiser son
+            // mot de passe par e-mail. Seul le titulaire, connecté, redemande ce lien (POST /auth/email/send-link).
+            if ($utilisateur->telephoneVerifie()) {
+                Journal::info('inscription.adresse_non_confirmee_utilisee', ['utilisateur' => $utilisateur->id]);
+
+                return;
+            }
+
             // Le compte attend toujours sa confirmation : le plus utile est de renvoyer le lien.
             $this->envoyer($utilisateur);
 
@@ -96,21 +106,27 @@ class ConfirmationEmailService
         Journal::info('inscription.adresse_deja_utilisee', ['utilisateur' => $utilisateur->id]);
     }
 
-    /** Confirme l'adresse : le compte est activé, et les notifications de bienvenue (et l'alerte aux administrateurs) partent maintenant. */
+    /**
+     * Confirme l'adresse. Compte du site : il est activé, et la bienvenue (et l'alerte aux administrateurs) part maintenant.
+     * Compte de l'application : il était déjà actif par son numéro (bienvenue déjà envoyée) ; il devient certifié.
+     */
     public function confirmer(User $utilisateur): bool
     {
         if ($utilisateur->email_verified_at !== null) {
             return false;
         }
 
+        $dejaActif = $utilisateur->telephoneVerifie();
         $utilisateur->forceFill(['email_verified_at' => now()])->save();
 
         Journal::info('email.confirme', ['utilisateur' => $utilisateur->id, 'role' => $utilisateur->est_prestataire ? 'prestataire' : 'client']);
         app(Enregistreur::class)->evenement('email.confirme');
 
         // Bienvenue et, pour un prestataire, alerte des administrateurs : seulement maintenant, pour qu'une adresse fictive ne
-        // remplisse pas la file de validation.
-        $this->ecouteur->inscription($utilisateur);
+        // remplisse pas la file de validation. Déjà faits à la vérification du numéro pour un compte de l'application.
+        if (! $dejaActif) {
+            $this->ecouteur->inscription($utilisateur);
+        }
 
         return true;
     }

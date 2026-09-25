@@ -1,6 +1,10 @@
 <?php
 
+use App\Http\Middleware\Api\CompteActif;
+use App\Http\Middleware\Api\ExigerRole;
+use App\Http\Middleware\Api\TelephoneVerifie;
 use App\Http\Middleware\ContexteRequete;
+use App\Http\Responses\ApiExceptionRenderer;
 use App\Http\Middleware\EmailConfirme;
 use App\Http\Middleware\EnsureRole;
 use App\Http\Middleware\ForceHttps;
@@ -16,6 +20,9 @@ use Illuminate\Session\Middleware\AuthenticateSession;
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
         web: __DIR__.'/../routes/web.php',
+        // API de l'application mobile (Flutter) : /api/v1/..., authentifiée par jetons Sanctum. Voir routes/api.php.
+        api: __DIR__.'/../routes/api.php',
+        apiPrefix: 'api',
         commands: __DIR__.'/../routes/console.php',
         health: '/up',
     )
@@ -41,6 +48,17 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->alias([
             'role' => EnsureRole::class,
             'email.confirme' => EmailConfirme::class,
+            // API mobile : rôle exigé, compte actif (adresse confirmée), numéro de téléphone vérifié par SMS.
+            'api.role' => ExigerRole::class,
+            'api.compte' => CompteActif::class,
+            'api.telephone' => TelephoneVerifie::class,
+        ]);
+
+        // Groupe « api » : pas de session ni de cookie (jetons uniquement), mais les mêmes en-têtes de sécurité, le même numéro de
+        // requête dans les journaux, et un plafond de requêtes par utilisateur (ou par IP pour un visiteur) : RateLimiter « api ».
+        $middleware->api(prepend: [SecurityHeaders::class], append: [
+            ThrottleRequests::class.':api',
+            ContexteRequete::class,
         ]);
 
         // Cookie posé par le navigateur (écran d'ouverture déjà vu) : il ne contient rien de secret, il n'est donc pas chiffré.
@@ -71,6 +89,11 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withExceptions(function (Exceptions $exceptions): void {
         // Un numéro de carte ou un code de sécurité n'est jamais rejoué dans un formulaire après une erreur (il finirait dans la session).
         $exceptions->dontFlash(['numero_carte', 'cvv']);
+
+        // API mobile : toute erreur sous /api/* répond en JSON standard { success: false, message, data, code, errors? }
+        // (jamais une page HTML ni une redirection vers /connexion). Le signalement (journal, Sentry) n'est pas modifié.
+        $exceptions->shouldRenderJsonWhen(fn (Request $request) => $request->is('api/*') || $request->expectsJson());
+        $exceptions->render(fn (\Throwable $e, Request $request) => $request->is('api/*') ? ApiExceptionRenderer::rendre($e) : null);
 
         // Toute erreur inattendue (pas les 404, validations, accès refusés... que Laravel ne « rapporte » pas) part aussi vers
         // Sentry quand SENTRY_DSN est renseigné. Elle reste écrite dans le journal comme avant.

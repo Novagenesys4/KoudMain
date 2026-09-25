@@ -35,7 +35,10 @@ class MotDePasseOublieController extends Controller
 
         $compte = User::query()->whereRaw('LOWER(email) = ?', [mb_strtolower(trim($donnees['email']))])->first();
 
-        if ($compte !== null) {
+        // Par e-mail, seulement vers une adresse CONFIRMÉE : un compte de l'application dont l'adresse n'est pas confirmée
+        // réinitialise son mot de passe par SMS (depuis l'application). Sinon, la personne qui lit une adresse mal saisie
+        // pourrait prendre ce compte (et son wallet).
+        if ($compte !== null && (! config('koudmain.securite.confirmation_email') || $compte->emailConfirme())) {
             $this->service->envoyer($compte);
         }
 

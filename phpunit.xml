@@ -38,6 +38,8 @@
         <env name="DB_PASSWORD" value="koudmain_dev" force="true"/>
         <env name="DB_URL" value="" force="true"/>
         <env name="MAIL_MAILER" value="array"/>
+        <!-- Les tests supposent les codes par SMS (journal) ; OtpEmailApiTest active lui-même le canal e-mail. Indépendant du .env local. -->
+        <env name="SMS_DRIVER" value="journal" force="true"/>
         <env name="QUEUE_CONNECTION" value="sync"/>
         <env name="SESSION_DRIVER" value="array"/>
         <env name="TRUST_PROXY" value="false"/>

@@ -27,8 +27,14 @@ class ConfirmationEmailController extends Controller
         // Compte inconnu ou empreinte qui ne correspond plus à l'adresse : même refus dans les deux cas.
         abort_if($compte === null || ! hash_equals($this->confirmations->empreinte($compte), $hash), 403);
 
+        $dejaActif = $compte->telephoneVerifie();
+
         if (! $this->confirmations->confirmer($compte)) {
             return redirect()->route('connexion')->with('succes', 'Votre adresse est déjà confirmée. Connectez-vous.');
+        }
+
+        if ($dejaActif) {
+            return redirect()->route('connexion')->with('succes', 'Adresse confirmée ! Votre compte KoudMain est maintenant certifié. Vous pouvez aussi vous connecter avec cette adresse.');
         }
 
         return redirect()->route('connexion')->with('succes', $compte->enAttenteValidation()
@@ -51,7 +57,9 @@ class ConfirmationEmailController extends Controller
 
         $compte = User::query()->whereRaw('LOWER(email) = ?', [mb_strtolower(trim($donnees['email']))])->first();
 
-        if ($compte !== null && $compte->email_verified_at === null) {
+        // Un compte déjà actif par son numéro (application) redemande son lien depuis son espace, connecté : pas depuis ce formulaire
+        // public (voir ConfirmationEmailService::prevenirCompteExistant).
+        if ($compte !== null && $compte->email_verified_at === null && ! $compte->telephoneVerifie()) {
             $this->confirmations->envoyer($compte);
         }
 

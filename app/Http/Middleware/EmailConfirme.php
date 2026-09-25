@@ -8,7 +8,9 @@ use Illuminate\Support\Facades\Auth;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
- * Filet de sécurité (règle 19) : un compte dont l'adresse e-mail n'est pas confirmée n'accède jamais à un espace.
+ * Filet de sécurité (règle 19) : un compte sans AUCUN identifiant vérifié (ni e-mail confirmé, ni numéro vérifié par SMS dans
+ * l'application) n'accède jamais à un espace. Un compte créé sur l'application (numéro vérifié) entre donc sur le site même si son
+ * adresse e-mail n'est pas encore confirmée.
  *
  * La connexion refuse déjà ces comptes (voir ConnexionRequest) ; ce middleware couvre le reste : une session ou un cookie
  * « rester connecté » créé avant l'obligation de confirmer, une bascule manuelle en base... Il s'applique à toutes les pages
@@ -20,7 +22,7 @@ class EmailConfirme
     {
         $utilisateur = $request->user();
 
-        if (config('koudmain.securite.confirmation_email') && $utilisateur !== null && $utilisateur->email_verified_at === null) {
+        if (config('koudmain.securite.confirmation_email') && $utilisateur !== null && ! $utilisateur->aUnIdentifiantVerifie()) {
             Auth::guard('web')->logout();
 
             $request->session()->invalidate();

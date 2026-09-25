@@ -63,7 +63,7 @@ class ConnexionTest extends TestCase
         User::factory()->create(['email' => 'client@exemple.ci']);
 
         $this->seConnecter('client@exemple.ci', 'mauvais')
-            ->assertSessionHasErrors(['email' => 'Adresse e-mail ou mot de passe incorrect.']);
+            ->assertSessionHasErrors(['email' => 'Identifiant ou mot de passe incorrect.']);
 
         $this->assertGuest();
     }
@@ -72,7 +72,7 @@ class ConnexionTest extends TestCase
     {
         // On ne révèle pas si une adresse est inscrite.
         $this->seConnecter('personne@exemple.ci')
-            ->assertSessionHasErrors(['email' => 'Adresse e-mail ou mot de passe incorrect.']);
+            ->assertSessionHasErrors(['email' => 'Identifiant ou mot de passe incorrect.']);
 
         $this->assertGuest();
     }
@@ -91,7 +91,36 @@ class ConnexionTest extends TestCase
     public function test_les_champs_vides_sont_signales(): void
     {
         $this->from('/connexion')->post('/connexion', [])
-            ->assertSessionHasErrors(['email' => 'Veuillez saisir votre adresse e-mail.', 'password' => 'Veuillez saisir votre mot de passe.']);
+            ->assertSessionHasErrors(['email' => 'Veuillez saisir votre adresse e-mail ou votre numéro de téléphone.', 'password' => 'Veuillez saisir votre mot de passe.']);
+    }
+
+    // ------------------------------------------------------------ Compte créé sur l'application (numéro vérifié)
+
+    public function test_un_compte_de_l_application_entre_avec_son_numero_sans_email_confirme(): void
+    {
+        config(['koudmain.securite.confirmation_email' => true]);
+        $user = User::factory()->unverified()->create(['email' => 'mobile@exemple.ci', 'telephone' => '0708123456', 'telephone_verifie_at' => now()]);
+
+        $this->seConnecter('07 08 12 34 56')->assertRedirect(route('client.tableau-de-bord'));
+        $this->assertAuthenticatedAs($user);
+    }
+
+    public function test_un_email_non_confirme_ne_sert_pas_d_identifiant(): void
+    {
+        config(['koudmain.securite.confirmation_email' => true]);
+        User::factory()->unverified()->create(['email' => 'mobile@exemple.ci', 'telephone' => '0708123456', 'telephone_verifie_at' => now()]);
+
+        $this->seConnecter('mobile@exemple.ci')->assertSessionHasErrors('email');
+        $this->assertStringContainsString('numéro de téléphone', session('errors')->first('email'));
+        $this->assertGuest();
+    }
+
+    public function test_un_numero_non_verifie_ne_sert_pas_d_identifiant(): void
+    {
+        User::factory()->create(['email' => 'site@exemple.ci', 'telephone' => '0708123456']);
+
+        $this->seConnecter('0708123456')->assertSessionHasErrors('email');
+        $this->assertGuest();
     }
 
     // ------------------------------------------------------------ Force brute

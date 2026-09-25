@@ -156,6 +156,30 @@ class ConfirmationEmailTest extends TestCase
         Mail::assertSent(NotificationMail::class, 1); // seul le compte réellement en attente reçoit un message
     }
 
+    public function test_un_compte_de_l_application_ne_recoit_pas_le_lien_a_la_demande_d_un_tiers(): void
+    {
+        // Compte actif par son numéro (application), adresse pas encore confirmée : ni le formulaire public de renvoi, ni une
+        // inscription avec la même adresse n'envoient le lien (sinon le lecteur de cette boîte pourrait prendre le compte).
+        Mail::fake();
+        $this->nonConfirme(['telephone_verifie_at' => now()]);
+
+        $this->post('/email/renvoyer', ['email' => 'attente@exemple.ci'])->assertRedirect(route('connexion'));
+        $this->post('/inscription', $this->donnees('attente@exemple.ci'))->assertRedirect(route('connexion'));
+
+        Mail::assertNothingSent();
+    }
+
+    public function test_confirmer_l_adresse_d_un_compte_de_l_application_le_certifie(): void
+    {
+        $compte = $this->nonConfirme(['telephone_verifie_at' => now()]);
+
+        $this->get(app(ConfirmationEmailService::class)->lien($compte))
+            ->assertRedirect(route('connexion'))
+            ->assertSessionHas('succes', fn (string $message) => str_contains($message, 'certifié'));
+
+        $this->assertTrue($compte->refresh()->emailConfirme());
+    }
+
     public function test_le_renvoi_est_limite_par_adresse(): void
     {
         Mail::fake();

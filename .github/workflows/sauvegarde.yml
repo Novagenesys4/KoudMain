@@ -1,0 +1,115 @@
+# Sauvegarde de la base (SECURITE.md, règle 20) : chaque nuit à 02 h 30 UTC, et à la demande.
+#   1. pg_dump de la base Supabase ;
+#   2. PREUVE : restauration dans une base PostgreSQL jetable, puis comptage des tables ;
+#   3. chiffrement avec age (clé PUBLIQUE seulement : la clé privée ne quitte jamais votre ordinateur) ;
+#   4. envoi vers Cloudflare R2 (un autre fournisseur que Supabase), puis vérification que l'objet existe ;
+#   5. (facultatif) variables d'environnement de Render, chiffrées de la même façon.
+# Secrets et variables à créer dans GitHub : voir SECURITE.md. Aucune adresse ni mot de passe n'est écrit dans ce fichier.
+name: Sauvegarde
+
+on:
+  schedule:
+    - cron: '30 2 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: sauvegarde
+  cancel-in-progress: false
+
+jobs:
+  sauvegarde:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      PG_VERSION: ${{ vars.BACKUP_PG_VERSION || '17' }}
+      R2_ACCOUNT_ID: ${{ vars.R2_ACCOUNT_ID }}
+      R2_BUCKET: ${{ vars.R2_BUCKET }}
+      AGE_RECIPIENT: ${{ vars.BACKUP_AGE_RECIPIENT }}
+    services:
+      jetable:
+        image: postgres:17
+        env:
+          POSTGRES_DB: verification
+          POSTGRES_USER: verification
+          POSTGRES_PASSWORD: verification
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U verification"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    steps:
+      - name: Vérifier la configuration
+        run: |
+          for v in R2_ACCOUNT_ID R2_BUCKET AGE_RECIPIENT; do
+            [ -n "${!v}" ] || { echo "::error::Variable GitHub manquante : $v (voir SECURITE.md)"; exit 1; }
+          done
+
+      - name: Installer les outils (PostgreSQL ${{ env.PG_VERSION }}, age)
+        run: |
+          sudo install -d /usr/share/postgresql-common/pgdg
+          sudo curl -sSfL -o /usr/share/postgresql-common/pgdg/apt.postgresql.org.asc https://www.postgresql.org/media/keys/ACCC4CF8.asc
+          echo "deb [signed-by=/usr/share/postgresql-common/pgdg/apt.postgresql.org.asc] https://apt.postgresql.org/pub/repos/apt $(lsb_release -cs)-pgdg main" | sudo tee /etc/apt/sources.list.d/pgdg.list
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq "postgresql-client-${PG_VERSION}" age
+          echo "/usr/lib/postgresql/${PG_VERSION}/bin" >> "$GITHUB_PATH"
+
+      - name: Exporter la base
+        env:
+          BACKUP_DATABASE_URL: ${{ secrets.BACKUP_DATABASE_URL }}
+        run: |
+          [ -n "$BACKUP_DATABASE_URL" ] || { echo "::error::Secret GitHub manquant : BACKUP_DATABASE_URL"; exit 1; }
+          nom="koudmain-$(date -u +%Y-%m-%dT%H%MZ).dump"
+          pg_dump --format=custom --no-owner --no-privileges --dbname="$BACKUP_DATABASE_URL" --file="$nom"
+          echo "NOM=$nom" >> "$GITHUB_ENV"
+
+      - name: Preuve de restauration (base jetable)
+        env:
+          PGPASSWORD: verification
+        run: |
+          pg_restore --no-owner --no-privileges --exit-on-error -h 127.0.0.1 -U verification -d verification "$NOM"
+          tables=$(psql -h 127.0.0.1 -U verification -d verification -tAc "select count(*) from information_schema.tables where table_schema = 'public'")
+          echo "Tables restaurées : $tables"
+          [ "$tables" -gt 0 ] || { echo "::error::La sauvegarde ne contient aucune table."; exit 1; }
+
+      - name: Chiffrer (clé publique age)
+        run: |
+          age -r "$AGE_RECIPIENT" -o "$NOM.age" "$NOM"
+          sha256sum "$NOM.age" > "$NOM.age.sha256"
+          shred -u "$NOM"
+
+      - name: Envoyer vers Cloudflare R2 et vérifier
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
+          AWS_DEFAULT_REGION: auto
+        run: |
+          point="https://${R2_ACCOUNT_ID}.r2.cloudflarestorage.com"
+          for f in "$NOM.age" "$NOM.age.sha256"; do
+            aws s3 cp "$f" "s3://${R2_BUCKET}/base-de-donnees/$f" --endpoint-url "$point" --only-show-errors
+          done
+          aws s3api head-object --bucket "$R2_BUCKET" --key "base-de-donnees/$NOM.age" --endpoint-url "$point" > /dev/null
+          echo "Sauvegarde envoyée et vérifiée : base-de-donnees/$NOM.age"
+
+      - name: Variables d'environnement de Render (facultatif)
+        env:
+          RENDER_API_KEY: ${{ secrets.RENDER_API_KEY }}
+          RENDER_SERVICE_ID: ${{ vars.RENDER_SERVICE_ID }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
+          AWS_DEFAULT_REGION: auto
+        run: |
+          if [ -z "$RENDER_API_KEY" ] || [ -z "$RENDER_SERVICE_ID" ]; then
+            echo "RENDER_API_KEY ou RENDER_SERVICE_ID absent : étape ignorée."
+            exit 0
+          fi
+          fichier="render-env-$(date -u +%Y-%m-%dT%H%MZ).json.age"
+          curl -sSf -H "Authorization: Bearer $RENDER_API_KEY" "https://api.render.com/v1/services/${RENDER_SERVICE_ID}/env-vars?limit=100" \
+            | age -r "$AGE_RECIPIENT" -o "$fichier"
+          point="https://${R2_ACCOUNT_ID}.r2.cloudflarestorage.com"
+          aws s3 cp "$fichier" "s3://${R2_BUCKET}/render/$fichier" --endpoint-url "$point" --only-show-errors
+          aws s3api head-object --bucket "$R2_BUCKET" --key "render/$fichier" --endpoint-url "$point" > /dev/null

@@ -63,6 +63,17 @@ class MotDePasseOublieTest extends TestCase
         Mail::assertSent(NotificationMail::class, 1); // seul le compte réellement inscrit reçoit un message
     }
 
+    public function test_pas_de_lien_par_e_mail_vers_une_adresse_non_confirmee(): void
+    {
+        // Compte de l'application (numéro vérifié) : son mot de passe se réinitialise par SMS, pas par une adresse jamais confirmée.
+        Mail::fake();
+        User::factory()->unverified()->create(['email' => 'mobile@exemple.ci', 'telephone_verifie_at' => now()]);
+
+        $this->post('/mot-de-passe-oublie', ['email' => 'mobile@exemple.ci'])->assertRedirect(route('connexion'));
+
+        Mail::assertNothingSent();
+    }
+
     public function test_le_lien_permet_de_choisir_un_nouveau_mot_de_passe_et_de_se_connecter_avec(): void
     {
         $utilisateur = $this->compte();

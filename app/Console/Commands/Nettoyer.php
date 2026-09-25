@@ -30,10 +30,13 @@ class Nettoyer extends Command
             $etats = DB::table('metriques')->where('nom', 'like', 'etat.%')->where('created_at', '<', now()->subDays($c['metriques_etats_jours']))->delete();
             $flux = app(Diffuseur::class)->purger();
             $journaux = $this->purgerJournaux((int) $c['journaux_jours']);
+            // API mobile : codes SMS expirés depuis plus d'un jour, jetons de connexion expirés.
+            $codes = DB::table('verifications_otp')->where('expire_at', '<', now()->subDay())->delete();
+            $jetons = DB::table('personal_access_tokens')->whereNotNull('expires_at')->where('expires_at', '<', now())->delete();
 
             return sprintf(
-                '%d notification(s), %d métrique(s), %d événement(s) temps réel, %d journal(aux) purgés',
-                $lues + $anciennes, $evenements + $etats, $flux, $journaux,
+                '%d notification(s), %d métrique(s), %d événement(s) temps réel, %d journal(aux), %d code(s) SMS, %d jeton(s) expirés purgés',
+                $lues + $anciennes, $evenements + $etats, $flux, $journaux, $codes, $jetons,
             );
         });
 

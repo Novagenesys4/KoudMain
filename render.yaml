@@ -80,6 +80,9 @@ services:
         sync: false
       - key: SUPABASE_BUCKET
         value: medias
+      # Pièces d'identité des prestataires : bucket PRIVÉ (à créer dans Supabase, « Public bucket » décoché).
+      - key: SUPABASE_BUCKET_KYC
+        value: kyc-prive
 
       # --- E-mails (Brevo, Resend... en SMTP) ---
       - key: MAIL_MAILER
@@ -100,6 +103,10 @@ services:
       # CINETPAY_API_KEY, CINETPAY_SITE_ID et CINETPAY_SECRET_KEY. Sans la clé secrète, les notifications de paiement sont refusées (règle 17).
       - key: PAIEMENT_DRIVER
         value: aucun
+
+      # --- Codes de vérification de l'application : par e-mail (via MAIL_* ci-dessus) tant qu'aucun fournisseur SMS n'est branché ---
+      - key: SMS_DRIVER
+        value: email
 
       # --- Temps réel : interrogation toutes les 3 s. Le flux continu occuperait un processus Apache par onglet ouvert. ---
       - key: TEMPS_REEL_MODE

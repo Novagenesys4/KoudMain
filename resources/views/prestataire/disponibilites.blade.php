@@ -20,13 +20,13 @@
     <form method="POST" action="{{ route('prestataire.disponibilites.enregistrer') }}">
         @csrf
         @method('PUT')
-        <x-espace.panneau titre="Ma semaine type" etiquette="Deux plages par jour au maximum" data-reveal>
+        <x-espace.panneau titre="Ma semaine type" etiquette="Trois plages par jour au maximum" data-reveal>
             <ul role="list" class="divide-y divide-line">
                 @foreach ($jours as $numero => $nom)
                     @php($plages = old("jours.$numero") ? collect(old("jours.$numero"))->map(fn ($p) => [$p['debut'] ?? '', $p['fin'] ?? ''])->values()->all() : ($horaires[$numero] ?? []))
                     <li class="grid items-center gap-x-6 gap-y-3 px-5 py-4 sm:grid-cols-[8rem_1fr]">
                         <p class="font-medium">{{ $nom }}</p>
-                        <div class="grid gap-3 sm:grid-cols-2">
+                        <div class="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
                             @for ($i = 0; $i < $plagesParJour; $i++)
                                 <fieldset class="flex items-center gap-2">
                                     <legend class="sr-only">{{ $nom }}, plage {{ $i + 1 }}</legend>
@@ -55,7 +55,7 @@
             </ul>
             <div class="flex flex-wrap items-center gap-4 border-t border-line px-5 py-4">
                 <button type="submit" class="btn btn-plein" data-chargement="Enregistrement…"><span data-libelle>Enregistrer mes horaires</span></button>
-                <p class="text-sm text-faint">Laissez les deux heures vides pour un jour de repos. Sans aucune plage, tous les jours (07 h – 21 h) sont ouverts.</p>
+                <p class="text-sm text-faint">Laissez les heures vides pour un jour de repos. Sans aucune plage, tous les jours (07 h – 21 h) sont ouverts.</p>
             </div>
         </x-espace.panneau>
     </form>

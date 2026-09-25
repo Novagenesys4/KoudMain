@@ -148,6 +148,23 @@ class AppServiceProvider extends ServiceProvider
             ? Limit::none()
             : Limit::perMinute($limite('admin_par_minute'))->by('a'.($request->user()?->id ?? ClientIp::resoudre($request))));
 
+        // ------------------------------------------------------------------ API mobile
+        $limiteApi = fn (string $cle): int => (int) config('koudmain.api.limites.'.$cle);
+
+        // Plafond général de l'API : par utilisateur connecté (jeton), sinon par IP.
+        RateLimiter::for('api', fn (Request $request) => $request->user() !== null
+            ? Limit::perMinute($limiteApi('utilisateur_par_minute'))->by('api-u'.$request->user()->id)
+            : Limit::perMinute($limiteApi('visiteur_par_minute'))->by('api-ip'.ClientIp::resoudre($request)));
+
+        // Connexion, inscription, mot de passe oublié : plafond par IP (en plus du décompte des échecs par compte, voir ConnexionApiRequest).
+        RateLimiter::for('api-auth', fn (Request $request) => Limit::perMinute($limiteApi('auth_par_minute_et_ip'))->by('api-auth'.ClientIp::resoudre($request)));
+
+        // Inscription par l'application : même plafond que le site (8 par tranche de 15 minutes et par IP), réponse JSON.
+        RateLimiter::for('api-inscription', fn (Request $request) => Limit::perMinutes(15, (int) config('koudmain.auth.max_inscriptions_par_ip'))->by('api-insc'.ClientIp::resoudre($request)));
+
+        // Codes SMS : chaque envoi coûte et peut servir à harceler quelqu'un. Plafond par IP (le plafond par numéro est dans OtpService).
+        RateLimiter::for('api-otp', fn (Request $request) => Limit::perHour($limiteApi('otp_par_heure_et_ip'))->by('api-otp'.ClientIp::resoudre($request)));
+
         // Inscription : 8 tentatives par tranche de 15 minutes et par IP (plan, phase 0, étape 4).
         RateLimiter::for('inscription', function (Request $request) {
             return Limit::perMinutes(15, (int) config('koudmain.auth.max_inscriptions_par_ip'))

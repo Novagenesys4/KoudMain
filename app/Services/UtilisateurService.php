@@ -116,6 +116,8 @@ class UtilisateurService
                 // Tables sans clé étrangère vers users : à vider à la main.
                 $cible->notifications()->delete();
                 DB::table('sessions')->where('user_id', $cible->id)->delete();
+                // Jetons de l'application mobile (table sans clé étrangère : polymorphe).
+                $cible->tokens()->delete();
 
                 $cible->delete();
 

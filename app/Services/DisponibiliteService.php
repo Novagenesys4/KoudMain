@@ -20,7 +20,8 @@ class DisponibiliteService
 {
     public const JOURS = [1 => 'Lundi', 2 => 'Mardi', 3 => 'Mercredi', 4 => 'Jeudi', 5 => 'Vendredi', 6 => 'Samedi', 7 => 'Dimanche'];
 
-    private const PAR_DEFAUT = ['07:00', '21:00'];
+    /** Plage proposée tous les jours tant que le prestataire n'a indiqué aucun horaire. */
+    public const PAR_DEFAUT = ['07:00', '21:00'];
 
     /**
      * Les plages d'ouverture, jour par jour : [1 => [['08:00', '12:00'], ['14:00', '18:00']], ...]

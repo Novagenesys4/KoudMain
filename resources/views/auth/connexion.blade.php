@@ -21,10 +21,11 @@
         @csrf
 
         <div class="champ">
-            <label for="champ-email">Adresse e-mail</label>
+            {{-- Adresse e-mail OU numéro de téléphone vérifié (compte créé sur l'application) : le nom du champ reste « email ». --}}
+            <label for="champ-email">Adresse e-mail ou numéro de téléphone</label>
             <div class="champ-saisie">
-                <input id="champ-email" name="email" type="email" value="{{ old('email') }}" required autofocus
-                       autocomplete="email" inputmode="email" @if ($errors->has('email')) aria-invalid="true" aria-describedby="erreur-connexion" @endif>
+                <input id="champ-email" name="email" type="text" value="{{ old('email') }}" required autofocus
+                       autocomplete="username" autocapitalize="none" spellcheck="false" @if ($errors->has('email')) aria-invalid="true" aria-describedby="erreur-connexion" @endif>
             </div>
         </div>
 
