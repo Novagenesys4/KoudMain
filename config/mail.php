@@ -37,6 +37,12 @@ return [
 
     'mailers' => [
 
+        // Brevo par son API web en HTTPS (MAIL_MAILER=brevo, clé BREVO_API_KEY) : transport déclaré dans AppServiceProvider.
+        // À préférer au SMTP sur Render gratuit, qui bloque les ports SMTP (25, 465, 587).
+        'brevo' => [
+            'transport' => 'brevo',
+        ],
+
         'smtp' => [
             'transport' => 'smtp',
             'scheme' => env('MAIL_SCHEME'),
@@ -45,7 +51,8 @@ return [
             'port' => env('MAIL_PORT', 2525),
             'username' => env('MAIL_USERNAME'),
             'password' => env('MAIL_PASSWORD'),
-            'timeout' => null,
+            // 10 s au plus : un serveur SMTP injoignable (port bloqué) ne doit pas faire attendre l'application.
+            'timeout' => (int) env('MAIL_TIMEOUT', 10),
             'local_domain' => env('MAIL_EHLO_DOMAIN', parse_url((string) env('APP_URL', 'http://localhost'), PHP_URL_HOST)),
         ],
 

@@ -18,6 +18,11 @@ return [
         'key' => env('POSTMARK_API_KEY'),
     ],
 
+    // Brevo par son API web (HTTPS) : MAIL_MAILER=brevo. Contourne le blocage des ports SMTP (Render, offre gratuite).
+    'brevo' => [
+        'key' => env('BREVO_API_KEY'),
+    ],
+
     'resend' => [
         'key' => env('RESEND_API_KEY'),
     ],

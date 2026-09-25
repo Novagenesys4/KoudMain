@@ -97,6 +97,9 @@ services:
         sync: false
       - key: MAIL_FROM_ADDRESS
         sync: false
+      # Render gratuit bloque les ports SMTP : préférer MAIL_MAILER=brevo (API web HTTPS) avec la clé API Brevo ci-dessous.
+      - key: BREVO_API_KEY
+        sync: false
 
       # --- Paiement Mobile Money : « aucun » tant que votre compte CinetPay n'est pas prêt (jamais « simulation » en production) ---
       # Le jour où vous activez CinetPay : PAIEMENT_DRIVER=cinetpay, puis ajoutez dans le tableau de bord (coffre de Render) :

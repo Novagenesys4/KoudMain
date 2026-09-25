@@ -16,6 +16,9 @@ use App\Services\Media\StockageLocal;
 use App\Services\Media\StockageSupabase;
 use App\Support\ClientIp;
 use App\Support\Saisie;
+use Illuminate\Support\Facades\Mail;
+use Symfony\Component\Mailer\Bridge\Brevo\Transport\BrevoTransportFactory;
+use Symfony\Component\Mailer\Transport\Dsn;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
@@ -56,6 +59,11 @@ class AppServiceProvider extends ServiceProvider
 
     public function boot(): void
     {
+        // E-mails par l'API web de Brevo (HTTPS) : MAIL_MAILER=brevo. Paquets symfony/brevo-mailer et symfony/http-client.
+        Mail::extend('brevo', fn () => (new BrevoTransportFactory)->create(
+            new Dsn('brevo+api', 'default', (string) config('services.brevo.key')),
+        ));
+
         // Erreurs (règle 14) : en production, jamais de page de débogage, même si APP_DEBUG=true est resté par erreur dans les
         // variables d'environnement. Le visiteur ne voit qu'un message générique ; le détail reste dans le journal du serveur.
         if ($this->app->isProduction() && config('app.debug')) {
